@@ -7,6 +7,12 @@
 #include "GameFramework/PlayerController.h"
 #include "UserController.generated.h"
 
+
+class UDecalComponent;
+class UBoxComponent;
+class AUserCharacter;
+
+
 /**
  * 
  */

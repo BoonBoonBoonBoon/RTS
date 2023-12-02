@@ -13,5 +13,7 @@ UCLASS()
 class RTS_API ARTSGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+	ARTSGameModeBase();
 	
 };
