@@ -3,3 +3,8 @@
 
 #include "UserController.h"
 
+AUserController::AUserController()
+{
+	bShowMouseCursor = true;
+	DefaultMouseCursor = EMouseCursor::Hand;
+}
