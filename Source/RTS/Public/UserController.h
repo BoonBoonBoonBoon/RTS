@@ -14,5 +14,7 @@ UCLASS()
 class RTS_API AUserController : public APlayerController
 {
 	GENERATED_BODY()
+
+
 	
 };
