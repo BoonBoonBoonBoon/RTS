@@ -21,6 +21,14 @@ class RTS_API AUserController : public APlayerController
 {
 	GENERATED_BODY()
 
-	AUserController();
+public:
 	
+	AUserController();
+	virtual void OnPossess(APawn* InPawn) override;
+
+protected:
+	
+	virtual void PlayerTick(float DeltaTime) override;
+	virtual void BeginPlay() override;
+	virtual void SetupInputComponent() override;
 };
