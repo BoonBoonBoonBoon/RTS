@@ -28,8 +28,10 @@ public:
 
 	// Checks if the cursor is near the edges of the screen and moves it accordingly 
 	void EdgeScrolling();
-	void EdgeScrolling_WASD_UpDown();
-	void EdgeScrolling_WASD_LeftRight(); 
+	void EdgeScrolling_WASD_Up(float Value);
+	void EdgeScrolling_WASD_Down(float Value); 
+	void EdgeScrolling_WASD_Right(float Value); 
+	void EdgeScrolling_WASD_Left(float Value); 
 
 	// Moves the camera in the direction of the cursor direction
 	void MoveCamera(const FVector& Direction);

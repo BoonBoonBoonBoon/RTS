@@ -80,33 +80,36 @@ void AUserController::EdgeScrolling()
 	}
 }
 
-void AUserController::EdgeScrolling_WASD_UpDown()
+void AUserController::EdgeScrolling_WASD_Up(float Value)
 {
-	// Returns the current view target 
-	APlayerCameraManager* CameraManager = Cast<APlayerCameraManager>(GetViewTarget());
-	
-	if (AActor* ViewTarget = GetViewTarget())
+	if(Value)
 	{
-		if(!bCursorMove)
-		{
-			// normal speed
-			
-		} else if (bCursorMove)
-		{
-			// make it much faster since using both keys and side scroll
-		}
+		MoveCamera(FVector(2.0f, 0.0f, 0.0f));
 	}
 }
 
-void AUserController::EdgeScrolling_WASD_LeftRight()
+void AUserController::EdgeScrolling_WASD_Down(float Value)
 {
-		// Returns the current view target 
-		APlayerCameraManager* CameraManager = Cast<APlayerCameraManager>(GetViewTarget());
-	
-		if (AActor* ViewTarget = GetViewTarget())
-		{
-			
-		}
+	if(Value)
+	{
+		MoveCamera(FVector(-2.0f, 0.0f, 0.0f));
+	}
+}
+
+void AUserController::EdgeScrolling_WASD_Right(float Value)
+{
+	if (Value)
+	{
+		MoveCamera(FVector(0.0f, 2.0f, 0.0f));
+	}
+}
+
+void AUserController::EdgeScrolling_WASD_Left(float Value)
+{
+	if(Value)
+	{
+		MoveCamera(FVector(0.0f, -2.0f, 0.0f));
+	}
 }
 
 void AUserController::MoveCamera(const FVector& Direction)
@@ -159,9 +162,10 @@ void AUserController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
 
-	InputComponent->BindAxis("Up/Down", this, FInputAxisHandlerSignature::TMethodPtr<AUserController>(&AUserController::EdgeScrolling_WASD_UpDown));
-
-	InputComponent->BindAxis("Left/Right", this, FInputAxisHandlerSignature::TMethodPtr<AUserController>(&AUserController::EdgeScrolling_WASD_LeftRight));
+	InputComponent->BindAxis("Up", this, &AUserController::EdgeScrolling_WASD_Up);
+	InputComponent->BindAxis("Down", this, &AUserController::EdgeScrolling_WASD_Down);
+	InputComponent->BindAxis("Right", this, &AUserController::EdgeScrolling_WASD_Right);
+	InputComponent->BindAxis("Left", this, &AUserController::EdgeScrolling_WASD_Left);
 	
 	
 }
