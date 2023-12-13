@@ -28,6 +28,8 @@ public:
 
 	// Checks if the cursor is near the edges of the screen and moves it accordingly 
 	void EdgeScrolling();
+	void EdgeScrolling_WASD_UpDown();
+	void EdgeScrolling_WASD_LeftRight(); 
 
 	// Moves the camera in the direction of the cursor direction
 	void MoveCamera(const FVector& Direction);
@@ -40,6 +42,7 @@ protected:
 	FVector2D ViewportSize;
 
 	bool bCheckCursor;
+	bool bCursorMove;
 	
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void BeginPlay() override;

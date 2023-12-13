@@ -30,41 +30,83 @@ void AUserController::EdgeScrolling()
 
 	// Check if the cursor is within the viewport bounds
 	bool bCursorOnScreen = MousePosition.X >= 0.0f && MousePosition.X <= static_cast<float>(ViewportSizeX)
-		&& MousePosition.Y >= 0.0f && MousePosition.Y <= static_cast<float>(ViewportSizeY);
+	&& MousePosition.Y >= 0.0f && MousePosition.Y <= static_cast<float>(ViewportSizeY);
 
 	bCheckCursor = bCursorOnScreen;
 
 	// Actions to take is the cursor is on the screen
 	if (bCursorOnScreen)
 	{
+		
 		FString MousePosString = FString::Printf(
-			TEXT("Mouse Position: X=%.2f, Y=%.2f"), MousePosition.X, MousePosition.Y);
+		TEXT("Mouse Position: X=%.2f, Y=%.2f"), MousePosition.X, MousePosition.Y);
+		
 		// Draw the string on the screen
 		GEngine->AddOnScreenDebugMessage(1, 1.0f, FColor::White, MousePosString);
-
-
+		
 		// GONNA NEED TO DO A CHECK TO SEE IF WE ARE HOVERING OVER A BUTTON LATER
-
 		if (MousePosition.X < 30)
 		{
 			// Moves the camera to the left 
-			MoveCamera(FVector(-1.0f, 0.0f, 0.0f));
+			MoveCamera(FVector(0.0f, -1.0f, 0.0f));
+			bCursorMove = true;
 		}
 		else if (MousePosition.X > 1900)
 		{
-			MoveCamera(FVector(1.0f, 0.f, 0.f));
+			// Moves Camera to the right
+			MoveCamera(FVector(0.0f, 1.f, 0.f));
+			bCursorMove = true;
+		}
+		else
+		{
+			bCursorMove = false;	
 		}
 
 		// Move Forward
 		if (MousePosition.Y < 20)
 		{
-			MoveCamera(FVector(0.0f, -1.0f, 0.0f));
+			MoveCamera(FVector(1.0f, 0.0f, 0.0f));
+			bCursorMove = true;
 		}
 		else if (MousePosition.Y > 990)
 		{
-			MoveCamera(FVector(0.0f, 1.0f, 0.0f));
+			MoveCamera(FVector(-1.0f, 0.0f, 0.0f));
+			bCursorMove = true;
+		}
+		else
+		{
+			bCursorMove = false;	
 		}
 	}
+}
+
+void AUserController::EdgeScrolling_WASD_UpDown()
+{
+	// Returns the current view target 
+	APlayerCameraManager* CameraManager = Cast<APlayerCameraManager>(GetViewTarget());
+	
+	if (AActor* ViewTarget = GetViewTarget())
+	{
+		if(!bCursorMove)
+		{
+			// normal speed
+			
+		} else if (bCursorMove)
+		{
+			// make it much faster since using both keys and side scroll
+		}
+	}
+}
+
+void AUserController::EdgeScrolling_WASD_LeftRight()
+{
+		// Returns the current view target 
+		APlayerCameraManager* CameraManager = Cast<APlayerCameraManager>(GetViewTarget());
+	
+		if (AActor* ViewTarget = GetViewTarget())
+		{
+			
+		}
 }
 
 void AUserController::MoveCamera(const FVector& Direction)
@@ -74,16 +116,29 @@ void AUserController::MoveCamera(const FVector& Direction)
 	
 	if (AActor* ViewTarget = GetViewTarget())
 	{
+		
 		// Log information about the CameraManager
 		UE_LOG(LogTemp, Warning, TEXT("ViewTarget found!"));
 
-		const float CameraSpeed = 500.f;
-		// Get the current view target location
-		FVector NewCameraLocation = ViewTarget->GetActorLocation() + Direction * CameraSpeed * GetWorld()->
+		if(bCursorMove)
+		{
+			const float CameraSpeed = 500;
+			// Get the current view target location
+			FVector NewCameraLocation = ViewTarget->GetActorLocation() + Direction * CameraSpeed * GetWorld()->
 			GetDeltaSeconds();
 		
-		// Set the new view target location
-		ViewTarget->SetActorLocation(NewCameraLocation);
+			// Set the new view target location
+			ViewTarget->SetActorLocation(NewCameraLocation);
+		} else
+		{
+			const float CameraSpeed = 1000;
+			// Get the current view target location
+			FVector NewCameraLocation = ViewTarget->GetActorLocation() + Direction * CameraSpeed * GetWorld()->
+			GetDeltaSeconds();
+		
+			// Set the new view target location
+			ViewTarget->SetActorLocation(NewCameraLocation);
+		}
 	}
 }
 
@@ -103,4 +158,10 @@ void AUserController::BeginPlay()
 void AUserController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
+
+	InputComponent->BindAxis("Up/Down", this, FInputAxisHandlerSignature::TMethodPtr<AUserController>(&AUserController::EdgeScrolling_WASD_UpDown));
+
+	InputComponent->BindAxis("Left/Right", this, FInputAxisHandlerSignature::TMethodPtr<AUserController>(&AUserController::EdgeScrolling_WASD_LeftRight));
+	
+	
 }

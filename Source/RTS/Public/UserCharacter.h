@@ -11,6 +11,11 @@ class RTS_API AUserCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
+
+/////////////////// OVERSEER /////////////////////
+
+
+	
 public:
 	// Sets default values for this character's properties
 	AUserCharacter();
