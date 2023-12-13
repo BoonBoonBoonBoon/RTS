@@ -50,7 +50,7 @@ void AUserController::EdgeScrolling()
 			// Moves the camera to the left 
 			MoveCamera(FVector(-1.0f, 0.0f, 0.0f));
 		}
-		else if (MousePosition.X > 1100)
+		else if (MousePosition.X > 1900)
 		{
 			MoveCamera(FVector(1.0f, 0.f, 0.f));
 		}
