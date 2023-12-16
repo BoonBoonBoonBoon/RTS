@@ -7,6 +7,7 @@
 #include "UserCharacter.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "UserCharacter.h"
 #include "UserController.generated.h"
 
 
@@ -38,22 +39,32 @@ public:
 	// Moves the camera in the direction of the cursor direction
 	void MoveCamera(const FVector& Direction);
 
+	// Changes the length of the CameraBoom
 	void ZoomIn(float Value);
 	void ZoomOut(float Value);
 
+	// Rotates the camera 
+	void Left_Camera_Rotation();
+	void Right_Camera_Rotation();
 	
 protected:
 	
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class AUserCharacter* UserCharacter;
+
 	
-	//FORCEINLINE class AUserCharacter* GetUserCharacter() const { return User; }
+	//FORCEINLINE class AUserCharacter* GetUserCharacter() const { return UserCharacter; }
 	//int32 ArmLength = GetUserCharacter()->GetCameraBoom()->TargetArmLength;
+	
 	// The Cursors Location
 	FVector2D MousePosition;
+	// Updated Cursor location
+	FVector2d CurrentMousePosition;
+	
 	// Returns the viewport Size
 	FVector2D ViewportSize;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box Selection")
+	bool bIsSelecting;
+	
 	bool bCheckCursor;
 	bool bCursorMove;
 	
@@ -70,5 +81,14 @@ private:
 	float ZoomRate = 30;
 	float MouseDownTime;
 	float Dist;
+
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class AUserCharacter* UserCharacter;
+	
+	void StartBoxSelection();
+	void UpdateBoxSelection();
+	void EndBoxSelection();
 	
 };

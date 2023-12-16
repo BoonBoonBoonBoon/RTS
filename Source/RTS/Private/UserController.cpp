@@ -14,6 +14,9 @@ AUserController::AUserController()
 	// Shows the mouse cursor && Handle it should use. 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Hand;
+
+	// Used to check if we are drawing or selecting units.
+	bIsSelecting = false;
 }
 
 void AUserController::OnPossess(APawn* InPawn)
@@ -149,17 +152,18 @@ void AUserController::MoveCamera(const FVector& Direction)
 
 void AUserController::ZoomIn(float Value)
 {
+
 	
-	/*
+	
 	// Get the current arm length
 	//float CurrentArmLength = UserCharacter->CameraBoom->TargetArmLength;
 
 	FString ValueOfZoom = FString::Printf(
-		TEXT("Zoom Value: X=%.2f"), Value);
+	TEXT("Zoom Value: X=%.2f"), Value);
 
 	// Draw the string on the screen
 	GEngine->AddOnScreenDebugMessage(1, 1.0f, FColor::White, ValueOfZoom);
-
+	
 
 	//AUserCharacter* UserCharacter;
 	if (UserCharacter)
@@ -186,7 +190,7 @@ void AUserController::ZoomIn(float Value)
 	{
 		// Handle the case where GetUserCharacter() returns nullptr
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("UserCharacter is nullptr."));
-	}*/
+	}
 	
 }
 
@@ -198,6 +202,15 @@ if (GetUser()->GetCameraBoom()->TargetArmLength < MinZoom)
 {
 	GetUser()->GetCameraBoom()->TargetArmLength = MinZoom;
 }*/
+}
+
+void AUserController::Left_Camera_Rotation()
+{
+	
+}
+
+void AUserController::Right_Camera_Rotation()
+{
 }
 
 
@@ -228,5 +241,41 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAxis("ZoomIn", this, &AUserController::ZoomIn);
 	InputComponent->BindAxis("ZoomOut", this, &AUserController::ZoomOut);
 	
+	// Rotates the Camera 
+	InputComponent->BindAxis("ZoomIn", this, &AUserController::ZoomIn);
+	InputComponent->BindAxis("ZoomOut", this, &AUserController::ZoomOut);
+
+	// Draw Box and select units 
+	InputComponent->BindAction("StartBoxSelection", IE_Pressed, this, &AUserController::StartBoxSelection);
+	InputComponent->BindAction("UpdateBoxSelection", IE_Released, this, &AUserController::EndBoxSelection);
+	InputComponent->BindAction("UpdateBoxSelection", IE_Released, this, &AUserController::UpdateBoxSelection);
 	
+}
+
+void AUserController::StartBoxSelection()
+{
+	bIsSelecting = true;
+	GetMousePosition(MousePosition.X, MousePosition.Y);
+}
+
+void AUserController::UpdateBoxSelection()
+{
+	if(bIsSelecting)
+	{
+		GetMousePosition(CurrentMousePosition.X, CurrentMousePosition.Y);
+		
+		// Calculate the size of the selection box
+		FVector2d BoxSize = CurrentMousePosition - MousePosition;
+		
+		// Convert BoxSize to FString
+		FString BoxSizeString = FString::Printf(TEXT("Box Size: X=%.2f, Y=%.2f"), BoxSize.X, BoxSize.Y);
+		
+		// Print the FString to the GEngine output log
+		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, BoxSizeString);
+	}
+}
+
+void AUserController::EndBoxSelection()
+{
+	bIsSelecting = false;
 }
