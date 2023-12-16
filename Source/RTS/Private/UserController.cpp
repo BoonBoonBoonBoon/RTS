@@ -190,8 +190,7 @@ void AUserController::ZoomIn(float Value)
 	
 }
 
-void AUserController::Zoom
-Out(float Value)
+void AUserController::ZoomOut(float Value)
 {
 	/*GetUser()->GetCameraBoom()->TargetArmLength -= Value;
 
