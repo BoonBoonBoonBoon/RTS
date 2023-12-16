@@ -4,7 +4,9 @@
 
 
 #include "CoreMinimal.h"
+#include "UserCharacter.h"
 #include "GameFramework/PlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
 #include "UserController.generated.h"
 
 
@@ -25,7 +27,7 @@ public:
 	
 	AUserController();
 	virtual void OnPossess(APawn* InPawn) override;
-
+	
 	// Checks if the cursor is near the edges of the screen and moves it accordingly 
 	void EdgeScrolling();
 	void EdgeScrolling_WASD_Up(float Value);
@@ -36,8 +38,17 @@ public:
 	// Moves the camera in the direction of the cursor direction
 	void MoveCamera(const FVector& Direction);
 
-protected:
+	void ZoomIn(float Value);
+	void ZoomOut(float Value);
 
+	
+protected:
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
+	class AUserCharacter* UserCharacter;
+	
+	//FORCEINLINE class AUserCharacter* GetUserCharacter() const { return User; }
+	//int32 ArmLength = GetUserCharacter()->GetCameraBoom()->TargetArmLength;
 	// The Cursors Location
 	FVector2D MousePosition;
 	// Returns the viewport Size
@@ -49,4 +60,15 @@ protected:
 	virtual void PlayerTick(float DeltaTime) override;
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
+
+private:
+
+	// Susceptible to Change
+	int32 MaxZoom = 4000;
+	int32 MinZoom = 1000;
+
+	float ZoomRate = 30;
+	float MouseDownTime;
+	float Dist;
+	
 };
