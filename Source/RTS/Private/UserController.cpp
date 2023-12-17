@@ -263,6 +263,11 @@ void AUserController::StartBoxSelection()
 	// Then do Logic
 	// Unless, if the mouse coordinates change while pressing down the input
 	// So do an if statement to check if the mouse if moving.
+
+
+	// When just clicking, Shoot a line trace from the camera to the object you want to pick, This will work as single use selection then use if statement for multi.........
+
+	
 	FVector2D BoxSelectionMouse;
 
 	if (GetMousePosition(BoxSelectionMouse.X, BoxSelectionMouse.Y))
@@ -273,21 +278,28 @@ void AUserController::StartBoxSelection()
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *MousePosString);
 
 		// draw a debug box 
-		FVector DebugBoxExtent(50.0f, 50.0f, 50.0f);
+		FVector DebugBoxExtent(10.1f, 10.1f, 10.1f);
 
-		FVector DebugBoxLocation(BoxSelectionMouse.X, BoxSelectionMouse.Y, 0.0f);
+		//FVector DebugBoxLocation(BoxSelectionMouse.X, BoxSelectionMouse.Y, 0.0f);
 
 		// Get the screen space position of the mouse
 		FVector2D ScreenSpaceMouse(BoxSelectionMouse.X, BoxSelectionMouse.Y);
 		FVector WorldSpaceMouse;
 		FVector WorldSpaceDirection;
 
+		// Offset the spawn distance from the camera 
+		float SpawnDistance = 3000.0f; 
+
+		
 		// Convert screen space coordinates to world space
 		if (UGameplayStatics::DeprojectScreenToWorld(MyController, FIntPoint(ScreenSpaceMouse.X, ScreenSpaceMouse.Y),
 													 WorldSpaceMouse, WorldSpaceDirection))
 		{
+			// Adjust the WorldOrigin to spawn the debug box further away
+			FVector SpawnLoc = WorldSpaceMouse + WorldSpaceDirection * SpawnDistance;
+
 			// Draw a debug box at the mouse position
-			DrawDebugBox(this->GetWorld(), WorldSpaceMouse, DebugBoxExtent,
+			DrawDebugBox(this->GetWorld(), SpawnLoc, DebugBoxExtent,
 						 FQuat::Identity, FColor::Red, true, -1.0f, 0, 10.0f);
 
 			// Log the world space position where the debug box is being drawn
