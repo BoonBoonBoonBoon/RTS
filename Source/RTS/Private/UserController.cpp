@@ -125,7 +125,7 @@ void AUserController::MoveCamera(const FVector& Direction)
 	if (AActor* ViewTarget = GetViewTarget())
 	{
 		// Log information about the CameraManager
-		UE_LOG(LogTemp, Warning, TEXT("ViewTarget found!"));
+		//UE_LOG(LogTemp, Warning, TEXT("ViewTarget found!"));
 
 		if (bCursorMove)
 		{
@@ -158,7 +158,7 @@ void AUserController::ZoomIn(float Value)
 	// Get the current arm length
 	//float CurrentArmLength = UserCharacter->CameraBoom->TargetArmLength;
 
-	FString ValueOfZoom = FString::Printf(
+	/*FString ValueOfZoom = FString::Printf(
 	TEXT("Zoom Value: X=%.2f"), Value);
 
 	// Draw the string on the screen
@@ -191,6 +191,7 @@ void AUserController::ZoomIn(float Value)
 		// Handle the case where GetUserCharacter() returns nullptr
 		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("UserCharacter is nullptr."));
 	}
+	*/
 	
 }
 
@@ -246,36 +247,60 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAxis("ZoomOut", this, &AUserController::ZoomOut);
 
 	// Draw Box and select units 
-	InputComponent->BindAction("StartBoxSelection", IE_Pressed, this, &AUserController::StartBoxSelection);
+	InputComponent->BindAction("BoxSelection", IE_Pressed, this, &AUserController::StartBoxSelection);
 	InputComponent->BindAction("UpdateBoxSelection", IE_Released, this, &AUserController::EndBoxSelection);
-	InputComponent->BindAction("UpdateBoxSelection", IE_Released, this, &AUserController::UpdateBoxSelection);
+	//InputComponent->BindAction("UpdateBoxSelection", IE_Axis, this, &AUserController::UpdateBoxSelection);
 	
 }
 
 void AUserController::StartBoxSelection()
 {
+	
+	
+	// We Use this function to select an item or unit.
+	// ONLY Draw a square if the coordinates start moving. 
+
+	// Get initial Mouse Coordinates
+	// Then do Logic
+	// Unless, if the mouse coordinates change while pressing down the input
+	// So do an if statement to check if the mouse if moving.
+
+
+	if(GetMousePosition(MousePosition.X, MousePosition.Y))
+	{
+		UWorld* World = GetWorld();
+		
+		//DrawDebugBox(World, FVector(MousePosition.X), FVector(MousePosition.Y), FColor::Blue);
+		UE_LOG(LogTemp, Warning, TEXT("StartBoxSelection called"));
+	}
+	
 	bIsSelecting = true;
-	GetMousePosition(MousePosition.X, MousePosition.Y);
+	// Boolean Function
 }
 
 void AUserController::UpdateBoxSelection()
 {
-	if(bIsSelecting)
+	if (bIsSelecting)
 	{
 		GetMousePosition(CurrentMousePosition.X, CurrentMousePosition.Y);
-		
+
 		// Calculate the size of the selection box
 		FVector2d BoxSize = CurrentMousePosition - MousePosition;
-		
-		// Convert BoxSize to FString
-		FString BoxSizeString = FString::Printf(TEXT("Box Size: X=%.2f, Y=%.2f"), BoxSize.X, BoxSize.Y);
-		
-		// Print the FString to the GEngine output log
-		GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, BoxSizeString);
+
+		UE_LOG(LogTemp, Warning, TEXT("StartBoxSelection Updated"));
 	}
 }
 
 void AUserController::EndBoxSelection()
 {
 	bIsSelecting = false;
+	UE_LOG(LogTemp, Warning, TEXT("StartBoxSelection ended"));
 }
+
+
+
+/*// Convert BoxSize to FString
+	FString BoxSizeString = FString::Printf(TEXT("Box Size: X=%.2f, Y=%.2f"), BoxSize.X, BoxSize.Y);
+	
+	// Print the FString to the GEngine output log
+	GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, BoxSizeString);*/
