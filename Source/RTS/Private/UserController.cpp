@@ -7,6 +7,7 @@
 #include "UserCharacter.h"
 #include "Camera/PlayerCameraManager.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AUserController::AUserController()
@@ -255,8 +256,6 @@ void AUserController::SetupInputComponent()
 
 void AUserController::StartBoxSelection()
 {
-	
-	
 	// We Use this function to select an item or unit.
 	// ONLY Draw a square if the coordinates start moving. 
 
@@ -264,18 +263,42 @@ void AUserController::StartBoxSelection()
 	// Then do Logic
 	// Unless, if the mouse coordinates change while pressing down the input
 	// So do an if statement to check if the mouse if moving.
+	FVector2D BoxSelectionMouse;
 
-
-	if(GetMousePosition(MousePosition.X, MousePosition.Y))
+	if (GetMousePosition(BoxSelectionMouse.X, BoxSelectionMouse.Y))
 	{
-		UWorld* World = GetWorld();
-		
-		//DrawDebugBox(World, FVector(MousePosition.X), FVector(MousePosition.Y), FColor::Blue);
-		UE_LOG(LogTemp, Warning, TEXT("StartBoxSelection called"));
+		FString MousePosString = FString::Printf(
+			TEXT("Mouse Position: X=%.2f, Y=%.2f"), BoxSelectionMouse.X, BoxSelectionMouse.Y);
+
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *MousePosString);
+
+		// draw a debug box 
+		FVector DebugBoxExtent(50.0f, 50.0f, 50.0f);
+
+		FVector DebugBoxLocation(BoxSelectionMouse.X, BoxSelectionMouse.Y, 0.0f);
+
+		// Get the screen space position of the mouse
+		FVector2D ScreenSpaceMouse(BoxSelectionMouse.X, BoxSelectionMouse.Y);
+		FVector WorldSpaceMouse;
+		FVector WorldSpaceDirection;
+
+		// Convert screen space coordinates to world space
+		if (UGameplayStatics::DeprojectScreenToWorld(MyController, FIntPoint(ScreenSpaceMouse.X, ScreenSpaceMouse.Y),
+													 WorldSpaceMouse, WorldSpaceDirection))
+		{
+			// Draw a debug box at the mouse position
+			DrawDebugBox(this->GetWorld(), WorldSpaceMouse, DebugBoxExtent,
+						 FQuat::Identity, FColor::Red, true, -1.0f, 0, 10.0f);
+
+			// Log the world space position where the debug box is being drawn
+			FString DebugBoxLocationString = FString::Printf(
+				TEXT("Debug Box Location (World Space): X=%.2f, Y=%.2f, Z=%.2f"),
+				WorldSpaceMouse.X, WorldSpaceMouse.Y, WorldSpaceMouse.Z);
+
+			UE_LOG(LogTemp, Warning, TEXT("%s"), *DebugBoxLocationString);
+		}
+		bIsSelecting = true;
 	}
-	
-	bIsSelecting = true;
-	// Boolean Function
 }
 
 void AUserController::UpdateBoxSelection()

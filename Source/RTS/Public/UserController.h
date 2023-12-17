@@ -24,6 +24,9 @@ class RTS_API AUserController : public APlayerController
 {
 	GENERATED_BODY()
 
+	UPROPERTY()
+	AUserController* MyController = this;
+	
 public:
 	
 	AUserController();
