@@ -265,13 +265,6 @@ void AUserController::StartBoxSelection()
 	// So do an if statement to check if the mouse if moving.
 	
 	// When just clicking, Shoot a line trace from the camera to the object you want to pick, This will work as single use selection then use if statement for multi.........
-
-
-
-
-	
-
-
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
 		FString MousePosString = FString::Printf(
@@ -280,26 +273,24 @@ void AUserController::StartBoxSelection()
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *MousePosString);
 
 		bIsSelecting = true;
-
-		if(HasCursorMoved())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Moved"));
-		}
 	}
 }
 
 void AUserController::Update()
 {
-	/*if(bIsSelecting)
+	if(bIsSelecting)
 	{
-		if(MouseHasBeenMoved)
+		// Checks if the mouse has been moved
+		if(HasCursorMoved())
 		{
-			bIsMultiSelecting = true;
+			UE_LOG(LogTemp, Warning, TEXT("Moved"));
+			 // if mouse has been moved updated the coordinates of the square.
+			Draw2DSSquare(InitialMousePosition,NULL);
 		} else
 		{
 			//SelectUnitCode
 		}
-	}*/
+	}
 }
 
 bool AUserController::HasCursorMoved()
@@ -315,6 +306,95 @@ bool AUserController::HasCursorMoved()
 	}
 	
 	return false;
+}
+
+void AUserController::Draw2DSSquare(const FVector2D& Center, float Size)
+{
+	// The half size of the square
+	float HalfSize = Size / 2.0f;
+
+	// Center CornerPoint where the point will originate
+	FVector2D CenterPoint = InitialMousePosition;
+	
+    // Corner points of the square
+    FVector2D TopLeft = Center + FVector2D(-HalfSize, -HalfSize);
+    FVector2D TopRight = Center + FVector2D(HalfSize, -HalfSize);
+    FVector2D BottomLeft = Center + FVector2D(-HalfSize, HalfSize);
+    FVector2D BottomRight = Center + FVector2D(HalfSize, HalfSize);
+
+    // Line trace from TopLeft to TopRight
+    /*
+    FHitResult HitResultTop;
+
+	
+	LineTraceSingleByChannel(
+        HitResultTop,
+        FVector(TopLeft, 0.0f),
+        FVector(TopRight, 0.0f),
+        ECC_Visibility
+    );
+
+    // Line trace from TopRight to BottomRight
+    FHitResult HitResultRight;
+    LineTraceSingleByChannel(
+        HitResultRight,
+        FVector(TopRight, 0.0f),
+        FVector(BottomRight, 0.0f),
+        ECC_Visibility
+    );
+
+    // Line trace from BottomRight to BottomLeft
+    FHitResult HitResultBottom;
+    LineTraceSingleByChannel(
+        HitResultBottom,
+        FVector(BottomRight, 0.0f),
+        FVector(BottomLeft, 0.0f),
+        ECC_Visibility
+    );
+
+    // Line trace from BottomLeft to TopLeft
+    FHitResult HitResultLeft;
+    LineTraceSingleByChannel(
+        HitResultLeft,
+        FVector(BottomLeft, 0.0f),
+        FVector(TopLeft, 0.0f),
+        ECC_Visibility
+    );
+
+    // Check if all traces hit something, indicating a closed shape
+    if (HitResultTop.bBlockingHit && HitResultRight.bBlockingHit &&
+        HitResultBottom.bBlockingHit && HitResultLeft.bBlockingHit)
+    {
+        // You can draw the square or perform other actions here
+
+        // DrawDebugLine for visualization (optional)
+        DrawDebugLine(
+            GetWorld(),
+            FVector(TopLeft, 0.0f),
+            FVector(TopRight, 0.0f),
+            FColor::Green, false, -1, 0, 2.0f
+        );
+       DrawDebugLine(
+            GetWorld(),
+            FVector(TopRight, 0.0f),
+            FVector(BottomRight, 0.0f),
+            FColor::Green, false, -1, 0, 2.0f
+        );
+        DrawDebugLine(
+            GetWorld(),
+            FVector(BottomRight, 0.0f),
+            FVector(BottomLeft, 0.0f),
+            FColor::Green, false, -1, 0, 2.0f
+        );
+        DrawDebugLine(
+            GetWorld(),
+            FVector(BottomLeft, 0.0f),
+            FVector(TopLeft, 0.0f),
+            FColor::Green, false, -1, 0, 2.0f
+        );
+    }
+    */
+
 }
 
 void AUserController::UpdateBoxSelection()

@@ -58,6 +58,8 @@ protected:
 	//int32 ArmLength = GetUserCharacter()->GetCameraBoom()->TargetArmLength;
 	
 	// The Cursors Location
+	FVector2D MousePosition;
+	
 	FVector2D InitialMousePosition;
 	// Updated Cursor location
 	FVector2d CurrentMousePosition;
@@ -98,6 +100,8 @@ public:
 
 	// Checks if the cursor has moved from it original location 
 	bool HasCursorMoved();
+	void Draw2DSSquare(const FVector2D& Center, float Size);
+	
 	void UpdateBoxSelection();
 	
 	void EndBoxSelection();
