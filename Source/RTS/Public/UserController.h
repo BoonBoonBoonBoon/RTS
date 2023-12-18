@@ -58,7 +58,7 @@ protected:
 	//int32 ArmLength = GetUserCharacter()->GetCameraBoom()->TargetArmLength;
 	
 	// The Cursors Location
-	FVector2D MousePosition;
+	FVector2D InitialMousePosition;
 	// Updated Cursor location
 	FVector2d CurrentMousePosition;
 	
@@ -67,6 +67,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box Selection")
 	bool bIsSelecting;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box Selection")
+	bool bIsMultiSelecting;
 	
 	bool bCheckCursor;
 	bool bCursorMove;
@@ -91,7 +94,12 @@ public:
 	class AUserCharacter* UserCharacter;
 	
 	void StartBoxSelection();
+	void Update();
+
+	// Checks if the cursor has moved from it original location 
+	bool HasCursorMoved();
 	void UpdateBoxSelection();
+	
 	void EndBoxSelection();
 	
 };

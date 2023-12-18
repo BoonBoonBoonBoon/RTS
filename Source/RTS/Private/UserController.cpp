@@ -221,7 +221,7 @@ void AUserController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	EdgeScrolling();
-
+	Update();
 }
 
 void AUserController::BeginPlay()
@@ -250,7 +250,7 @@ void AUserController::SetupInputComponent()
 	// Draw Box and select units 
 	InputComponent->BindAction("BoxSelection", IE_Pressed, this, &AUserController::StartBoxSelection);
 	InputComponent->BindAction("UpdateBoxSelection", IE_Released, this, &AUserController::EndBoxSelection);
-	//InputComponent->BindAction("UpdateBoxSelection", IE_Axis, this, &AUserController::UpdateBoxSelection);
+	//InputComponent->BindAction("UpdateBoxSelection", IE_Held, this, &AUserController::UpdateBoxSelection);
 	
 }
 
@@ -263,9 +263,62 @@ void AUserController::StartBoxSelection()
 	// Then do Logic
 	// Unless, if the mouse coordinates change while pressing down the input
 	// So do an if statement to check if the mouse if moving.
-
-
+	
 	// When just clicking, Shoot a line trace from the camera to the object you want to pick, This will work as single use selection then use if statement for multi.........
+
+
+
+
+	
+
+
+	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
+	{
+		FString MousePosString = FString::Printf(
+			TEXT("SingleSelectionMouse Position: X=%.2f, Y=%.2f"), InitialMousePosition.X, InitialMousePosition.Y);
+
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *MousePosString);
+
+		bIsSelecting = true;
+
+		if(HasCursorMoved())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Moved"));
+		}
+	}
+}
+
+void AUserController::Update()
+{
+	/*if(bIsSelecting)
+	{
+		if(MouseHasBeenMoved)
+		{
+			bIsMultiSelecting = true;
+		} else
+		{
+			//SelectUnitCode
+		}
+	}*/
+}
+
+bool AUserController::HasCursorMoved()
+{
+	FVector2D CurrentCursor;
+	GetMousePosition(CurrentCursor.X, CurrentCursor.Y);
+
+	// Compares The current cursor location with the first cursor location
+	if(CurrentCursor != InitialMousePosition)
+	{
+		return true;
+		//return CurrentCursor != InitialMousePosition;
+	}
+	
+	return false;
+}
+
+void AUserController::UpdateBoxSelection()
+{
 
 	
 	FVector2D BoxSelectionMouse;
@@ -283,7 +336,7 @@ void AUserController::StartBoxSelection()
 		//FVector DebugBoxLocation(BoxSelectionMouse.X, BoxSelectionMouse.Y, 0.0f);
 
 		// Get the screen space position of the mouse
-		FVector2D ScreenSpaceMouse(BoxSelectionMouse.X, BoxSelectionMouse.Y);
+		const FVector2D ScreenSpaceMouse(BoxSelectionMouse.X, BoxSelectionMouse.Y);
 		FVector WorldSpaceMouse;
 		FVector WorldSpaceDirection;
 
@@ -293,7 +346,7 @@ void AUserController::StartBoxSelection()
 		
 		// Convert screen space coordinates to world space
 		if (UGameplayStatics::DeprojectScreenToWorld(MyController, FIntPoint(ScreenSpaceMouse.X, ScreenSpaceMouse.Y),
-													 WorldSpaceMouse, WorldSpaceDirection))
+		WorldSpaceMouse, WorldSpaceDirection))
 		{
 			// Adjust the WorldOrigin to spawn the debug box further away
 			FVector SpawnLoc = WorldSpaceMouse + WorldSpaceDirection * SpawnDistance;
@@ -313,24 +366,27 @@ void AUserController::StartBoxSelection()
 	}
 }
 
-void AUserController::UpdateBoxSelection()
-{
-	if (bIsSelecting)
-	{
-		GetMousePosition(CurrentMousePosition.X, CurrentMousePosition.Y);
-
-		// Calculate the size of the selection box
-		FVector2d BoxSize = CurrentMousePosition - MousePosition;
-
-		UE_LOG(LogTemp, Warning, TEXT("StartBoxSelection Updated"));
-	}
-}
-
 void AUserController::EndBoxSelection()
 {
 	bIsSelecting = false;
 	UE_LOG(LogTemp, Warning, TEXT("StartBoxSelection ended"));
+
+	FVector2D SingleSelectionMouse;
+
+	if (GetMousePosition(SingleSelectionMouse.X, SingleSelectionMouse.Y))
+	{
+		FString MousePosString = FString::Printf(
+			TEXT("SingleSelectionMouse Position ended: X=%.2f, Y=%.2f"), SingleSelectionMouse.X, SingleSelectionMouse.Y);
+
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *MousePosString);
+
+		
+	}
+
+
+	
 }
+
 
 
 
