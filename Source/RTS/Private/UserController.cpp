@@ -254,17 +254,19 @@ void AUserController::SetupInputComponent()
 	
 }
 
+// We Use this function to select an item or unit.
+// ONLY Draw a square if the coordinates start moving. 
+
+// Get initial Mouse Coordinates
+// Then do Logic
+// Unless, if the mouse coordinates change while pressing down the input
+// So do an if statement to check if the mouse if moving.
+	
+// When just clicking, Shoot a line trace from the camera to the object you want to pick, This will work as single use selection then use if statement for multi.........
+
 void AUserController::StartBoxSelection()
 {
-	// We Use this function to select an item or unit.
-	// ONLY Draw a square if the coordinates start moving. 
-
-	// Get initial Mouse Coordinates
-	// Then do Logic
-	// Unless, if the mouse coordinates change while pressing down the input
-	// So do an if statement to check if the mouse if moving.
-	
-	// When just clicking, Shoot a line trace from the camera to the object you want to pick, This will work as single use selection then use if statement for multi.........
+	// Get the Coordinates of the mouse when clicked
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
 		FString MousePosString = FString::Printf(
@@ -283,10 +285,30 @@ void AUserController::Update()
 		// Checks if the mouse has been moved
 		if(HasCursorMoved())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Moved"));
+			// Checks the Current mouse position in Comparison to the Initial Mouse Position 
+			FVector2D NewMousePosition;
+			GetMousePosition(NewMousePosition.X, NewMousePosition.Y);
+			
+			if (NewMousePosition.X < InitialMousePosition.X)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Moved Left"));
+			} else if (NewMousePosition.X > InitialMousePosition.X)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Moved Right"));
+			}
+			
+			if (NewMousePosition.Y < InitialMousePosition.Y)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Moved Up"));
+			} else if (NewMousePosition.Y > InitialMousePosition.Y)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Moved Down"));
+			}
+			
+
 			
 			 // if mouse has been moved updated the coordinates of the square.
-			Draw2DSSquare(InitialMousePosition,NULL);
+			Draw2DSSquare(InitialMousePosition);
 		} else
 		{
 			//SelectUnitCode
@@ -309,18 +331,15 @@ bool AUserController::HasCursorMoved()
 	return false;
 }
 
-void AUserController::Draw2DSSquare(const FVector2D& X, FVector2D& Y)
+void AUserController::Draw2DSSquare(const FVector2D& Init) // Direction?? 
 {
 	
 	// Center CornerPoint where the point will originate
-	FVector2D CenterPoint = InitialMousePosition;
-	
-  
+	//FVector2D CenterPoint = InitialMousePosition;
 }
 
 void AUserController::UpdateBoxSelection()
 {
-
 	
 	FVector2D BoxSelectionMouse;
 
@@ -380,14 +399,8 @@ void AUserController::EndBoxSelection()
 			TEXT("SingleSelectionMouse Position ended: X=%.2f, Y=%.2f"), SingleSelectionMouse.X, SingleSelectionMouse.Y);
 
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *MousePosString);
-
-		
 	}
-
-
-	
 }
-
 
 
 
