@@ -100,7 +100,7 @@ public:
 
 	// Checks if the cursor has moved from it original location 
 	bool HasCursorMoved();
-	void Draw2DSSquare(const FVector2D& Init); // Direction?
+	void Draw2DSSquare(const FVector Edge1, FVector2D& Edge2); // Direction?
 	
 	void UpdateBoxSelection();
 	

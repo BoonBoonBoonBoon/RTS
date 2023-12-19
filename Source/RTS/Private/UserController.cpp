@@ -280,18 +280,39 @@ void AUserController::StartBoxSelection()
 
 void AUserController::Update()
 {
-	if(bIsSelecting)
+	if (bIsSelecting)
 	{
 		// Checks if the mouse has been moved
-		if(HasCursorMoved())
+		if (HasCursorMoved())
 		{
 			// Checks the Current mouse position in Comparison to the Initial Mouse Position 
 			FVector2D NewMousePosition;
-			GetMousePosition(NewMousePosition.X, NewMousePosition.Y);
+			if (GetMousePosition(NewMousePosition.X, NewMousePosition.Y))
+			{
+				// Calculate the extent of the rectangle in X and Y directions
+				float SelectionWidth = FMath::Abs(NewMousePosition.X - InitialMousePosition.X);
+				float SelectionHeight = FMath::Abs(NewMousePosition.Y - InitialMousePosition.Y);
+
+				// Find the other two edges of the rectangle
+				FVector2D Edge1(InitialMousePosition.X + SelectionWidth, InitialMousePosition.Y);
+				FVector2D Edge2(InitialMousePosition.X, InitialMousePosition.Y + SelectionHeight);
+
+				// Log the locations of the edges
+				UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X, InitialMousePosition.Y);
+				UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
+				UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
+				UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);
+				
+			//	Draw2DSSquare(Edge1, Edge2);
+			}
 			
+			/*
 			if (NewMousePosition.X < InitialMousePosition.X)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Moved Left"));
+
+				
+				
 			} else if (NewMousePosition.X > InitialMousePosition.X)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Moved Right"));
@@ -303,12 +324,12 @@ void AUserController::Update()
 			} else if (NewMousePosition.Y > InitialMousePosition.Y)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Moved Down"));
-			}
+			}*/
 			
 
 			
 			 // if mouse has been moved updated the coordinates of the square.
-			Draw2DSSquare(InitialMousePosition);
+			//Draw2DSSquare(InitialMousePosition);
 		} else
 		{
 			//SelectUnitCode
@@ -331,11 +352,13 @@ bool AUserController::HasCursorMoved()
 	return false;
 }
 
-void AUserController::Draw2DSSquare(const FVector2D& Init) // Direction?? 
+void AUserController::Draw2DSSquare(const FVector Edge1, FVector2D& Edge2) // Direction?? 
 {
-	
-	// Center CornerPoint where the point will originate
-	//FVector2D CenterPoint = InitialMousePosition;
+	// Draw Line from Start to Edge 1 & edge 2
+	if(InitialMousePosition.X && InitialMousePosition.Y)
+	{
+		DrawDebugLine(GetWorld(), FVector(InitialMousePosition.X), Edge1, FColor::Red);
+	}
 }
 
 void AUserController::UpdateBoxSelection()
