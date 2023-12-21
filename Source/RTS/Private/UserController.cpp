@@ -273,158 +273,16 @@ void AUserController::StartBoxSelection()
 			TEXT("SingleSelectionMouse Position: X=%.2f, Y=%.2f"), InitialMousePosition.X, InitialMousePosition.Y);
 
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *MousePosString);
-
-		bIsSelecting = true;
-	}
-}
-
-void AUserController::Update()
-{
-	if (bIsSelecting)
-	{
+		
 		// Checks if the mouse has been moved
 		if (HasCursorMoved())
 		{
-			// Checks the Current mouse position in Comparison to the Initial Mouse Position 
-			FVector2D NewMousePosition;
-			if (GetMousePosition(NewMousePosition.X, NewMousePosition.Y))
-			{
-				// Calculate the extent of the rectangle in X and Y directions
-				float SelectionWidth = FMath::Abs(NewMousePosition.X - InitialMousePosition.X);
-				float SelectionHeight = FMath::Abs(NewMousePosition.Y - InitialMousePosition.Y);
-
-				// Find the other two edges of the rectangle
-				FVector2D Edge1(InitialMousePosition.X + SelectionWidth, InitialMousePosition.Y);
-				FVector2D Edge2(InitialMousePosition.X, InitialMousePosition.Y + SelectionHeight);
-
-				// Log the locations of the edges
-				UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X, InitialMousePosition.Y);
-				UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
-				UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
-				UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);
-
-				FVector WorldSpaceMouse;
-				FVector WorldSpaceDirection;
-				float SpawnDistance = 1000.f;
-				
-				if (UGameplayStatics::DeprojectScreenToWorld(MyController, FIntPoint(InitialMousePosition.X, InitialMousePosition.Y),
-					WorldSpaceMouse, WorldSpaceDirection))
-				{
-					// Adjust the WorldOrigin to spawn the debug box further away
-					FVector SpawnLoc = WorldSpaceMouse + WorldSpaceDirection * SpawnDistance;
-					
-					DrawDebugLine(GetWorld(), FVector(InitialMousePosition.X, InitialMousePosition.Y, 0.0f), FVector(Edge1.X, Edge1.Y, 0.0f), FColor::Green, false, -1, 0, 2.0f);
-					DrawDebugLine(GetWorld(), FVector(Edge1.X, Edge1.Y, 0.0f), FVector(NewMousePosition.X, NewMousePosition.Y, 0.0f), FColor::Green, false, -1, 0, 2.0f);
-					DrawDebugLine(GetWorld(), FVector(NewMousePosition.X, NewMousePosition.Y, 0.0f), FVector(Edge2.X, Edge2.Y, 0.0f), FColor::Green, false, -1, 0, 2.0f);
-					DrawDebugLine(GetWorld(), FVector(Edge2.X, Edge2.Y, 0.0f), FVector(InitialMousePosition.X, InitialMousePosition.Y, 0.0f), FColor::Green, false, -1, 0, 2.0f);
-				}
-				
-				// Draw lines connecting the edges to form a square
-			
-				
-			//	Draw2DSSquare(Edge1, Edge2);
-			}
-			
-			/*
-			if (NewMousePosition.X < InitialMousePosition.X)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Moved Left"));
-
-				
-				
-			} else if (NewMousePosition.X > InitialMousePosition.X)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Moved Right"));
-			}
-			
-			if (NewMousePosition.Y < InitialMousePosition.Y)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Moved Up"));
-			} else if (NewMousePosition.Y > InitialMousePosition.Y)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Moved Down"));
-			}*/
-			
-
-			
-			 // if mouse has been moved updated the coordinates of the square.
-			//Draw2DSSquare(InitialMousePosition);
-		} else
+			bIsSelecting = true;
+		} else // Single Click
 		{
-			//SelectUnitCode
+			UE_LOG(LogTemp, Warning, TEXT("Single Click"));
+			
 		}
-	}
-}
-
-bool AUserController::HasCursorMoved()
-{
-	FVector2D CurrentCursor;
-	GetMousePosition(CurrentCursor.X, CurrentCursor.Y);
-
-	// Compares The current cursor location with the first cursor location
-	if(CurrentCursor != InitialMousePosition)
-	{
-		return true;
-		//return CurrentCursor != InitialMousePosition;
-	}
-	
-	return false;
-}
-
-void AUserController::Draw2DSSquare(const FVector Edge1, FVector2D& Edge2) // Direction?? 
-{
-	// Draw Line from Start to Edge 1 & edge 2
-	if(InitialMousePosition.X && InitialMousePosition.Y)
-	{
-		DrawDebugLine(GetWorld(), FVector(InitialMousePosition.X), Edge1, FColor::Red);
-	}
-}
-
-void AUserController::UpdateBoxSelection()
-{
-	
-	FVector2D BoxSelectionMouse;
-
-	if (GetMousePosition(BoxSelectionMouse.X, BoxSelectionMouse.Y))
-	{
-		FString MousePosString = FString::Printf(
-			TEXT("Mouse Position: X=%.2f, Y=%.2f"), BoxSelectionMouse.X, BoxSelectionMouse.Y);
-
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *MousePosString);
-
-		// draw a debug box 
-		FVector DebugBoxExtent(10.1f, 10.1f, 10.1f);
-
-		//FVector DebugBoxLocation(BoxSelectionMouse.X, BoxSelectionMouse.Y, 0.0f);
-
-		// Get the screen space position of the mouse
-		const FVector2D ScreenSpaceMouse(BoxSelectionMouse.X, BoxSelectionMouse.Y);
-		FVector WorldSpaceMouse;
-		FVector WorldSpaceDirection;
-
-		// Offset the spawn distance from the camera 
-		float SpawnDistance = 3000.0f; 
-
-		
-		// Convert screen space coordinates to world space
-		if (UGameplayStatics::DeprojectScreenToWorld(MyController, FIntPoint(ScreenSpaceMouse.X, ScreenSpaceMouse.Y),
-		WorldSpaceMouse, WorldSpaceDirection))
-		{
-			// Adjust the WorldOrigin to spawn the debug box further away
-			FVector SpawnLoc = WorldSpaceMouse + WorldSpaceDirection * SpawnDistance;
-
-			// Draw a debug box at the mouse position
-			DrawDebugBox(this->GetWorld(), SpawnLoc, DebugBoxExtent,
-						 FQuat::Identity, FColor::Red, true, -1.0f, 0, 10.0f);
-
-			// Log the world space position where the debug box is being drawn
-			FString DebugBoxLocationString = FString::Printf(
-				TEXT("Debug Box Location (World Space): X=%.2f, Y=%.2f, Z=%.2f"),
-				WorldSpaceMouse.X, WorldSpaceMouse.Y, WorldSpaceMouse.Z);
-
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *DebugBoxLocationString);
-		}
-		bIsSelecting = true;
 	}
 }
 
@@ -444,10 +302,135 @@ void AUserController::EndBoxSelection()
 	}
 }
 
+bool AUserController::HasCursorMoved()
+{
+	FVector2D CurrentCursor;
+	GetMousePosition(CurrentCursor.X, CurrentCursor.Y);
 
-
-/*// Convert BoxSize to FString
-	FString BoxSizeString = FString::Printf(TEXT("Box Size: X=%.2f, Y=%.2f"), BoxSize.X, BoxSize.Y);
+	// Compares The current cursor location with the first cursor location
+	if(CurrentCursor != InitialMousePosition)
+	{
+		return true;
+		//return CurrentCursor != InitialMousePosition;
+	}
 	
-	// Print the FString to the GEngine output log
-	GEngine->AddOnScreenDebugMessage(1, 5.f, FColor::Red, BoxSizeString);*/
+	return false;
+}
+
+void AUserController::SingleSelection()
+{
+	
+}
+
+
+void AUserController::Update()
+{
+	if (bIsSelecting)
+	{
+		// Checks the Current mouse position in Comparison to the Initial Mouse Position 
+		FVector2D NewMousePosition;
+		if (GetMousePosition(NewMousePosition.X, NewMousePosition.Y))
+		{
+			// Calculate the extent of the rectangle in X and Y directions
+			float SelectionWidth = FMath::Abs(NewMousePosition.X - InitialMousePosition.X);
+			float SelectionHeight = FMath::Abs(NewMousePosition.Y - InitialMousePosition.Y);
+
+			// Find the other two edges of the rectangle
+			FVector2D Edge1(InitialMousePosition.X + SelectionWidth, InitialMousePosition.Y);
+			FVector2D Edge2(InitialMousePosition.X, InitialMousePosition.Y + SelectionHeight);
+
+			// Log the locations of the edges
+			UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X, InitialMousePosition.Y);
+			UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
+			UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
+			UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);
+
+			FVector WorldSpaceMouse;
+			FVector WorldSpaceDirection;
+			float SpawnDistance = 1000.f;
+
+			if (UGameplayStatics::DeprojectScreenToWorld(MyController,
+			                                             FIntPoint(InitialMousePosition.X, InitialMousePosition.Y),
+			                                             WorldSpaceMouse, WorldSpaceDirection))
+			{
+				// Adjust the WorldOrigin to spawn the debug box further away
+				FVector SpawnLoc = WorldSpaceMouse + WorldSpaceDirection * SpawnDistance;
+
+				// Draw lines connecting the edges to form a square
+				DrawDebugLine(GetWorld(), FVector(InitialMousePosition.X, InitialMousePosition.Y, 0.0f),
+				              FVector(Edge1.X, Edge1.Y, 0.0f), FColor::Green, false, -1, 0, 2.0f);
+				DrawDebugLine(GetWorld(), FVector(Edge1.X, Edge1.Y, 0.0f),
+				              FVector(NewMousePosition.X, NewMousePosition.Y, 0.0f), FColor::Green, false, -1, 0,
+				              2.0f);
+				DrawDebugLine(GetWorld(), FVector(NewMousePosition.X, NewMousePosition.Y, 0.0f),
+				              FVector(Edge2.X, Edge2.Y, 0.0f), FColor::Green, false, -1, 0, 2.0f);
+				DrawDebugLine(GetWorld(), FVector(Edge2.X, Edge2.Y, 0.0f),
+				              FVector(InitialMousePosition.X, InitialMousePosition.Y, 0.0f), FColor::Green, false,
+				              -1, 0, 2.0f);
+			}
+		}
+	}
+}
+
+
+void AUserController::Draw2DSSquare(const FVector Edge1, FVector2D& Edge2) // Direction?? 
+{
+	// Draw Line from Start to Edge 1 & edge 2
+	if(InitialMousePosition.X && InitialMousePosition.Y)
+	{
+		DrawDebugLine(GetWorld(), FVector(InitialMousePosition.X), Edge1, FColor::Red);
+	}
+}
+
+
+
+/*
+void AUserController::PlayerTick(float DeltaTime)
+{
+	Super::PlayerTick(DeltaTime);
+
+	GetHitResultUnderCursor(mTraceChannel, true, hit);
+	CalculateMovement(DeltaTime);
+
+	// keep updating the destination every tick while desired
+	if (leftMouseDown)
+	{
+		//MoveToMouseCursor();
+		mouseDownTime += DeltaTime;
+
+		mouseEnd = hit.Location;
+
+		centerMouseLocation = FVector((mouseStart + mouseEnd) / 2);
+		dist = FVector::Dist(mouseEnd, mouseStart) / 2;
+		selectionSize = FVector(dist, dist, 100);
+
+		if (mouseDownTime > 0.75f)
+			DrawDebugBox(GetWorld(), centerMouseLocation, selectionSize, FQuat(0, 0, 0, 0), FColor::Black);
+	}
+	else {
+		mouseDownTime = 0;
+	}
+
+	if (CursorToWorld != nullptr)
+	{
+		FVector CursorFV = hit.ImpactNormal;
+		FRotator CursorR = CursorFV.Rotation();
+		CursorToWorld->SetWorldLocation(hit.Location);
+		CursorToWorld->SetWorldRotation(CursorR);
+
+		if (hit.bBlockingHit)
+		{
+			AActor* targetFound = hit.GetActor();
+
+			if (targetFound != nullptr && targetFound->Implements<UResourceInterface>())
+			{
+				IResourceInterface* ri = GetResource(targetFound);
+				UMaterial* decal = *materialCursors.Find(ri->GetType());
+
+				if (decal != nullptr)
+					CursorToWorld->SetDecalMaterial(decal);
+			}
+		}
+	}
+}
+*/

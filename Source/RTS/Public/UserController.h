@@ -96,14 +96,17 @@ public:
 	class AUserCharacter* UserCharacter;
 	
 	void StartBoxSelection();
-	void Update();
-
+	void EndBoxSelection();
+	
 	// Checks if the cursor has moved from it original location 
 	bool HasCursorMoved();
+	// Returns What to do When a Single unit is selected
+	void SingleSelection();
+	// Updates the Marquee edges 
+	void Update();
+	// Draws The Marquee Tool 
 	void Draw2DSSquare(const FVector Edge1, FVector2D& Edge2); // Direction?
 	
-	void UpdateBoxSelection();
 	
-	void EndBoxSelection();
 	
 };
