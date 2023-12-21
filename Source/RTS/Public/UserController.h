@@ -90,6 +90,8 @@ private:
 	float MouseDownTime;
 	float Dist;
 
+	UDecalComponent* CursorToWorld;
+	
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
@@ -100,8 +102,10 @@ public:
 	
 	// Checks if the cursor has moved from it original location 
 	bool HasCursorMoved();
-	// Returns What to do When a Single unit is selected
-	void SingleSelection();
+	// Hits the units that are selected
+	void UnitSelection();
+	// What happens when pawn selected
+	void HandlePawnSelection(APawn* HitPawn);
 	// Updates the Marquee edges 
 	void Update();
 	// Draws The Marquee Tool 
