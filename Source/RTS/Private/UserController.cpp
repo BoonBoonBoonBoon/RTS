@@ -302,6 +302,25 @@ void AUserController::Update()
 				UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
 				UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
 				UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);
+
+				FVector WorldSpaceMouse;
+				FVector WorldSpaceDirection;
+				float SpawnDistance = 1000.f;
+				
+				if (UGameplayStatics::DeprojectScreenToWorld(MyController, FIntPoint(InitialMousePosition.X, InitialMousePosition.Y),
+					WorldSpaceMouse, WorldSpaceDirection))
+				{
+					// Adjust the WorldOrigin to spawn the debug box further away
+					FVector SpawnLoc = WorldSpaceMouse + WorldSpaceDirection * SpawnDistance;
+					
+					DrawDebugLine(GetWorld(), FVector(InitialMousePosition.X, InitialMousePosition.Y, 0.0f), FVector(Edge1.X, Edge1.Y, 0.0f), FColor::Green, false, -1, 0, 2.0f);
+					DrawDebugLine(GetWorld(), FVector(Edge1.X, Edge1.Y, 0.0f), FVector(NewMousePosition.X, NewMousePosition.Y, 0.0f), FColor::Green, false, -1, 0, 2.0f);
+					DrawDebugLine(GetWorld(), FVector(NewMousePosition.X, NewMousePosition.Y, 0.0f), FVector(Edge2.X, Edge2.Y, 0.0f), FColor::Green, false, -1, 0, 2.0f);
+					DrawDebugLine(GetWorld(), FVector(Edge2.X, Edge2.Y, 0.0f), FVector(InitialMousePosition.X, InitialMousePosition.Y, 0.0f), FColor::Green, false, -1, 0, 2.0f);
+				}
+				
+				// Draw lines connecting the edges to form a square
+			
 				
 			//	Draw2DSSquare(Edge1, Edge2);
 			}
