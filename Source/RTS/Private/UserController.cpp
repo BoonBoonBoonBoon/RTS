@@ -284,6 +284,7 @@ void AUserController::StartBoxSelection()
 		bIsSelecting = true;
 		UE_LOG(LogTemp, Warning, TEXT("Single Click"));
 
+		UnitSelection();
 		/*if (Hit){
 			if (AActor* Actor)
 			{
@@ -336,8 +337,13 @@ void AUserController::UnitSelection()
 		FHitResult HitResult;
 		FCollisionQueryParams CollisionParams;
 		CollisionParams.AddIgnoredActor(this); // Ignore the controller itself
-
-		float TraceDistance = 3000.f;
+		
+		float TraceDistance = 7000.f;
+		
+		// Adjust the WorldOrigin to spawn the debug box further away
+		FVector SpawnLoc = WorldMouseLocation + WorldMouseDirection * TraceDistance;
+		
+		FVector DebugBoxExtent(50.0f, 50.0f, 50.0f);
 		
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldMouseLocation, WorldMouseLocation + WorldMouseDirection * TraceDistance, ECC_Visibility, CollisionParams))
 		{
@@ -347,6 +353,8 @@ void AUserController::UnitSelection()
 			{
 				// Perform actions for the selected pawn
 				HandlePawnSelection(HitPawn);
+				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
+				
 			}
 		}
 	}
