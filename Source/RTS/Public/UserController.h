@@ -111,6 +111,6 @@ public:
 	// Draws The Marquee Tool 
 	void Draw2DSSquare(const FVector Edge1, FVector2D& Edge2); // Direction?
 	
-	
+	FHitResult bHit; 
 	
 };

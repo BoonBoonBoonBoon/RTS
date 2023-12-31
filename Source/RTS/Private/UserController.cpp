@@ -349,6 +349,11 @@ void AUserController::UnitSelection()
 		{
 			// Check if the hit actor is a pawn
 			APawn* HitPawn = Cast<APawn>(HitResult.GetActor());
+
+			// Check if its either
+			// Damageable
+			// Resource
+			
 			if (HitPawn)
 			{
 				// Perform actions for the selected pawn
