@@ -6,6 +6,7 @@
 #include "CoreMinimal.h"
 #include "UserCharacter.h"
 #include "GameFramework/PlayerController.h"
+#include "RTS/Public/Interfaces/SelectionInterface.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "UserCharacter.h"
 #include "UserController.generated.h"
@@ -26,7 +27,8 @@ class RTS_API AUserController : public APlayerController
 
 	UPROPERTY()
 	AUserController* MyController = this;
-	
+
+	USelectionInterface* SelectionInterface;
 public:
 	
 	AUserController();
@@ -96,18 +98,28 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	class AUserCharacter* UserCharacter;
-	
+
+	UFUNCTION(BlueprintCallable)
 	void StartBoxSelection();
+	UFUNCTION(BlueprintCallable)
 	void EndBoxSelection();
 	
-	// Checks if the cursor has moved from it original location 
+	// Checks if the cursor has moved from it original location
+	UFUNCTION(BlueprintCallable)
 	bool HasCursorMoved();
+	
 	// Hits the units that are selected
+	UFUNCTION(BlueprintCallable)
 	void UnitSelection();
+	
 	// What happens when pawn selected
+	UFUNCTION(BlueprintCallable)
 	void HandlePawnSelection(APawn* HitPawn);
-	// Updates the Marquee edges 
+	
+	// Updates the Marquee edges
+	UFUNCTION(BlueprintCallable)
 	void Update();
+	
 	// Draws The Marquee Tool 
 	void Draw2DSSquare(const FVector Edge1, FVector2D& Edge2); // Direction?
 	
