@@ -229,7 +229,7 @@ void AUserController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 
 	EdgeScrolling();
-	Update();
+	UpdateFlow();
 }
 
 void AUserController::BeginPlay()
@@ -382,7 +382,7 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 }
 
 
-void AUserController::Update()
+void AUserController::UpdateFlow()
 {
 	if (bIsSelecting)
 	{
@@ -390,7 +390,7 @@ void AUserController::Update()
 		if (HasCursorMoved())
 		{
 			// Checks the Current mouse position in Comparison to the Initial Mouse Position 
-			FVector2D NewMousePosition;
+			
 			if (GetMousePosition(NewMousePosition.X, NewMousePosition.Y))
 			{
 				// Calculate the extent of the rectangle in X and Y directions
@@ -411,7 +411,7 @@ void AUserController::Update()
 				FVector WorldSpaceDirection;
 				float SpawnDistance = 1000.f;
 
-				if (UGameplayStatics::DeprojectScreenToWorld(MyController,
+				/*if (UGameplayStatics::DeprojectScreenToWorld(MyController,
 															 FIntPoint(InitialMousePosition.X, InitialMousePosition.Y),
 															 WorldSpaceMouse, WorldSpaceDirection))
 				{
@@ -429,7 +429,7 @@ void AUserController::Update()
 					DrawDebugLine(GetWorld(), FVector(Edge2.X, Edge2.Y, 0.0f),
 								  FVector(InitialMousePosition.X, InitialMousePosition.Y, 0.0f), FColor::Green, false,
 								  -1, 0, 2.0f);
-				}
+				}*/
 			}
 		}
 	}

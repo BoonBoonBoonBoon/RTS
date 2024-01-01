@@ -61,10 +61,16 @@ protected:
 	
 	// The Cursors Location
 	FVector2D MousePosition;
-	
+
+public:
+	UPROPERTY(BlueprintReadWrite)
 	FVector2D InitialMousePosition;
-	// Updated Cursor location
-	FVector2d CurrentMousePosition;
+	
+	//NewMousePos
+	UPROPERTY(BlueprintReadWrite)
+	FVector2D NewMousePosition;
+	
+protected:
 	
 	// Returns the viewport Size
 	FVector2D ViewportSize;
@@ -118,7 +124,7 @@ public:
 	
 	// Updates the Marquee edges
 	UFUNCTION(BlueprintCallable)
-	void Update();
+	void UpdateFlow();
 	
 	// Draws The Marquee Tool 
 	void Draw2DSSquare(const FVector Edge1, FVector2D& Edge2); // Direction?
