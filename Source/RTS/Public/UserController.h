@@ -69,6 +69,12 @@ public:
 	//NewMousePos
 	UPROPERTY(BlueprintReadWrite)
 	FVector2D NewMousePosition;
+
+	FVector2D STEdge1;
+	FVector2D STEdge2;
+
+	UPROPERTY(BlueprintReadWrite)
+	bool CursorMoved = false;
 	
 protected:
 	

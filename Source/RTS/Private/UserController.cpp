@@ -302,7 +302,7 @@ void AUserController::EndBoxSelection()
 {
 	bIsSelecting = false;
 	UE_LOG(LogTemp, Warning, TEXT("StartBoxSelection ended"));
-
+	CursorMoved = false;
 	FVector2D SingleSelectionMouse;
 
 	if (GetMousePosition(SingleSelectionMouse.X, SingleSelectionMouse.Y))
@@ -322,6 +322,7 @@ bool AUserController::HasCursorMoved()
 	// Compares The current cursor location with the first cursor location
 	if(CurrentCursor != InitialMousePosition)
 	{
+		CursorMoved = true;
 		return true;
 		//return CurrentCursor != InitialMousePosition;
 	}
@@ -401,6 +402,9 @@ void AUserController::UpdateFlow()
 				FVector2D Edge1(InitialMousePosition.X + SelectionWidth, InitialMousePosition.Y);
 				FVector2D Edge2(InitialMousePosition.X, InitialMousePosition.Y + SelectionHeight);
 
+				STEdge1 = Edge1;
+				STEdge2 = Edge2;
+				
 				// Log the locations of the edges
 				UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X, InitialMousePosition.Y);
 				UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
