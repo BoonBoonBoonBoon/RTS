@@ -10,6 +10,7 @@
 
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "TestObjects/SelectionPawn.h"
 
 
 AUserController::AUserController()
@@ -401,7 +402,24 @@ void AUserController::UpdateFlow()
 				// Find the other two edges of the rectangle
 				FVector2D Edge1(InitialMousePosition.X + SelectionWidth, InitialMousePosition.Y);
 				FVector2D Edge2(InitialMousePosition.X, InitialMousePosition.Y + SelectionHeight);
+				
+				// Create a box representing the selection rectangle
+				FBox2D SelectionBox(InitialMousePosition, NewMousePosition);
 
+				UGameplayStatics::GetAllActorsOfClass(GetWorld(),  ASelectionPawn::StaticClass(), ActorsInSelection);
+				
+				for (AActor* Actor : ActorsInSelection)
+				{
+					// Check if the actor is within the selection box and of the correct type
+					if (SelectionBox.IsInside(FVector2D(Actor->GetActorLocation().X, Actor->GetActorLocation().Y)) && Actor->IsA(ASelectionPawn::StaticClass()))
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Selected Actor: %s"), *Actor->GetName());
+					}
+				}
+
+
+
+				
 				STEdge1 = Edge1;
 				STEdge2 = Edge2;
 				
@@ -411,6 +429,19 @@ void AUserController::UpdateFlow()
 				UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
 				UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);
 
+				
+
+
+
+
+
+
+
+
+
+
+
+				
 				FVector WorldSpaceMouse;
 				FVector WorldSpaceDirection;
 				float SpawnDistance = 1000.f;

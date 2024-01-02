@@ -75,6 +75,8 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	bool CursorMoved = false;
+
+	TArray<AActor*> ActorsInSelection;
 	
 protected:
 	
