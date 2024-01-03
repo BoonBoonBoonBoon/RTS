@@ -79,6 +79,8 @@ public:
 	TArray<AActor*> ActorsInSelection;
 	
 protected:
+
+	UBoxComponent* SelectionArea;
 	
 	// Returns the viewport Size
 	FVector2D ViewportSize;
@@ -117,6 +119,16 @@ public:
 	void StartBoxSelection();
 	UFUNCTION(BlueprintCallable)
 	void EndBoxSelection();
+
+
+	TArray<AActor*> SelectedUnits;
+
+	// Shift + LMS for multi-selection of individual units 
+	UFUNCTION()
+	void MultiSelect();
+
+	// Checks if we are selecting multiple ai
+	bool MultiselectCond;
 	
 	// Checks if the cursor has moved from it original location
 	UFUNCTION(BlueprintCallable)
@@ -125,6 +137,8 @@ public:
 	// Hits the units that are selected
 	UFUNCTION(BlueprintCallable)
 	void UnitSelection();
+
+	bool bNotHit;
 	
 	// What happens when pawn selected
 	UFUNCTION(BlueprintCallable)

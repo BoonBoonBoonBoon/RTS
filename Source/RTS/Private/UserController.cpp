@@ -6,6 +6,7 @@
 #include "InteractiveToolManager.h"
 #include "UserCharacter.h"
 #include "Camera/PlayerCameraManager.h"
+#include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 
 #include "GameFramework/SpringArmComponent.h"
@@ -27,6 +28,8 @@ AUserController::AUserController()
 	CursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
 	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 	
+	SelectionArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SelectionArea"));
+	SelectionArea->SetBoxExtent(FVector(0));
 }
 
 void AUserController::OnPossess(APawn* InPawn)
@@ -258,6 +261,7 @@ void AUserController::SetupInputComponent()
 
 	// Draw Box and select units 
 	InputComponent->BindAction("BoxSelection", IE_Pressed, this, &AUserController::StartBoxSelection);
+	InputComponent->BindAction("MultiSelection", IE_Pressed, this, &AUserController::MultiSelect);
 	InputComponent->BindAction("UpdateBoxSelection", IE_Released, this, &AUserController::EndBoxSelection);
 	//InputComponent->BindAction("UpdateBoxSelection", IE_Held, this, &AUserController::UpdateBoxSelection);
 	
@@ -278,32 +282,46 @@ void AUserController::StartBoxSelection()
 	// Get the Coordinates of the mouse when clicked
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
-		FString MousePosString = FString::Printf(
-			TEXT("SingleSelectionMouse Position: X=%.2f, Y=%.2f"), InitialMousePosition.X, InitialMousePosition.Y);
-
-		//UE_LOG(LogTemp, Warning, TEXT("%s"), *MousePosString);
-
 		bIsSelecting = true;
-	//	UE_LOG(LogTemp, Warning, TEXT("Single Click"));
-
 		UnitSelection();
-		
+		if(bNotHit)
+		{
+			SelectedUnits.Empty();
+			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
+		}
 	}
 }
 
 void AUserController::EndBoxSelection()
 {
 	bIsSelecting = false;
-	UE_LOG(LogTemp, Warning, TEXT("StartBoxSelection ended"));
+	//UE_LOG(LogTemp, Warning, TEXT("StartBoxSelection ended"));
 	CursorMoved = false;
 	FVector2D SingleSelectionMouse;
-
+	MultiselectCond = false;
 	if (GetMousePosition(SingleSelectionMouse.X, SingleSelectionMouse.Y))
 	{
-		FString MousePosString = FString::Printf(
-			TEXT("SingleSelectionMouse Position ended: X=%.2f, Y=%.2f"), SingleSelectionMouse.X, SingleSelectionMouse.Y);
+		//FString MousePosString = FString::Printf(
+		//	TEXT("SingleSelectionMouse Position ended: X=%.2f, Y=%.2f"), SingleSelectionMouse.X, SingleSelectionMouse.Y);
 
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *MousePosString);
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *MousePosString);
+
+
+		// Maybe move this to the function on when we deselect instead of ending the click 
+		// Clear the array at the end of the function
+		//ActorsInSelection.Empty();
+	}
+}
+
+void AUserController::MultiSelect()
+{
+	//UE_LOG(LogTemp, Warning, TEXT("Single Click"));
+	
+	// Get the Coordinates of the mouse when clicked
+	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
+	{
+		MultiselectCond = true;
+		UnitSelection();
 	}
 }
 
@@ -357,8 +375,9 @@ void AUserController::UnitSelection()
 				// Perform actions for the selected pawn
 				HandlePawnSelection(HitPawn);
 				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
-				
+				bNotHit = false;
 			}
+			bNotHit = true;
 		}
 	}
 }
@@ -372,6 +391,16 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 		UE_LOG(LogTemp, Warning, TEXT("Selected Pawn: %s"), *PawnName);
 
 		// Perform additional actions for the selected pawn if needed
+
+		if(MultiselectCond)
+		{
+			SelectedUnits.AddUnique(HitPawn);
+			for (AActor* HitPawn : SelectedUnits)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
+			}
+			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
+		}
 	}
 }
 
@@ -383,108 +412,69 @@ void AUserController::UpdateFlow()
 		// Checks if the mouse has been moved
 		if (HasCursorMoved())
 		{
+			FVector MouseWorldStart, MouseWorldDirection;
+			
 			// Checks the Current mouse position in Comparison to the Initial Mouse Position 
 			if (GetMousePosition(NewMousePosition.X, NewMousePosition.Y))
 			{
-				// Calculate the extent of the rectangle in X and Y directions
-				float SelectionWidth = FMath::Abs(NewMousePosition.X - InitialMousePosition.X);
-				float SelectionHeight = FMath::Abs(NewMousePosition.Y - InitialMousePosition.Y);
-
-				// Find the other two edges of the rectangle
-				FVector2D Edge1(InitialMousePosition.X + SelectionWidth, InitialMousePosition.Y);
-				FVector2D Edge2(InitialMousePosition.X, InitialMousePosition.Y + SelectionHeight);
-
-				// Create a box representing the selection rectangle
-				FBox2D SelectionBox(InitialMousePosition, NewMousePosition);
-				UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASelectionPawn::StaticClass(), ActorsInSelection);
-
-				for (AActor* Actor : ActorsInSelection)
+				APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+				if (PlayerController &&
+						   PlayerController->DeprojectScreenPositionToWorld(InitialMousePosition.X, InitialMousePosition.Y, MouseWorldStart, MouseWorldDirection))
 				{
-					// Get the actor's 2D location
-					FVector2D ActorLocation(Actor->GetActorLocation().X, Actor->GetActorLocation().Y);
 
-					// Check if the actor is within the selection box and of the correct type
-					if (SelectionBox.IsInside(ActorLocation) && Actor->IsA(ASelectionPawn::StaticClass()))
+					// Deproject current screen coordinates to world coordinates
+					FVector CurrentMouseWorldLocation, CurrentMouseWorldDirection;
+					PlayerController->DeprojectScreenPositionToWorld(NewMousePosition.X, NewMousePosition.Y, CurrentMouseWorldLocation, CurrentMouseWorldDirection);
+					
+					// Calculate the extent of the rectangle in X and Y directions
+					float SelectionWidth = FMath::Abs(NewMousePosition.X - InitialMousePosition.X);
+					float SelectionHeight = FMath::Abs(NewMousePosition.Y - InitialMousePosition.Y);
+
+					// Find the other two edges of the rectangle
+					FVector2D Edge1(InitialMousePosition.X + SelectionWidth, InitialMousePosition.Y);
+					FVector2D Edge2(InitialMousePosition.X, InitialMousePosition.Y + SelectionHeight);
+					
+			
+					/*
+					FVector BoxExtent = FVector(SelectionWidth / 2, SelectionHeight / 2, 20);
+
+					// Add an offset to the starting position of the box (adjust the offset as needed)
+					FVector BoxSpawnLocation = MouseWorldStart + FVector(0.0f, 0.0f, 1000.0f);
+					
+					// Draw a debug box at the initial mouse position with dynamic scaling
+					DrawDebugBox(GetWorld(), BoxSpawnLocation, BoxExtent, FQuat::Identity, FColor::Red, true, -1.0f, 0, 10.0f);
+					*/
+				
+					
+					// Create a box representing the selection rectangle
+					FBox2D SelectionBox(InitialMousePosition, NewMousePosition);
+					UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASelectionPawn::StaticClass(), ActorsInSelection);
+
+					for (AActor* Actor : ActorsInSelection)
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Selected Actor: %s"), *Actor->GetName());
+						// Get the actor's 2D location
+						FVector2D ActorLocation(Actor->GetActorLocation().X, Actor->GetActorLocation().Y);
+
+						// Check if the actor is within the selection box and of the correct type
+						if (SelectionBox.IsInside(ActorLocation) && Actor->IsA(ASelectionPawn::StaticClass()))
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Selected Actor: %s"), *Actor->GetName());
+						}
 					}
+
+					STEdge1 = Edge1;
+					STEdge2 = Edge2;
+					
+
+					// Log the locations of the edges
+					UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X, InitialMousePosition.Y);
+					UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
+					UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
+					UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);
+
+				
 				}
-
-				STEdge1 = Edge1;
-				STEdge2 = Edge2;
-
-				// Log the locations of the edges
-				UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X, InitialMousePosition.Y);
-				UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
-				UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
-				UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);
-
-				// Clear the array at the end of the function
-				//ActorsInSelection.Empty();
 			}
 		}
 	}
 }
-
-
-void AUserController::Draw2DSSquare(const FVector Edge1, FVector2D& Edge2) // Direction?? 
-{
-	// Draw Line from Start to Edge 1 & edge 2
-	if(InitialMousePosition.X && InitialMousePosition.Y)
-	{
-		DrawDebugLine(GetWorld(), FVector(InitialMousePosition.X), Edge1, FColor::Red);
-	}
-}
-
-
-
-/*
-void AUserController::PlayerTick(float DeltaTime)
-{
-	Super::PlayerTick(DeltaTime);
-
-	GetHitResultUnderCursor(mTraceChannel, true, hit);
-	CalculateMovement(DeltaTime);
-
-	// keep updating the destination every tick while desired
-	if (leftMouseDown)
-	{
-		//MoveToMouseCursor();
-		mouseDownTime += DeltaTime;
-
-		mouseEnd = hit.Location;
-
-		centerMouseLocation = FVector((mouseStart + mouseEnd) / 2);
-		dist = FVector::Dist(mouseEnd, mouseStart) / 2;
-		selectionSize = FVector(dist, dist, 100);
-
-		if (mouseDownTime > 0.75f)
-			DrawDebugBox(GetWorld(), centerMouseLocation, selectionSize, FQuat(0, 0, 0, 0), FColor::Black);
-	}
-	else {
-		mouseDownTime = 0;
-	}
-
-	if (CursorToWorld != nullptr)
-	{
-		FVector CursorFV = hit.ImpactNormal;
-		FRotator CursorR = CursorFV.Rotation();
-		CursorToWorld->SetWorldLocation(hit.Location);
-		CursorToWorld->SetWorldRotation(CursorR);
-
-		if (hit.bBlockingHit)
-		{
-			AActor* targetFound = hit.GetActor();
-
-			if (targetFound != nullptr && targetFound->Implements<UResourceInterface>())
-			{
-				IResourceInterface* ri = GetResource(targetFound);
-				UMaterial* decal = *materialCursors.Find(ri->GetType());
-
-				if (decal != nullptr)
-					CursorToWorld->SetDecalMaterial(decal);
-			}
-		}
-	}
-}
-*/
