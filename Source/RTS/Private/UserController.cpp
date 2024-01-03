@@ -263,19 +263,7 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAction("BoxSelection", IE_Pressed, this, &AUserController::StartBoxSelection);
 	InputComponent->BindAction("MultiSelection", IE_Pressed, this, &AUserController::MultiSelect);
 	InputComponent->BindAction("UpdateBoxSelection", IE_Released, this, &AUserController::EndBoxSelection);
-	//InputComponent->BindAction("UpdateBoxSelection", IE_Held, this, &AUserController::UpdateBoxSelection);
-	
 }
-
-// We Use this function to select an item or unit.
-// ONLY Draw a square if the coordinates start moving. 
-
-// Get initial Mouse Coordinates
-// Then do Logic
-// Unless, if the mouse coordinates change while pressing down the input
-// So do an if statement to check if the mouse if moving.
-	
-// When just clicking, Shoot a line trace from the camera to the object you want to pick, This will work as single use selection then use if statement for multi.........
 
 void AUserController::StartBoxSelection()
 {
@@ -291,6 +279,7 @@ void AUserController::StartBoxSelection()
 		}
 	}
 }
+
 
 void AUserController::EndBoxSelection()
 {
@@ -313,6 +302,7 @@ void AUserController::EndBoxSelection()
 	}
 }
 
+
 void AUserController::MultiSelect()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Single Click"));
@@ -324,6 +314,7 @@ void AUserController::MultiSelect()
 		UnitSelection();
 	}
 }
+
 
 bool AUserController::HasCursorMoved()
 {
@@ -340,6 +331,7 @@ bool AUserController::HasCursorMoved()
 	
 	return false;
 }
+
 
 void AUserController::UnitSelection()
 {
@@ -381,6 +373,7 @@ void AUserController::UnitSelection()
 		}
 	}
 }
+
 
 void AUserController::HandlePawnSelection(APawn* HitPawn)
 {
@@ -434,7 +427,6 @@ void AUserController::UpdateFlow()
 					FVector2D Edge1(InitialMousePosition.X + SelectionWidth, InitialMousePosition.Y);
 					FVector2D Edge2(InitialMousePosition.X, InitialMousePosition.Y + SelectionHeight);
 					
-			
 					/*
 					FVector BoxExtent = FVector(SelectionWidth / 2, SelectionHeight / 2, 20);
 
@@ -444,7 +436,6 @@ void AUserController::UpdateFlow()
 					// Draw a debug box at the initial mouse position with dynamic scaling
 					DrawDebugBox(GetWorld(), BoxSpawnLocation, BoxExtent, FQuat::Identity, FColor::Red, true, -1.0f, 0, 10.0f);
 					*/
-				
 					
 					// Create a box representing the selection rectangle
 					FBox2D SelectionBox(InitialMousePosition, NewMousePosition);
@@ -462,17 +453,12 @@ void AUserController::UpdateFlow()
 						}
 					}
 
-					STEdge1 = Edge1;
-					STEdge2 = Edge2;
-					
-
 					// Log the locations of the edges
 					UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X, InitialMousePosition.Y);
 					UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
 					UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
 					UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);
-
-				
+					
 				}
 			}
 		}
