@@ -12,6 +12,8 @@ ASelectionPawn::ASelectionPawn()
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	//CollisionRoot->OnComponentBeginOverlap.AddDynamic(this, &ASelectionPawn::OverlapBegin);
+	
 	CollisionRoot = CreateDefaultSubobject<USphereComponent>("CollisionRoot ");
 	CollisionRoot->SetupAttachment(RootComponent);
 }
@@ -51,7 +53,7 @@ void ASelectionPawn::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	CollisionRoot->OnComponentBeginOverlap.AddDynamic(this, &ASelectionPawn::OverlapBegin);
+	//CollisionRoot->OnComponentBeginOverlap.AddDynamic(this, &ASelectionPawn::OverlapBegin);
 }
 
 // Called to bind functionality to input
