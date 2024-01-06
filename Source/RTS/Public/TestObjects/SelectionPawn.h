@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/Pawn.h"
 #include "SelectionPawn.generated.h"
 
@@ -15,6 +16,9 @@ public:
 	// Sets default values for this pawn's properties
 	ASelectionPawn();
 
+	UPROPERTY(EditAnywhere)
+	USphereComponent* CollisionRoot;
+	
 	// Declare hit and overlap functions
 	UFUNCTION()
 	void NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp, bool bSelfMoved, FVector HitLocation, FVector HitNormal, FVector NormalImpulse, const FHitResult& Hit);
