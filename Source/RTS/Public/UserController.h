@@ -9,12 +9,12 @@
 #include "RTS/Public/Interfaces/SelectionInterface.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "UserCharacter.h"
+#include "Kismet/GameplayStatics.h"
 #include "UserController.generated.h"
 
 
 class UDecalComponent;
 class UBoxComponent;
-class AUserCharacter;
 
 
 /**
@@ -25,9 +25,10 @@ class RTS_API AUserController : public APlayerController
 {
 	GENERATED_BODY()
 
+	AUserCharacter* UserCh = nullptr;
 	UPROPERTY()
 	AUserController* MyController = this;
-
+	
 	USelectionInterface* SelectionInterface;
 public:
 	
@@ -45,7 +46,7 @@ public:
 	void MoveCamera(const FVector& Direction);
 
 	// Changes the length of the CameraBoom
-	void ZoomIn(float Value);
+	void ZoomIn(float AxisValue);
 	void ZoomOut(float Value);
 
 	// Rotates the camera 
@@ -100,9 +101,12 @@ protected:
 
 private:
 
+	float TargetZoom = 3000.f;
+	float ZoomSpeed = 2.f;
+	
 	// Susceptible to Change
-	int32 MaxZoom = 4000;
-	int32 MinZoom = 1000;
+	int32 MaxZoom = 4000.f;
+	int32 MinZoom = 500.f;
 
 	float ZoomRate = 30;
 	float MouseDownTime;

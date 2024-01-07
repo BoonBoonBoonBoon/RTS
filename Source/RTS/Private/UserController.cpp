@@ -8,7 +8,7 @@
 #include "Camera/PlayerCameraManager.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
-
+#include "Kismet/KismetMathLibrary.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TestObjects/SelectionPawn.h"
@@ -30,6 +30,8 @@ AUserController::AUserController()
 	
 	SelectionArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SelectionArea"));
 	SelectionArea->SetBoxExtent(FVector(0));
+
+	
 }
 
 void AUserController::OnPossess(APawn* InPawn)
@@ -163,11 +165,16 @@ void AUserController::MoveCamera(const FVector& Direction)
 	}
 }
 
-void AUserController::ZoomIn(float Value)
+void AUserController::ZoomIn(float AxisValue)
 {
 
-	
-	
+	if(AxisValue == 0.f)
+	{
+		return;
+	}
+
+	const float Zoom = AxisValue * 100.f;
+	TargetZoom = FMath::Clamp(Zoom + TargetZoom, MinZoom, MaxZoom);
 	// Get the current arm length
 	//float CurrentArmLength = UserCharacter->CameraBoom->TargetArmLength;
 
@@ -232,6 +239,15 @@ void AUserController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
 
+	UE_LOG(LogTemp, Warning, TEXT("UserCh: %s"), *GetNameSafe(UserCh)); // Returns None??
+	
+	if(UserCh && UserCh->CameraBoom)
+	{
+		
+		// zoom the camera in the desired direction
+		const float InterpolatedZoom =  UKismetMathLibrary::FInterpTo(UserCh->CameraBoom->TargetArmLength, TargetZoom, DeltaTime, ZoomSpeed);
+		UserCh->CameraBoom->TargetArmLength = InterpolatedZoom;
+	}
 	EdgeScrolling();
 	UpdateFlow();
 }

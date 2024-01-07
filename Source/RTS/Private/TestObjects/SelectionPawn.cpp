@@ -15,7 +15,8 @@ ASelectionPawn::ASelectionPawn()
 	//CollisionRoot->OnComponentBeginOverlap.AddDynamic(this, &ASelectionPawn::OverlapBegin);
 	
 	CollisionRoot = CreateDefaultSubobject<USphereComponent>("CollisionRoot ");
-	CollisionRoot->SetupAttachment(RootComponent);
+	CollisionRoot->SetSphereRadius(60);
+	//CollisionRoot->SetupAttachment(RootComponent);
 }
 
 void ASelectionPawn::NotifyHit(UPrimitiveComponent* MyComp, AActor* Other, UPrimitiveComponent* OtherComp,

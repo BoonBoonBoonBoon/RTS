@@ -14,9 +14,9 @@ AUserCharacter::AUserCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	// Don't rotate character to camera direction
-	bUseControllerRotationPitch = false;
-	bUseControllerRotationYaw = false;
-	bUseControllerRotationRoll = false;
+	bUseControllerRotationPitch = true;
+	bUseControllerRotationYaw = true;
+	bUseControllerRotationRoll = true;
 
 	GetCharacterMovement()->MaxWalkSpeed = 2000;
 
