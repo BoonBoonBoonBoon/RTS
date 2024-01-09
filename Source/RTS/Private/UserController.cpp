@@ -31,6 +31,7 @@ AUserController::AUserController()
 	SelectionArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SelectionArea"));
 	SelectionArea->SetBoxExtent(FVector(0));
 
+	UserCharacter = Cast<AUserCharacter>(GetPawn());
 	
 }
 
@@ -165,91 +166,74 @@ void AUserController::MoveCamera(const FVector& Direction)
 	}
 }
 
-void AUserController::ZoomIn(float AxisValue)
+/*
+void AUserController::EnableRotation()
 {
-
-	if(AxisValue == 0.f)
-	{
-		return;
-	}
-
-	const float Zoom = AxisValue * 100.f;
-	TargetZoom = FMath::Clamp(Zoom + TargetZoom, MinZoom, MaxZoom);
-	// Get the current arm length
-	//float CurrentArmLength = UserCharacter->CameraBoom->TargetArmLength;
-
-	/*FString ValueOfZoom = FString::Printf(
-	TEXT("Zoom Value: X=%.2f"), Value);
-
-	// Draw the string on the screen
-	GEngine->AddOnScreenDebugMessage(1, 1.0f, FColor::White, ValueOfZoom);
-	
-
-	//AUserCharacter* UserCharacter;
-	if (UserCharacter)
-	{
-		USpringArmComponent* CameraBoom = UserCharacter->GetCameraBoom();
-		if (CameraBoom)
-		{
-			// Get the current TargetArmLength
-			float TargetArmLength = CameraBoom->TargetArmLength;
-
-			// Convert the TargetArmLength to a string
-			FString ArmLengthString = FString::Printf(TEXT("TargetArmLength: %f"), TargetArmLength);
-
-			// Display the TargetArmLength on the screen
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Yellow, ArmLengthString);
-		}
-		else
-		{
-			// Handle the case where GetCameraBoom() returns nullptr
-			GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("CameraBoom is nullptr."));
-		}
-	}
-	else
-	{
-		// Handle the case where GetUserCharacter() returns nullptr
-		GEngine->AddOnScreenDebugMessage(-1, 5.0f, FColor::Red, TEXT("UserCharacter is nullptr."));
-	}
-	*/
-	
+	CanRotate = true;
 }
 
-void AUserController::ZoomOut(float Value)
+void AUserController::DisableRotation()
 {
-	/*GetUser()->GetCameraBoom()->TargetArmLength -= Value;
-
-if (GetUser()->GetCameraBoom()->TargetArmLength < MinZoom)
-{
-	GetUser()->GetCameraBoom()->TargetArmLength = MinZoom;
-}*/
+	CanRotate = false;
 }
+
 
 void AUserController::Left_Camera_Rotation()
 {
-	
+	// CompRot combines 2 rotations, In this case A is the current rotation, B is the rotation we want to add. 
+	TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(0.f, 45.f, 0.f));
 }
 
 void AUserController::Right_Camera_Rotation()
 {
+	TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(0.f, -45.f, 0.f));
 }
+
+void AUserController::RotateHorizontal(float AxisValue)
+{
+
+	// If the mouse hasnt moved return. 
+	if(AxisValue == 0.f)
+	{
+		return;
+	}
+	// else if it has and the we can rotate then we compose A&B again, this time the Yaw rotation will be dynamic and dictated by the mouse movement. 
+	if(CanRotate)
+	{
+		TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(0.f, AxisValue, 0.f));
+	}
+}
+
+void AUserController::RotateVertical(float AxisValue)
+{
+	
+	if(AxisValue == 0.f)
+	{
+		return;
+	}
+	
+	// Checks Pitch rotation instead.
+	if(CanRotate)
+	{
+		TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(AxisValue, 0.f, 0.f));
+	}
+}
+*/
 
 
 void AUserController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-
-	UE_LOG(LogTemp, Warning, TEXT("UserCh: %s"), *GetNameSafe(UserCh)); // Returns None??
 	
-	if(UserCh && UserCh->CameraBoom)
-	{
-		
-		// zoom the camera in the desired direction
-		const float InterpolatedZoom =  UKismetMathLibrary::FInterpTo(UserCh->CameraBoom->TargetArmLength, TargetZoom, DeltaTime, ZoomSpeed);
-		UserCh->CameraBoom->TargetArmLength = InterpolatedZoom;
-	}
 	EdgeScrolling();
 	UpdateFlow();
+
+	/*
+	// zoom the camera in the desired direction
+	const FRotator InterpolatedRotation =  UKismetMathLibrary::RInterpTo(UserCharacter->CameraBoom->GetRelativeRotation(), TargetRotation, DeltaTime, RotateSpeed);
+	UserCharacter->CameraBoom->SetRelativeRotation(InterpolatedRotation);
+	*/
+	
 }
 
 void AUserController::BeginPlay()
@@ -267,14 +251,16 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAxis("Right", this, &AUserController::EdgeScrolling_WASD_Right);
 	InputComponent->BindAxis("Left", this, &AUserController::EdgeScrolling_WASD_Left);
 
-	// Controls the Camera Zoom Capabilities
-	InputComponent->BindAxis("ZoomIn", this, &AUserController::ZoomIn);
-	InputComponent->BindAxis("ZoomOut", this, &AUserController::ZoomOut);
+	/*// Freemove Camera
+	InputComponent->BindAxis("RotateHorizontal", this, &AUserController::RotateHorizontal);
+	InputComponent->BindAxis("RotateVertical", this, &AUserController::RotateVertical);
 	
-	// Rotates the Camera 
-	InputComponent->BindAxis("ZoomIn", this, &AUserController::ZoomIn);
-	InputComponent->BindAxis("ZoomOut", this, &AUserController::ZoomOut);
-
+	// Camera Rotation
+	InputComponent->BindAction("Rotate", IE_Pressed, this, &AUserController::EnableRotation);
+	InputComponent->BindAction("Rotate", IE_Released, this, &AUserController::DisableRotation);
+	InputComponent->BindAction("RotateLeft", IE_Pressed, this, &AUserController::Left_Camera_Rotation);
+	InputComponent->BindAction("RotateRight", IE_Pressed, this, &AUserController::Right_Camera_Rotation);*/
+	
 	// Draw Box and select units 
 	InputComponent->BindAction("BoxSelection", IE_Pressed, this, &AUserController::StartBoxSelection);
 	InputComponent->BindAction("MultiSelection", IE_Pressed, this, &AUserController::MultiSelect);

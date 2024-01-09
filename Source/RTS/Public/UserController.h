@@ -25,7 +25,8 @@ class RTS_API AUserController : public APlayerController
 {
 	GENERATED_BODY()
 
-	AUserCharacter* UserCh = nullptr;
+	AUserCharacter* UserCharacter;
+	
 	UPROPERTY()
 	AUserController* MyController = this;
 	
@@ -45,17 +46,20 @@ public:
 	// Moves the camera in the direction of the cursor direction
 	void MoveCamera(const FVector& Direction);
 
-	// Changes the length of the CameraBoom
-	void ZoomIn(float AxisValue);
-	void ZoomOut(float Value);
-
-	// Rotates the camera 
+	// Checks if camera rotation is valid or not 
+	void EnableRotation();
+	void DisableRotation();
+	
+	// Rotates the camera in Sections 
 	void Left_Camera_Rotation();
 	void Right_Camera_Rotation();
+
+	// Rotates the camera with the middle mouse button (Freelook)
+	void RotateHorizontal(float AxisValue);
+	void RotateVertical(float AxisValue);
+
 	
 protected:
-	
-
 	
 	//FORCEINLINE class AUserCharacter* GetUserCharacter() const { return UserCharacter; }
 	//int32 ArmLength = GetUserCharacter()->GetCameraBoom()->TargetArmLength;
@@ -101,6 +105,17 @@ protected:
 
 private:
 
+	/*
+	FVector TargetLocation; 
+	FRotator TargetRotation;
+
+	bool CanRotate;
+	
+	float RotateSpeed = 2.f;
+	float RotatePitchMin = 10.f;
+	float RotatePitchMax = 80.f;
+	*/
+	
 	float TargetZoom = 3000.f;
 	float ZoomSpeed = 2.f;
 	
@@ -115,9 +130,6 @@ private:
 	UDecalComponent* CursorToWorld;
 	
 public:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Camera, meta = (AllowPrivateAccess = "true"))
-	class AUserCharacter* UserCharacter;
 
 	UFUNCTION(BlueprintCallable)
 	void StartBoxSelection();
