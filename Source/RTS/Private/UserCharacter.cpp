@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Interfaces/ITargetDevice.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -42,7 +43,14 @@ AUserCharacter::AUserCharacter()
 void AUserCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+	// Zoom and location
+	TargetLocation =- GetActorLocation();
+	TargetZoom = 3000.f;
+
+	// inital Rotation for camera
+	const FRotator Rotation = CameraBoom->GetRelativeRotation();
+	TargetRotation = FRotator(Rotation.Pitch + 10, Rotation.Yaw,0.0f);
 }
 
 void AUserCharacter::EnableRotation()
@@ -73,10 +81,11 @@ void AUserCharacter::RotateHorizontal(float AxisValue)
 	{
 		return;
 	}
-	// else if it has and the we can rotate then we compose A&B again, this time the Yaw rotation will be dynamic and dictated by the mouse movement. 
+	// else if it has and the we can rotate then we compose A&B again.
+	// this time the Yaw rotation will be dynamic and dictated by the mouse movement. 
 	if(CanRotate)
 	{
-		TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(0.f, AxisValue, 0.f));
+		TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(0.f, AxisValue * 2, 0.f));
 	}
 }
 
@@ -91,7 +100,7 @@ void AUserCharacter::RotateVertical(float AxisValue)
 	// Checks Pitch rotation instead.
 	if(CanRotate)
 	{
-		TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(AxisValue, 0.f, 0.f));
+		TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(AxisValue * 2, 0.f, 0.f));
 	}
 }
 
@@ -107,10 +116,31 @@ void AUserCharacter::Zoom(float AxisValue)
 
 }
 
+void AUserCharacter::CameraBounds()
+{
+	float NewPitch = TargetRotation.Pitch;
+	if(TargetRotation.Pitch < (RotatePitchMax * -1))
+	{
+		NewPitch = (RotatePitchMax * -1);
+	}else if(TargetRotation.Pitch > (RotatePitchMin * -1))
+	{
+		NewPitch = (RotatePitchMin * -1);
+	}
+
+	// Set the new pitch and clamp any roll
+	TargetRotation = FRotator(NewPitch, TargetRotation.Yaw, 0.f);
+
+	// Clamp desired location to within bounds
+	TargetLocation = FVector(TargetLocation.X, TargetLocation.Y, 0.f);
+	
+}
+
 // Called every frame
 void AUserCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	CameraBounds();
 	
 	// zoom the camera in the desired direction
 	const float InterpolatedZoom =  UKismetMathLibrary::FInterpTo(CameraBoom->TargetArmLength, TargetZoom, DeltaTime, ZoomSpeed);

@@ -71,6 +71,8 @@ public:
 	void RotateVertical(float AxisValue);
 
 	void Zoom(float AxisValue);
+
+	void CameraBounds();
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
