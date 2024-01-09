@@ -5,6 +5,7 @@
 
 #include "InteractiveToolManager.h"
 #include "UserCharacter.h"
+#include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
@@ -27,11 +28,10 @@ AUserController::AUserController()
 	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
 	CursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
 	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
-	
+
 	SelectionArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SelectionArea"));
 	SelectionArea->SetBoxExtent(FVector(0));
 
-	UserCharacter = Cast<AUserCharacter>(GetPawn());
 	
 }
 
@@ -68,36 +68,46 @@ void AUserController::EdgeScrolling()
 		// GONNA NEED TO DO A CHECK TO SEE IF WE ARE HOVERING OVER A BUTTON LATER
 		if (MousePosition.X < 30)
 		{
-			// Moves the camera to the left 
-			MoveCamera(FVector(0.0f, -1.0f, 0.0f));
+			// Moves the camera to the left
+			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+			FVector LeftVector = FVector::CrossProduct(ForwardVector, FVector::UpVector);
+			LeftVector.Normalize();
+			MoveCamera(LeftVector);
+		
 			bCursorMove = true;
 		}
 		else if (MousePosition.X > 1900)
 		{
 			// Moves Camera to the right
-			MoveCamera(FVector(0.0f, 1.f, 0.f));
+			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+			FVector RightVector = -FVector::CrossProduct(ForwardVector, FVector::UpVector);
+			RightVector.Normalize();
+			MoveCamera(RightVector);
+			
+			
 			bCursorMove = true;
 		}
-		else
-		{
-			bCursorMove = false;
-		}
-
+		
 		// Move Forward
 		if (MousePosition.Y < 20)
 		{
-			MoveCamera(FVector(1.0f, 0.0f, 0.0f));
+			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+			MoveCamera(ForwardVector);
+			
 			bCursorMove = true;
 		}
 		else if (MousePosition.Y > 990)
 		{
-			MoveCamera(FVector(-1.0f, 0.0f, 0.0f));
+			// Backwards
+			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+			FVector OppositeForwardVector = -ForwardVector;
+			MoveCamera(OppositeForwardVector);
+			
 			bCursorMove = true;
 		}
-		else
-		{
-			bCursorMove = false;
-		}
+		
+		bCursorMove = false;
+		
 	}
 }
 
@@ -105,7 +115,8 @@ void AUserController::EdgeScrolling_WASD_Up(float Value)
 {
 	if (Value)
 	{
-		MoveCamera(FVector(2.0f, 0.0f, 0.0f));
+		FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+		MoveCamera(ForwardVector);
 	}
 }
 
@@ -113,7 +124,9 @@ void AUserController::EdgeScrolling_WASD_Down(float Value)
 {
 	if (Value)
 	{
-		MoveCamera(FVector(-2.0f, 0.0f, 0.0f));
+		FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+		FVector OppositeForwardVector = -ForwardVector;
+		MoveCamera(OppositeForwardVector);
 	}
 }
 
@@ -121,7 +134,11 @@ void AUserController::EdgeScrolling_WASD_Right(float Value)
 {
 	if (Value)
 	{
-		MoveCamera(FVector(0.0f, 2.0f, 0.0f));
+		FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+		FVector RightVector = -FVector::CrossProduct(ForwardVector, FVector::UpVector);
+		RightVector.Normalize();
+		MoveCamera(RightVector);
+		//MoveCamera(FVector(0.0f, 2.0f, 0.0f));
 	}
 }
 
@@ -129,7 +146,11 @@ void AUserController::EdgeScrolling_WASD_Left(float Value)
 {
 	if (Value)
 	{
-		MoveCamera(FVector(0.0f, -2.0f, 0.0f));
+		FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+		FVector LeftVector = FVector::CrossProduct(ForwardVector, FVector::UpVector);
+		LeftVector.Normalize();
+		MoveCamera(LeftVector);
+		//MoveCamera(FVector(0.0f, -2.0f, 0.0f));
 	}
 }
 
@@ -166,79 +187,30 @@ void AUserController::MoveCamera(const FVector& Direction)
 	}
 }
 
-/*
-void AUserController::EnableRotation()
-{
-	CanRotate = true;
-}
-
-void AUserController::DisableRotation()
-{
-	CanRotate = false;
-}
-
-
-void AUserController::Left_Camera_Rotation()
-{
-	// CompRot combines 2 rotations, In this case A is the current rotation, B is the rotation we want to add. 
-	TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(0.f, 45.f, 0.f));
-}
-
-void AUserController::Right_Camera_Rotation()
-{
-	TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(0.f, -45.f, 0.f));
-}
-
-void AUserController::RotateHorizontal(float AxisValue)
-{
-
-	// If the mouse hasnt moved return. 
-	if(AxisValue == 0.f)
-	{
-		return;
-	}
-	// else if it has and the we can rotate then we compose A&B again, this time the Yaw rotation will be dynamic and dictated by the mouse movement. 
-	if(CanRotate)
-	{
-		TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(0.f, AxisValue, 0.f));
-	}
-}
-
-void AUserController::RotateVertical(float AxisValue)
-{
-	
-	if(AxisValue == 0.f)
-	{
-		return;
-	}
-	
-	// Checks Pitch rotation instead.
-	if(CanRotate)
-	{
-		TargetRotation = UKismetMathLibrary::ComposeRotators(TargetRotation, FRotator(AxisValue, 0.f, 0.f));
-	}
-}
-*/
-
 
 void AUserController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
+
+
+	/*if (UserCharacter)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Successfully cast to AUserCharacter!"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to cast to AUserCharacter or GetPawn() is nullptr."));
+	}*/
 	
 	EdgeScrolling();
 	UpdateFlow();
-
-	/*
-	// zoom the camera in the desired direction
-	const FRotator InterpolatedRotation =  UKismetMathLibrary::RInterpTo(UserCharacter->CameraBoom->GetRelativeRotation(), TargetRotation, DeltaTime, RotateSpeed);
-	UserCharacter->CameraBoom->SetRelativeRotation(InterpolatedRotation);
-	*/
-	
 }
 
 void AUserController::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	UserCharacter = Cast<AUserCharacter>(GetPawn());
 }
 
 void AUserController::SetupInputComponent()
@@ -251,16 +223,6 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAxis("Right", this, &AUserController::EdgeScrolling_WASD_Right);
 	InputComponent->BindAxis("Left", this, &AUserController::EdgeScrolling_WASD_Left);
 
-	/*// Freemove Camera
-	InputComponent->BindAxis("RotateHorizontal", this, &AUserController::RotateHorizontal);
-	InputComponent->BindAxis("RotateVertical", this, &AUserController::RotateVertical);
-	
-	// Camera Rotation
-	InputComponent->BindAction("Rotate", IE_Pressed, this, &AUserController::EnableRotation);
-	InputComponent->BindAction("Rotate", IE_Released, this, &AUserController::DisableRotation);
-	InputComponent->BindAction("RotateLeft", IE_Pressed, this, &AUserController::Left_Camera_Rotation);
-	InputComponent->BindAction("RotateRight", IE_Pressed, this, &AUserController::Right_Camera_Rotation);*/
-	
 	// Draw Box and select units 
 	InputComponent->BindAction("BoxSelection", IE_Pressed, this, &AUserController::StartBoxSelection);
 	InputComponent->BindAction("MultiSelection", IE_Pressed, this, &AUserController::MultiSelect);
@@ -274,7 +236,7 @@ void AUserController::StartBoxSelection()
 	{
 		bIsSelecting = true;
 		UnitSelection();
-		if(bNotHit)
+		if (bNotHit)
 		{
 			SelectedUnits.Empty();
 			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
@@ -308,7 +270,7 @@ void AUserController::EndBoxSelection()
 void AUserController::MultiSelect()
 {
 	//UE_LOG(LogTemp, Warning, TEXT("Single Click"));
-	
+
 	// Get the Coordinates of the mouse when clicked
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
@@ -324,13 +286,13 @@ bool AUserController::HasCursorMoved()
 	GetMousePosition(CurrentCursor.X, CurrentCursor.Y);
 
 	// Compares The current cursor location with the first cursor location
-	if(CurrentCursor != InitialMousePosition)
+	if (CurrentCursor != InitialMousePosition)
 	{
 		CursorMoved = true;
 		return true;
 		//return CurrentCursor != InitialMousePosition;
 	}
-	
+
 	return false;
 }
 
@@ -341,21 +303,25 @@ void AUserController::UnitSelection()
 	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 
 	// Get the mouse cursor position in world space
-	if (UGameplayStatics::DeprojectScreenToWorld(PlayerController, FVector2D(InitialMousePosition.X, InitialMousePosition.Y), WorldMouseLocation, WorldMouseDirection))
+	if (UGameplayStatics::DeprojectScreenToWorld(PlayerController,
+	                                             FVector2D(InitialMousePosition.X, InitialMousePosition.Y),
+	                                             WorldMouseLocation, WorldMouseDirection))
 	{
 		// Perform a line trace to detect pawns
 		FHitResult HitResult;
 		FCollisionQueryParams CollisionParams;
 		CollisionParams.AddIgnoredActor(this); // Ignore the controller itself
-		
+
 		float TraceDistance = 7000.f;
-		
+
 		// Adjust the WorldOrigin to spawn the debug box further away
 		FVector SpawnLoc = WorldMouseLocation + WorldMouseDirection * TraceDistance;
-		
+
 		FVector DebugBoxExtent(50.0f, 50.0f, 50.0f);
-		
-		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldMouseLocation, WorldMouseLocation + WorldMouseDirection * TraceDistance, ECC_Visibility, CollisionParams))
+
+		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldMouseLocation,
+		                                         WorldMouseLocation + WorldMouseDirection * TraceDistance,
+		                                         ECC_Visibility, CollisionParams))
 		{
 			// Check if the hit actor is a pawn
 			APawn* HitPawn = Cast<APawn>(HitResult.GetActor());
@@ -363,7 +329,7 @@ void AUserController::UnitSelection()
 			// Check if its either
 			// Damageable
 			// Resource
-			
+
 			if (HitPawn)
 			{
 				// Perform actions for the selected pawn
@@ -387,7 +353,7 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 
 		// Perform additional actions for the selected pawn if needed
 
-		if(MultiselectCond)
+		if (MultiselectCond)
 		{
 			SelectedUnits.AddUnique(HitPawn);
 			for (AActor* HitPawn : SelectedUnits)
@@ -408,19 +374,21 @@ void AUserController::UpdateFlow()
 		if (HasCursorMoved())
 		{
 			FVector MouseWorldStart, MouseWorldDirection;
-			
+
 			// Checks the Current mouse position in Comparison to the Initial Mouse Position 
 			if (GetMousePosition(NewMousePosition.X, NewMousePosition.Y))
 			{
 				APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 				if (PlayerController &&
-						   PlayerController->DeprojectScreenPositionToWorld(InitialMousePosition.X, InitialMousePosition.Y, MouseWorldStart, MouseWorldDirection))
+					PlayerController->DeprojectScreenPositionToWorld(InitialMousePosition.X, InitialMousePosition.Y,
+					                                                 MouseWorldStart, MouseWorldDirection))
 				{
-
 					// Deproject current screen coordinates to world coordinates
 					FVector CurrentMouseWorldLocation, CurrentMouseWorldDirection;
-					PlayerController->DeprojectScreenPositionToWorld(NewMousePosition.X, NewMousePosition.Y, CurrentMouseWorldLocation, CurrentMouseWorldDirection);
-					
+					PlayerController->DeprojectScreenPositionToWorld(NewMousePosition.X, NewMousePosition.Y,
+					                                                 CurrentMouseWorldLocation,
+					                                                 CurrentMouseWorldDirection);
+
 					// Calculate the extent of the rectangle in X and Y directions
 					float SelectionWidth = FMath::Abs(NewMousePosition.X - InitialMousePosition.X);
 					float SelectionHeight = FMath::Abs(NewMousePosition.Y - InitialMousePosition.Y);
@@ -428,7 +396,7 @@ void AUserController::UpdateFlow()
 					// Find the other two edges of the rectangle
 					FVector2D Edge1(InitialMousePosition.X + SelectionWidth, InitialMousePosition.Y);
 					FVector2D Edge2(InitialMousePosition.X, InitialMousePosition.Y + SelectionHeight);
-					
+
 					/*
 					FVector BoxExtent = FVector(SelectionWidth / 2, SelectionHeight / 2, 20);
 
@@ -438,7 +406,7 @@ void AUserController::UpdateFlow()
 					// Draw a debug box at the initial mouse position with dynamic scaling
 					DrawDebugBox(GetWorld(), BoxSpawnLocation, BoxExtent, FQuat::Identity, FColor::Red, true, -1.0f, 0, 10.0f);
 					*/
-					
+
 					// Create a box representing the selection rectangle
 					FBox2D SelectionBox(InitialMousePosition, NewMousePosition);
 					UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASelectionPawn::StaticClass(), ActorsInSelection);
@@ -456,11 +424,11 @@ void AUserController::UpdateFlow()
 					}
 
 					// Log the locations of the edges
-					UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X, InitialMousePosition.Y);
+					UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X,
+					       InitialMousePosition.Y);
 					UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
 					UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
 					UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);
-					
 				}
 			}
 		}
