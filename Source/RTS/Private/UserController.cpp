@@ -66,7 +66,7 @@ void AUserController::EdgeScrolling()
 		GEngine->AddOnScreenDebugMessage(1, 1.0f, FColor::White, MousePosString);
 
 		// GONNA NEED TO DO A CHECK TO SEE IF WE ARE HOVERING OVER A BUTTON LATER
-		if (MousePosition.X < 30)
+		if (MousePosition.X < 70)
 		{
 			// Moves the camera to the left
 			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
@@ -76,7 +76,7 @@ void AUserController::EdgeScrolling()
 		
 			bCursorMove = true;
 		}
-		else if (MousePosition.X > 1900)
+		else if (MousePosition.X > 1850)
 		{
 			// Moves Camera to the right
 			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
@@ -89,14 +89,14 @@ void AUserController::EdgeScrolling()
 		}
 		
 		// Move Forward
-		if (MousePosition.Y < 20)
+		if (MousePosition.Y < 50)
 		{
 			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
 			MoveCamera(ForwardVector);
 			
 			bCursorMove = true;
 		}
-		else if (MousePosition.Y > 990)
+		else if (MousePosition.Y > 920)
 		{
 			// Backwards
 			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
@@ -386,8 +386,8 @@ void AUserController::UpdateFlow()
 					// Deproject current screen coordinates to world coordinates
 					FVector CurrentMouseWorldLocation, CurrentMouseWorldDirection;
 					PlayerController->DeprojectScreenPositionToWorld(NewMousePosition.X, NewMousePosition.Y,
-					                                                 CurrentMouseWorldLocation,
-					                                                 CurrentMouseWorldDirection);
+																	 CurrentMouseWorldLocation,
+																	 CurrentMouseWorldDirection);
 
 					// Calculate the extent of the rectangle in X and Y directions
 					float SelectionWidth = FMath::Abs(NewMousePosition.X - InitialMousePosition.X);
@@ -407,28 +407,40 @@ void AUserController::UpdateFlow()
 					DrawDebugBox(GetWorld(), BoxSpawnLocation, BoxExtent, FQuat::Identity, FColor::Red, true, -1.0f, 0, 10.0f);
 					*/
 
-					// Create a box representing the selection rectangle
-					FBox2D SelectionBox(InitialMousePosition, NewMousePosition);
-					UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASelectionPawn::StaticClass(), ActorsInSelection);
+					FVector2D Boxsize = NewMousePosition - InitialMousePosition;
 
-					for (AActor* Actor : ActorsInSelection)
+					float ZOffset = 2000.0f;
+					
+					FVector BoxExtent(Boxsize.X / 2, Boxsize.Y / 2, 10.f);
+					FVector BoxLocation = FVector((InitialMousePosition + NewMousePosition) / 2, ZOffset);
+
+					if(PlayerController->DeprojectScreenPositionToWorld(Boxsize.X, Boxsize.Y, BoxLocation, BoxExtent))
 					{
-						// Get the actor's 2D location
-						FVector2D ActorLocation(Actor->GetActorLocation().X, Actor->GetActorLocation().Y);
+						DrawDebugBox(GetWorld(), BoxLocation, BoxExtent, FQuat::Identity, FColor::Green, true, -1.0f, 0, 10.0f);
+					
+						// Create a box representing the selection rectangle
+						FBox2D SelectionBox(InitialMousePosition, NewMousePosition);
+						UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASelectionPawn::StaticClass(), ActorsInSelection);
 
-						// Check if the actor is within the selection box and of the correct type
-						if (SelectionBox.IsInside(ActorLocation) && Actor->IsA(ASelectionPawn::StaticClass()))
+						for (AActor* Actor : ActorsInSelection)
 						{
-							UE_LOG(LogTemp, Warning, TEXT("Selected Actor: %s"), *Actor->GetName());
-						}
-					}
+							// Get the actor's 2D location
+							FVector2D ActorLocation(Actor->GetActorLocation().X, Actor->GetActorLocation().Y);
 
-					// Log the locations of the edges
-					UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X,
-					       InitialMousePosition.Y);
-					UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
-					UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
-					UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);
+							// Check if the actor is within the selection box and of the correct type
+							if (SelectionBox.IsInside(ActorLocation) && Actor->IsA(ASelectionPawn::StaticClass()))
+							{
+								UE_LOG(LogTemp, Warning, TEXT("Selected Actor: %s"), *Actor->GetName());
+							}
+						}
+
+						// Log the locations of the edges
+						UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X,
+							   InitialMousePosition.Y);
+						UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
+						UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
+						UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);
+					}
 				}
 			}
 		}

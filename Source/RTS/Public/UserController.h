@@ -46,19 +46,7 @@ public:
 	// Moves the camera in the direction of the cursor direction
 	void MoveCamera(const FVector& Direction);
 
-	// Checks if camera rotation is valid or not 
-	void EnableRotation();
-	void DisableRotation();
-	
-	// Rotates the camera in Sections 
-	void Left_Camera_Rotation();
-	void Right_Camera_Rotation();
 
-	// Rotates the camera with the middle mouse button (Freelook)
-	void RotateHorizontal(float AxisValue);
-	void RotateVertical(float AxisValue);
-
-	
 protected:
 	
 	//FORCEINLINE class AUserCharacter* GetUserCharacter() const { return UserCharacter; }
