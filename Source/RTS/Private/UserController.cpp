@@ -10,6 +10,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "RTS\Public\Interfaces\SelectionInterface.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "TestObjects/SelectionPawn.h"
@@ -252,6 +253,7 @@ void AUserController::EndBoxSelection()
 	CursorMoved = false;
 	FVector2D SingleSelectionMouse;
 	MultiselectCond = false;
+	bIsDecalSelect = false;
 	if (GetMousePosition(SingleSelectionMouse.X, SingleSelectionMouse.Y))
 	{
 		//FString MousePosString = FString::Printf(
@@ -351,14 +353,19 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 		FString PawnName = HitPawn->GetName();
 		UE_LOG(LogTemp, Warning, TEXT("Selected Pawn: %s"), *PawnName);
 
-		// Perform additional actions for the selected pawn if needed
-
+		bIsDecalSelect = true;
+		
 		if (MultiselectCond)
 		{
+			// Loops through all possible actors 
 			SelectedUnits.AddUnique(HitPawn);
 			for (AActor* HitPawn : SelectedUnits)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
+				if(ISelectionInterface* Selectable = Cast<ISelectionInterface>(HitPawn))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("SelectionInterface"));
+				}
 			}
 			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
 		}

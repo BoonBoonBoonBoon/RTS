@@ -70,6 +70,10 @@ public:
 	bool CursorMoved = false;
 
 	TArray<AActor*> ActorsInSelection;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bIsDecalSelect = false;
+	
 	
 protected:
 
@@ -103,7 +107,8 @@ private:
 	float RotatePitchMin = 10.f;
 	float RotatePitchMax = 80.f;
 	*/
-	
+
+
 	float TargetZoom = 3000.f;
 	float ZoomSpeed = 2.f;
 	
