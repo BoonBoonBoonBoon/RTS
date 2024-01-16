@@ -129,7 +129,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void EndBoxSelection();
 
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> SelectedUnits;
 
 	// Shift + LMS for multi-selection of individual units 

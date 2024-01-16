@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UserController.h"
 #include "GameFramework/Character.h"
 #include "GenericBaseAI.generated.h"
 
@@ -15,6 +16,12 @@ public:
 	// Sets default values for this character's properties
 	AGenericBaseAI();
 
+	UPROPERTY(EditAnywhere)
+	UDecalComponent* SelectedDecalComp;
+
+	UPROPERTY(EditAnywhere)
+	AUserController* UserController;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
