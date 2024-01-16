@@ -14,6 +14,7 @@ AGenericBaseAI::AGenericBaseAI()
 
 	SelectedDecalComp = CreateDefaultSubobject<UDecalComponent>("Decal");
 	SelectedDecalComp->SetupAttachment(RootComponent);
+	
 }
 
 // Called when the game starts or when spawned
@@ -21,7 +22,8 @@ void AGenericBaseAI::BeginPlay()
 {
 	Super::BeginPlay();
 	//UserController = Cast<AUserController>(GetWorld()->GetFirstPlayerController());
-	
+
+	SelectedDecalComp->SetVisibility(false);
 }
 
 // Called every frame

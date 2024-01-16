@@ -255,7 +255,7 @@ void AUserController::EndBoxSelection()
 	FVector2D SingleSelectionMouse;
 	MultiselectCond = false;
 	bIsDecalSelect = false;
-	Decals->DecalHit = false;
+//	Decals->DecalHit = false;
 	
 	if (GetMousePosition(SingleSelectionMouse.X, SingleSelectionMouse.Y))
 	{
@@ -370,7 +370,9 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 
 				if(BaseAI)
 				{
-					UnitDecals(BaseAI);
+					Decals->SelectedDecalComp->SetVisibility(true);
+					
+					//UnitDecals(BaseAI);
 					UE_LOG(LogTemp, Warning, TEXT("MBaseAI"));
 				}
 				
