@@ -9,6 +9,7 @@
 #include "RTS/Public/Interfaces/SelectionInterface.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "UserCharacter.h"
+#include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "Kismet/GameplayStatics.h"
 #include "UserController.generated.h"
 
@@ -147,11 +148,17 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UnitSelection();
 
+	UPROPERTY(EditAnywhere)
+	AGenericBaseAI* Decals;
+
 	bool bNotHit;
 	
 	// What happens when pawn selected
 	UFUNCTION(BlueprintCallable)
 	void HandlePawnSelection(APawn* HitPawn);
+
+	// Logic for the Units decal apearing and disapearing
+	void UnitDecals(AGenericBaseAI* HitPawn);
 	
 	// Updates the Marquee edges
 	UFUNCTION(BlueprintCallable)

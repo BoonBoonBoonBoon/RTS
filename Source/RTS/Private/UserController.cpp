@@ -5,6 +5,7 @@
 
 #include "InteractiveToolManager.h"
 #include "UserCharacter.h"
+#include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/BoxComponent.h"
@@ -254,6 +255,8 @@ void AUserController::EndBoxSelection()
 	FVector2D SingleSelectionMouse;
 	MultiselectCond = false;
 	bIsDecalSelect = false;
+	Decals->DecalHit = false;
+	
 	if (GetMousePosition(SingleSelectionMouse.X, SingleSelectionMouse.Y))
 	{
 		//FString MousePosString = FString::Printf(
@@ -362,13 +365,38 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 			for (AActor* HitPawn : SelectedUnits)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
-				if(ISelectionInterface* Selectable = Cast<ISelectionInterface>(HitPawn))
+
+				AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
+
+				if(BaseAI)
+				{
+					UnitDecals(BaseAI);
+					UE_LOG(LogTemp, Warning, TEXT("MBaseAI"));
+				}
+				
+				/*if(ISelectionInterface* Selectable = Cast<ISelectionInterface>(HitPawn))
 				{
 					UE_LOG(LogTemp, Warning, TEXT("SelectionInterface"));
-				}
+				}*/
 			}
 			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
+		} else
+		{
+			AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
+			if(BaseAI)
+			{
+				//UnitDecals(BaseAI);
+				UE_LOG(LogTemp, Warning, TEXT("SBaseAI"));
+			}
 		}
+	}
+}
+
+void AUserController::UnitDecals(AGenericBaseAI* HitPawn)
+{
+	if(HitPawn)
+	{
+		Decals->DecalHit = true;
 	}
 }
 

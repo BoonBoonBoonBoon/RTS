@@ -3,9 +3,11 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UserController.h"
+
 #include "GameFramework/Character.h"
 #include "GenericBaseAI.generated.h"
+
+class AUserController; 
 
 UCLASS()
 class RTS_API AGenericBaseAI : public ACharacter
@@ -19,9 +21,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	UDecalComponent* SelectedDecalComp;
 
-	UPROPERTY(EditAnywhere)
-	AUserController* UserController;
-	
+	//UPROPERTY(EditAnywhere)
+	//AUserController* UserController;
+
+	bool DecalHit = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

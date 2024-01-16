@@ -2,9 +2,9 @@
 
 
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
-
-#include "UserController.h"
 #include "Components/DecalComponent.h"
+
+class AUserController; 
 
 // Sets default values
 AGenericBaseAI::AGenericBaseAI()
@@ -20,7 +20,7 @@ AGenericBaseAI::AGenericBaseAI()
 void AGenericBaseAI::BeginPlay()
 {
 	Super::BeginPlay();
-	UserController = Cast<AUserController>(GetWorld()->GetFirstPlayerController());
+	//UserController = Cast<AUserController>(GetWorld()->GetFirstPlayerController());
 	
 }
 
@@ -31,10 +31,17 @@ void AGenericBaseAI::Tick(float DeltaTime)
 	
 	
 	
-	if (UserController)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Visible"));
-	}
+	//if (UserController)
+	//{
+		//UE_LOG(LogTemp, Warning, TEXT("Visible"));
+		/*if(DecalHit)
+		{
+			SelectedDecalComp->SetVisibility(true);
+		} else
+		{
+			SelectedDecalComp->SetVisibility(false);
+		}*/
+	//}
 	
 }
 
