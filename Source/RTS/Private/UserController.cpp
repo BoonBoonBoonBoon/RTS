@@ -356,8 +356,7 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 		FString PawnName = HitPawn->GetName();
 		UE_LOG(LogTemp, Warning, TEXT("Selected Pawn: %s"), *PawnName);
 
-		bIsDecalSelect = true;
-		
+
 		if (MultiselectCond)
 		{
 			// Loops through all possible actors 
@@ -366,31 +365,46 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
 
-				AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
+				HitPawn->Tags.AddUnique(TEXT("SelectedActor"));
 
-				if(BaseAI)
+				if (HitPawn->Tags.Contains(TEXT("SelectedActor")))
 				{
-					Decals->SelectedDecalComp->SetVisibility(true);
+					FName TagToCheck = FName(TEXT("SelectedActor"));
+
+					// Get all actors in the world
+					TArray<AActor*> AllActors;
+					UGameplayStatics::GetAllActorsWithTag(GetWorld(), TagToCheck, AllActors);
+
+					// Print the number of actors with the specified tag
+					UE_LOG(LogTemp, Warning, TEXT("Number of actors with tag '%s': %d"), *TagToCheck.ToString(),
+					       AllActors.Num());
 					
-					//UnitDecals(BaseAI);
-					UE_LOG(LogTemp, Warning, TEXT("MBaseAI"));
+					AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
+					if (BaseAI)
+					{
+						BaseAI->SelectedDecalComp->SetVisibility(true);
+						// Decals->SelectedDecalComp->SetVisibility(true);
+						//UnitDecals(BaseAI);
+						//UE_LOG(LogTemp, Warning, TEXT("MBaseAI"));
+					}
 				}
 				
-				/*if(ISelectionInterface* Selectable = Cast<ISelectionInterface>(HitPawn))
-				{
-					UE_LOG(LogTemp, Warning, TEXT("SelectionInterface"));
-				}*/
 			}
 			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
-		} else
+		}
+		else
 		{
+			// probably get rid of the if else statement sin 
 			AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
-			if(BaseAI)
+			if (BaseAI)
 			{
 				//UnitDecals(BaseAI);
 				UE_LOG(LogTemp, Warning, TEXT("SBaseAI"));
 			}
 		}
+
+		// Blueprints 
+		bIsDecalSelect = true;
 	}
 }
 

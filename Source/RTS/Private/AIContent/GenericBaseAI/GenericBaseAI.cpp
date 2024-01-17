@@ -23,7 +23,7 @@ void AGenericBaseAI::BeginPlay()
 	Super::BeginPlay();
 	//UserController = Cast<AUserController>(GetWorld()->GetFirstPlayerController());
 
-	SelectedDecalComp->SetVisibility(false);
+	//SelectedDecalComp->SetVisibility(false);   
 }
 
 // Called every frame
