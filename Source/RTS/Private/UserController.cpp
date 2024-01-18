@@ -352,10 +352,33 @@ void AUserController::UnitSelection()
 			// Damageable
 			// Resource
 
+			// Checks if multiselect, if so we dont need to click off deselect
+
 			if (HitPawn)
 			{
-				// Perform actions for the selected pawn
-				HandlePawnSelection(HitPawn);
+				if (MultiselectCond)
+				{
+					// Perform actions for the selected pawn
+					HandlePawnSelection(HitPawn);
+				}
+				else
+				{
+					// No this is a error, this is a good way to make it so can quickly switch from group to single unit
+					// Need to empty array before and then only select the specific unit, maybe add to new array 
+					AGenericBaseAI* DecalAI = Cast<AGenericBaseAI>(HitPawn);
+					if (DecalAI && DecalAI->SelectedDecalComp->IsVisible())
+					{
+						DecalAI->SelectedDecalComp->SetVisibility(false);
+					}
+					HandlePawnSelection(HitPawn);
+				}
+
+				// WE want to check if the decal is active or not.
+				// if it is active we want to turn it off.
+				//we already empty out the array when clicked off its just doing the decal in tandem
+
+				
+				// Will run no matter what 
 				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
 				bNotHit = false;
 			}
