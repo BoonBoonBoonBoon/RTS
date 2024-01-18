@@ -384,20 +384,29 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
 
+				HitPawn->Tags.AddUnique(TEXT("SelectedPawn"));
+				if(HitPawn->Tags.Contains(TEXT("SelectedPawn")))
+				{
+					// Define the tag you want to check
+					FName TagToCheck = FName(TEXT("Pawn"));
+
+					// Get all actors in the world
+					TArray<AActor*> AllActors;
+					UGameplayStatics::GetAllActorsWithTag(GetWorld(), TagToCheck, AllActors);
+
+					// Print the number of actors with the specified tag
+					UE_LOG(LogTemp, Warning, TEXT("Number of actors with tag '%s': %d"), *TagToCheck.ToString(), AllActors.Num());
+					
 				AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
 
 				if(BaseAI)
 				{
-					Decals->SelectedDecalComp->SetVisibility(true);
+					BaseAI->SelectedDecalComp->SetVisibility(true);
 					
 					//UnitDecals(BaseAI);
 					UE_LOG(LogTemp, Warning, TEXT("MBaseAI"));
 				}
-				
-				/*if(ISelectionInterface* Selectable = Cast<ISelectionInterface>(HitPawn))
-				{
-					UE_LOG(LogTemp, Warning, TEXT("SelectionInterface"));
-				}*/
+				}
 			}
 			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
 		} else
