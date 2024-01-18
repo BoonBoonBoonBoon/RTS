@@ -193,13 +193,17 @@ void AUserController::MoveCamera(const FVector& Direction)
 void AUserController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-		
-	// Checks if we are valid to dispose of the selection decal
-	if(SelectedUnits.Num() == 0)
+
+
+	/*if (UserCharacter)
 	{
-		// PROBLEM IS HERE VVVVVVVVVVV
-		//DecalVis(AI, true);
+		UE_LOG(LogTemp, Warning, TEXT("Successfully cast to AUserCharacter!"));
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to cast to AUserCharacter or GetPawn() is nullptr."));
+	}*/
+	
 	EdgeScrolling();
 	UpdateFlow();
 }
@@ -209,6 +213,7 @@ void AUserController::BeginPlay()
 	Super::BeginPlay();
 	
 	UserCharacter = Cast<AUserCharacter>(GetPawn());
+
 
 	// Quick fills the array, Will be removed on first interaction.
 	AActor* TempActor = nullptr;
@@ -233,16 +238,6 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAction("UpdateBoxSelection", IE_Released, this, &AUserController::EndBoxSelection);
 }
 
-void AUserController::DecalVis(AGenericBaseAI* HitActor, bool Selected)
-{
-	AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(HitActor);
-	if(Selected)
-	{
-		GenAI->SelectedDecalComp->SetVisibility(false);
-	}
-}
-
-
 void AUserController::StartBoxSelection()
 {
 	// Get the Coordinates of the mouse when clicked
@@ -259,7 +254,6 @@ void AUserController::StartBoxSelection()
 			}
 			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
 		}
-		
 	}
 }
 
@@ -272,6 +266,7 @@ void AUserController::EndBoxSelection()
 	FVector2D SingleSelectionMouse;
 	MultiselectCond = false;
 	bIsDecalSelect = false;
+//	Decals->DecalHit = false;
 	
 	if (GetMousePosition(SingleSelectionMouse.X, SingleSelectionMouse.Y))
 	{
@@ -382,7 +377,6 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
 
-				// Gives actors specific tags for identification 
 				HitPawn->Tags.AddUnique(TEXT("SelectedActor"));
 
 				if (HitPawn->Tags.Contains(TEXT("SelectedActor")))
@@ -395,56 +389,37 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 
 					// Print the number of actors with the specified tag
 					UE_LOG(LogTemp, Warning, TEXT("Number of actors with tag '%s': %d"), *TagToCheck.ToString(),
-						   AllActors.Num());
+					       AllActors.Num());
 					
 					AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
 					if (BaseAI)
 					{
-						// Set the Decal visibility 
 						BaseAI->SelectedDecalComp->SetVisibility(true);
+						// Decals->SelectedDecalComp->SetVisibility(true);
+						//UnitDecals(BaseAI);
+						//UE_LOG(LogTemp, Warning, TEXT("MBaseAI"));
 					}
 				}
+				
 			}
 			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
 		}
 		else
 		{
-
-
-
-
-
-			
-			/*
-			// Loops through all possible actors 
-			SelectedUnits.AddUnique(HitPawn);
-			for (AActor* HitPawn : SelectedUnits)
+			// probably get rid of the if else statement sin 
+			AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
+			if (BaseAI)
 			{
-				if(SelectedUnits.Num() > 1)
-				{
-					SelectedUnits.Empty();
-					SelectedUnits.AddUnique(HitPawn);
-				}
-				
-				if(SelectedUnits.Num() < 2){
-					
-					HitPawn->Tags.AddUnique(TEXT("SelectedActor"));
-
-					if (HitPawn->Tags.Contains(TEXT("SelectedActor")))
-					{
-						AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
-						if (BaseAI)
-						{
-							BaseAI->SelectedDecalComp->SetVisibility(true);
-						}
-					}
-				}
-			}*/
-			// Blueprints 
-			bIsDecalSelect = true;
+				//UnitDecals(BaseAI);
+				UE_LOG(LogTemp, Warning, TEXT("SBaseAI"));
+			}
 		}
+
+		// Blueprints 
+		bIsDecalSelect = true;
 	}
 }
+
 void AUserController::UnitDecals(AGenericBaseAI* HitPawn)
 {
 	if(HitPawn)

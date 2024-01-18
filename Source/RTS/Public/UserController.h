@@ -75,9 +75,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsDecalSelect = false;
 
+	
+	
+
+
 	bool SelectionProcessed = false;
 
 	bool TurnOffDecal = false;
+
 
 protected:
 
@@ -99,7 +104,6 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
-	void DecalVis(AGenericBaseAI* HitActor, bool Selected);
 private:
 
 	/*
