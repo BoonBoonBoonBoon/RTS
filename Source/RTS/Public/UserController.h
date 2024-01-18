@@ -99,7 +99,6 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
-	void DecalVis(AGenericBaseAI* HitActor, bool Selected);
 private:
 
 	/*
