@@ -373,7 +373,8 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 		FString PawnName = HitPawn->GetName();
 		UE_LOG(LogTemp, Warning, TEXT("Selected Pawn: %s"), *PawnName);
 
-
+		bIsDecalSelect = true;
+		
 		if (MultiselectCond)
 		{
 			TurnOffDecal = false;
@@ -383,66 +384,30 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
 
-				// Gives actors specific tags for identification 
-				HitPawn->Tags.AddUnique(TEXT("SelectedActor"));
+				AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
 
-				if (HitPawn->Tags.Contains(TEXT("SelectedActor")))
+				if(BaseAI)
 				{
-					FName TagToCheck = FName(TEXT("SelectedActor"));
-
-					// Get all actors in the world
-					TArray<AActor*> AllActors;
-					UGameplayStatics::GetAllActorsWithTag(GetWorld(), TagToCheck, AllActors);
-
-					// Print the number of actors with the specified tag
-					UE_LOG(LogTemp, Warning, TEXT("Number of actors with tag '%s': %d"), *TagToCheck.ToString(),
-						   AllActors.Num());
+					Decals->SelectedDecalComp->SetVisibility(true);
 					
-					AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
-					if (BaseAI)
-					{
-						// Set the Decal visibility 
-						BaseAI->SelectedDecalComp->SetVisibility(true);
-					}
-				}
-			}
-			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
-		}
-		else
-		{
-
-
-
-
-
-			
-			/*
-			// Loops through all possible actors 
-			SelectedUnits.AddUnique(HitPawn);
-			for (AActor* HitPawn : SelectedUnits)
-			{
-				if(SelectedUnits.Num() > 1)
-				{
-					SelectedUnits.Empty();
-					SelectedUnits.AddUnique(HitPawn);
+					//UnitDecals(BaseAI);
+					UE_LOG(LogTemp, Warning, TEXT("MBaseAI"));
 				}
 				
-				if(SelectedUnits.Num() < 2){
-					
-					HitPawn->Tags.AddUnique(TEXT("SelectedActor"));
-
-					if (HitPawn->Tags.Contains(TEXT("SelectedActor")))
-					{
-						AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
-						if (BaseAI)
-						{
-							BaseAI->SelectedDecalComp->SetVisibility(true);
-						}
-					}
-				}
-			}*/
-			// Blueprints 
-			bIsDecalSelect = true;
+				/*if(ISelectionInterface* Selectable = Cast<ISelectionInterface>(HitPawn))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("SelectionInterface"));
+				}*/
+			}
+			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
+		} else
+		{
+			AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
+			if(BaseAI)
+			{
+				//UnitDecals(BaseAI);
+				UE_LOG(LogTemp, Warning, TEXT("SBaseAI"));
+			}
 		}
 	}
 }

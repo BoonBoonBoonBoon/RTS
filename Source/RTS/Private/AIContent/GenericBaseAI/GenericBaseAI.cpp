@@ -24,6 +24,7 @@ void AGenericBaseAI::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SelectedDecalComp->SetVisibility(false);
 }
 
 // Called every frame

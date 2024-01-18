@@ -142,7 +142,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> SelectedUnits;
 
-	
 	// Shift + LMS for multi-selection of individual units 
 	UFUNCTION()
 	void MultiSelect();
