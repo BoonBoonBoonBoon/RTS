@@ -254,10 +254,7 @@ void AUserController::StartBoxSelection()
 		if (bNotHit)
 		{
 			SelectedUnits.Empty();
-			if(SelectedUnits.Num() == 0)
-			{
-				TurnOffDecal = true;
-			}
+		
 			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
 		}
 		
@@ -365,11 +362,11 @@ void AUserController::UnitSelection()
 				{
 					// No this is a error, this is a good way to make it so can quickly switch from group to single unit
 					// Need to empty array before and then only select the specific unit, maybe add to new array 
-					AGenericBaseAI* DecalAI = Cast<AGenericBaseAI>(HitPawn);
+					/*AGenericBaseAI* DecalAI = Cast<AGenericBaseAI>(HitPawn);
 					if (DecalAI && DecalAI->SelectedDecalComp->IsVisible())
 					{
 						DecalAI->SelectedDecalComp->SetVisibility(false);
-					}
+					}*/
 					HandlePawnSelection(HitPawn);
 				}
 
@@ -400,7 +397,7 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 		
 		if (MultiselectCond)
 		{
-			TurnOffDecal = false;
+			//TurnOffDecal = false;
 			// Loops through all possible actors 
 			SelectedUnits.AddUnique(HitPawn);
 			for (AActor* HitPawn : SelectedUnits)
