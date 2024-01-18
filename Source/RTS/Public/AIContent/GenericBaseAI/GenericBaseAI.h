@@ -21,8 +21,8 @@ public:
 	UPROPERTY(EditAnywhere)
 	UDecalComponent* SelectedDecalComp;
 
-	//UPROPERTY(EditAnywhere)
-	//AUserController* UserController;
+	UPROPERTY(EditAnywhere)
+	AUserController* UserController;
 
 	bool DecalHit = false;
 protected:
