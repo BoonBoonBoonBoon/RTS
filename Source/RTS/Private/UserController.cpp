@@ -213,6 +213,8 @@ void AUserController::BeginPlay()
 	// Quick fills the array, Will be removed on first interaction.
 	AActor* TempActor = nullptr;
 	SelectedUnits.Add(TempActor);
+
+	
 }
 
 void AUserController::SetupInputComponent()
@@ -251,6 +253,10 @@ void AUserController::StartBoxSelection()
 		if (bNotHit)
 		{
 			SelectedUnits.Empty();
+			if(SelectedUnits.Num() == 0)
+			{
+				TurnOffDecal = true;
+			}
 			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
 		}
 		
@@ -369,6 +375,7 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 
 		if (MultiselectCond)
 		{
+			TurnOffDecal = false;
 			// Loops through all possible actors 
 			SelectedUnits.AddUnique(HitPawn);
 			for (AActor* HitPawn : SelectedUnits)
