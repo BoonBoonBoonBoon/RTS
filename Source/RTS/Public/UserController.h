@@ -74,10 +74,8 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsDecalSelect = false;
-
-	bool SelectionProcessed = false;
 	
-
+	
 protected:
 
 	UBoxComponent* SelectionArea;
@@ -98,7 +96,6 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
-	void DecalVis(AGenericBaseAI* HitActor, bool Selected);
 private:
 
 	/*
