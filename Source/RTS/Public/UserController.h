@@ -75,9 +75,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsDecalSelect = false;
 
+	
+	
+
+
 	bool SelectionProcessed = false;
 
 	bool TurnOffDecal = false;
+
 
 protected:
 

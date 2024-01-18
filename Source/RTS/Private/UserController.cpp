@@ -214,6 +214,7 @@ void AUserController::BeginPlay()
 	
 	UserCharacter = Cast<AUserCharacter>(GetPawn());
 
+
 	// Quick fills the array, Will be removed on first interaction.
 	AActor* TempActor = nullptr;
 	SelectedUnits.Add(TempActor);
