@@ -396,20 +396,8 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 				HitPawn->Tags.AddUnique(TEXT("SelectedPawn"));
 				if (HitPawn->Tags.Contains(TEXT("SelectedPawn")))
 				{
-					/*// Define the tag you want to check
-					FName TagToCheck = FName(TEXT("Pawn"));
-
-					// Get all actors in the world
-					TArray<AActor*> AllActors;
-					UGameplayStatics::GetAllActorsWithTag(GetWorld(), TagToCheck, AllActors);
-
-					// Print the number of actors with the specified tag
-					UE_LOG(LogTemp, Warning, TEXT("Number of actors with tag '%s': %d"), *TagToCheck.ToString(),
-						   AllActors.Num());*/
-
-					AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
-
-					if (BaseAI)
+					
+					if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn))
 					{
 						BaseAI->SelectedDecalComp->SetVisibility(true);
 						UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
@@ -432,8 +420,7 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 					HitPawn->Tags.AddUnique(TEXT("SelectedPawn"));
 					if (HitPawn->Tags.Contains(TEXT("SelectedPawn")))
 					{
-						AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
-						if (BaseAI)
+						if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn))
 						{
 							BaseAI->SelectedDecalComp->SetVisibility(true);
 							UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
@@ -442,17 +429,32 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 				}
 			}
 			// If it currently has a few elements 
-			else if (SelectedUnits.Num() > 1)
+			else if (SelectedUnits.Num() > 1 || SelectedUnits.Num() == 1)
 			{
-				/*UE_LOG(LogTemp, Warning, TEXT("not empty"));
-				SelectedUnits.Empty();
-				SelectedUnits.AddUnique(HitPawn);
-				AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
-				if (BaseAI)
+				UE_LOG(LogTemp, Warning, TEXT("empty"));
+
+				// Loops through all the elements and turns vis off
+				for (AActor* Pawns : SelectedUnits)
 				{
-					BaseAI->SelectedDecalComp->SetVisibility(true);
-					UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
-				}*/
+					if(AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Pawns))
+					{
+						BaseAI->SelectedDecalComp->SetVisibility(false);
+					}
+				}
+				// then empties array
+				SelectedUnits.Empty();
+
+				// adds the new incoming element
+				SelectedUnits.AddUnique(HitPawn);
+
+				for (AActor* NewPawn : SelectedUnits)
+				{
+					if(AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(NewPawn))
+					{
+						// sets the new elements vis 
+						BaseAI->SelectedDecalComp->SetVisibility(true);
+					}
+				}
 			}
 		}
 	}
