@@ -156,13 +156,15 @@ public:
 	AGenericBaseAI* Decals;
 
 	bool bNotHit;
-	
+
 	// What happens when pawn selected
 	UFUNCTION(BlueprintCallable)
 	void HandlePawnSelection(APawn* HitPawn);
 
 	// Logic for the Units decal apearing and disapearing
 	void UnitDecals(AGenericBaseAI* HitPawn);
+
+	void CleanUpDecal(APawn* HitPawn);
 	
 	// Updates the Marquee edges
 	UFUNCTION(BlueprintCallable)

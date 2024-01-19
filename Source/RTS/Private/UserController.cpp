@@ -195,10 +195,9 @@ void AUserController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 		
 	// Checks if we are valid to dispose of the selection decal
-	if(SelectedUnits.Num() == 0)
+	if (MultiselectCond)
 	{
-		// PROBLEM IS HERE VVVVVVVVVVV
-		//DecalVis(AI, true);
+		CleanUpDecal(NULL);
 	}
 	EdgeScrolling();
 	UpdateFlow();
@@ -252,7 +251,7 @@ void AUserController::StartBoxSelection()
 		bIsSelecting = true;
 		UnitSelection();
 		
-		if (bNotHit)
+		if (bNotHit && !MultiselectCond)
 		{
 			//  loops through all the actors in the class 
 			for (AActor* Actor : SelectedUnits)
@@ -264,24 +263,11 @@ void AUserController::StartBoxSelection()
 					GenAI->SelectedDecalComp->SetVisibility(false);
 				}
 			}
-
 			// Clear the SelectedUnits array after processing all elements
 			SelectedUnits.Empty();
 			
-			/*SelectedUnits.Empty();
-			if(SelectedUnits.IsEmpty())
-			{
-				for(AActor* Actor : SelectedUnits)
-				{
-					if(const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
-					{
-							GenAI->SelectedDecalComp->SetVisibility(false);
-					}
-				}
-			}*/
 			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
 		}
-		
 	}
 }
 
@@ -297,23 +283,12 @@ void AUserController::EndBoxSelection()
 	
 	if (GetMousePosition(SingleSelectionMouse.X, SingleSelectionMouse.Y))
 	{
-		//FString MousePosString = FString::Printf(
-		//	TEXT("SingleSelectionMouse Position ended: X=%.2f, Y=%.2f"), SingleSelectionMouse.X, SingleSelectionMouse.Y);
-
-		//UE_LOG(LogTemp, Warning, TEXT("%s"), *MousePosString);
-
-
-		// Maybe move this to the function on when we deselect instead of ending the click 
-		// Clear the array at the end of the function
-		//ActorsInSelection.Empty();
 	}
 }
 
 
 void AUserController::MultiSelect()
 {
-	//UE_LOG(LogTemp, Warning, TEXT("Single Click"));
-
 	// Get the Coordinates of the mouse when clicked
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
@@ -375,30 +350,16 @@ void AUserController::UnitSelection()
 
 			// Checks if multiselect, if so we dont need to click off deselect
 
+			// Want it so when i select with single or multi it will select.
+			// But if i dont multiselect the next one it will just move the next one.
+			//
+
+
 			if (HitPawn)
 			{
-				if (MultiselectCond)
-				{
-					// Perform actions for the selected pawn
-					HandlePawnSelection(HitPawn);
-				}
-				else
-				{
-					// No this is a error, this is a good way to make it so can quickly switch from group to single unit
-					// Need to empty array before and then only select the specific unit, maybe add to new array 
-					/*AGenericBaseAI* DecalAI = Cast<AGenericBaseAI>(HitPawn);
-					if (DecalAI && DecalAI->SelectedDecalComp->IsVisible())
-					{
-						DecalAI->SelectedDecalComp->SetVisibility(false);
-					}*/
-					HandlePawnSelection(HitPawn);
-				}
+				// Perform actions for the selected pawn
+				HandlePawnSelection(HitPawn);
 
-				// WE want to check if the decal is active or not.
-				// if it is active we want to turn it off.
-				//we already empty out the array when clicked off its just doing the decal in tandem
-
-				
 				// Will run no matter what 
 				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
 				bNotHit = false;
@@ -407,7 +368,6 @@ void AUserController::UnitSelection()
 		}
 	}
 }
-
 
 void AUserController::HandlePawnSelection(APawn* HitPawn)
 {
@@ -418,10 +378,13 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 		UE_LOG(LogTemp, Warning, TEXT("Selected Pawn: %s"), *PawnName);
 
 		bIsDecalSelect = true;
-		
-		if (MultiselectCond)
+
+		// if it isnt multi selct we empty the array first
+		if (!MultiselectCond)
 		{
-			//TurnOffDecal = false;
+			SelectedUnits.Empty();
+			CleanUpDecal(HitPawn);
+		}
 			// Loops through all possible actors 
 			SelectedUnits.AddUnique(HitPawn);
 			for (AActor* HitPawn : SelectedUnits)
@@ -429,7 +392,7 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 				UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
 
 				HitPawn->Tags.AddUnique(TEXT("SelectedPawn"));
-				if(HitPawn->Tags.Contains(TEXT("SelectedPawn")))
+				if (HitPawn->Tags.Contains(TEXT("SelectedPawn")))
 				{
 					// Define the tag you want to check
 					FName TagToCheck = FName(TEXT("Pawn"));
@@ -439,29 +402,54 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 					UGameplayStatics::GetAllActorsWithTag(GetWorld(), TagToCheck, AllActors);
 
 					// Print the number of actors with the specified tag
-					UE_LOG(LogTemp, Warning, TEXT("Number of actors with tag '%s': %d"), *TagToCheck.ToString(), AllActors.Num());
-					
-				AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
+					UE_LOG(LogTemp, Warning, TEXT("Number of actors with tag '%s': %d"), *TagToCheck.ToString(),
+					       AllActors.Num());
 
-				if(BaseAI)
-				{
-					BaseAI->SelectedDecalComp->SetVisibility(true);
-					
-					//UnitDecals(BaseAI);
-					UE_LOG(LogTemp, Warning, TEXT("MBaseAI"));
-				}
+					AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
+
+					if (BaseAI)
+					{
+						BaseAI->SelectedDecalComp->SetVisibility(true);
+					}
 				}
 			}
 			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
-		} else
-		{
-			AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
-			if(BaseAI)
+
+		
+		 //else
+		/*{
+			SelectedUnits.Empty();
+			SelectedUnits.AddUnique(HitPawn);
+			for (AActor* HitPawn : SelectedUnits)
 			{
-				//UnitDecals(BaseAI);
-				UE_LOG(LogTemp, Warning, TEXT("SBaseAI"));
+				UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
+
+				HitPawn->Tags.AddUnique(TEXT("SelectedPawn"));
+				if (HitPawn->Tags.Contains(TEXT("SelectedPawn")))
+				{
+					// Define the tag you want to check
+					FName TagToCheck = FName(TEXT("Pawn"));
+
+					// Get all actors in the world
+					TArray<AActor*> AllActors;
+					UGameplayStatics::GetAllActorsWithTag(GetWorld(), TagToCheck, AllActors);
+
+					// Print the number of actors with the specified tag
+					UE_LOG(LogTemp, Warning, TEXT("Number of actors with tag '%s': %d"), *TagToCheck.ToString(),
+						   AllActors.Num());
+
+					AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
+
+					if (BaseAI)
+					{
+						BaseAI->SelectedDecalComp->SetVisibility(true);
+
+						//UnitDecals(BaseAI);
+						UE_LOG(LogTemp, Warning, TEXT("MBaseAI"));
+					}
+				}
 			}
-		}
+		}*/
 	}
 }
 void AUserController::UnitDecals(AGenericBaseAI* HitPawn)
@@ -469,6 +457,14 @@ void AUserController::UnitDecals(AGenericBaseAI* HitPawn)
 	if(HitPawn)
 	{
 		Decals->DecalHit = true;
+	}
+}
+
+void AUserController::CleanUpDecal(APawn* HitPawn)
+{
+	if (AGenericBaseAI* Gen = Cast<AGenericBaseAI>(HitPawn))
+	{
+		Gen->SelectedDecalComp->SetVisibility(false);
 	}
 }
 
