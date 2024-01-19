@@ -195,10 +195,10 @@ void AUserController::PlayerTick(float DeltaTime)
 	Super::PlayerTick(DeltaTime);
 		
 	// Checks if we are valid to dispose of the selection decal
-	if (MultiselectCond)
+	/*if (MultiselectCond)
 	{
 		CleanUpDecal(NULL);
-	}
+	}*/
 	EdgeScrolling();
 	UpdateFlow();
 }
@@ -211,8 +211,8 @@ void AUserController::BeginPlay()
 
 
 	// Quick fills the array, Will be removed on first interaction.
-	AActor* TempActor = nullptr;
-	SelectedUnits.Add(TempActor);
+	//AActor* TempActor = nullptr;
+	//SelectedUnits.Add(TempActor);
 
 	
 }
@@ -235,11 +235,11 @@ void AUserController::SetupInputComponent()
 
 void AUserController::DecalVis(AGenericBaseAI* HitActor, bool Selected)
 {
-	AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(HitActor);
+	/*AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(HitActor);
 	if(Selected)
 	{
 		GenAI->SelectedDecalComp->SetVisibility(false);
-	}
+	}*/
 }
 
 
@@ -251,7 +251,7 @@ void AUserController::StartBoxSelection()
 		bIsSelecting = true;
 		UnitSelection();
 		
-		if (bNotHit && !MultiselectCond)
+		if (bNotHit)
 		{
 			//  loops through all the actors in the class 
 			for (AActor* Actor : SelectedUnits)
@@ -261,12 +261,12 @@ void AUserController::StartBoxSelection()
 				{
 					// turns vis off
 					GenAI->SelectedDecalComp->SetVisibility(false);
+					//UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
+					UE_LOG(LogTemp, Warning, TEXT("Array Wiped"));
 				}
 			}
 			// Clear the SelectedUnits array after processing all elements
 			SelectedUnits.Empty();
-			
-			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
 		}
 	}
 }
@@ -338,8 +338,8 @@ void AUserController::UnitSelection()
 		FVector DebugBoxExtent(50.0f, 50.0f, 50.0f);
 
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldMouseLocation,
-		                                         WorldMouseLocation + WorldMouseDirection * TraceDistance,
-		                                         ECC_Visibility, CollisionParams))
+												 WorldMouseLocation + WorldMouseDirection * TraceDistance,
+												 ECC_Visibility, CollisionParams))
 		{
 			// Check if the hit actor is a pawn
 			APawn* HitPawn = Cast<APawn>(HitResult.GetActor());
@@ -363,8 +363,10 @@ void AUserController::UnitSelection()
 				// Will run no matter what 
 				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
 				bNotHit = false;
+			} else {
+			
+				bNotHit = true;
 			}
-			bNotHit = true;
 		}
 	}
 }
@@ -374,27 +376,27 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 	if (HitPawn)
 	{
 		// Log information about the selected pawn
-		FString PawnName = HitPawn->GetName();
-		UE_LOG(LogTemp, Warning, TEXT("Selected Pawn: %s"), *PawnName);
+		//FString PawnName = HitPawn->GetName();
+		//UE_LOG(LogTemp, Warning, TEXT("Selected Pawn: %s"), *PawnName);
 
 		bIsDecalSelect = true;
 
 		// if it isnt multi selct we empty the array first
-		if (!MultiselectCond)
+		if (MultiselectCond)
 		{
-			SelectedUnits.Empty();
-			CleanUpDecal(HitPawn);
-		}
+			//SelectedUnits.Empty();
+			//CleanUpDecal(HitPawn);
+
 			// Loops through all possible actors 
 			SelectedUnits.AddUnique(HitPawn);
 			for (AActor* HitPawn : SelectedUnits)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
+				//	UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
 
 				HitPawn->Tags.AddUnique(TEXT("SelectedPawn"));
 				if (HitPawn->Tags.Contains(TEXT("SelectedPawn")))
 				{
-					// Define the tag you want to check
+					/*// Define the tag you want to check
 					FName TagToCheck = FName(TEXT("Pawn"));
 
 					// Get all actors in the world
@@ -403,55 +405,60 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 
 					// Print the number of actors with the specified tag
 					UE_LOG(LogTemp, Warning, TEXT("Number of actors with tag '%s': %d"), *TagToCheck.ToString(),
-					       AllActors.Num());
+						   AllActors.Num());*/
 
 					AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
 
 					if (BaseAI)
 					{
 						BaseAI->SelectedDecalComp->SetVisibility(true);
+						UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
 					}
 				}
 			}
-			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
+		}
+		else
+		{
+			// Single Left Click
 
-		
-		 //else
-		/*{
-			SelectedUnits.Empty();
-			SelectedUnits.AddUnique(HitPawn);
-			for (AActor* HitPawn : SelectedUnits)
+			// If its Empty
+			if (SelectedUnits.Num() == 0)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
+				UE_LOG(LogTemp, Warning, TEXT("empty"));
 
-				HitPawn->Tags.AddUnique(TEXT("SelectedPawn"));
-				if (HitPawn->Tags.Contains(TEXT("SelectedPawn")))
+				SelectedUnits.AddUnique(HitPawn);
+				for (AActor* HitPawn : SelectedUnits)
 				{
-					// Define the tag you want to check
-					FName TagToCheck = FName(TEXT("Pawn"));
-
-					// Get all actors in the world
-					TArray<AActor*> AllActors;
-					UGameplayStatics::GetAllActorsWithTag(GetWorld(), TagToCheck, AllActors);
-
-					// Print the number of actors with the specified tag
-					UE_LOG(LogTemp, Warning, TEXT("Number of actors with tag '%s': %d"), *TagToCheck.ToString(),
-						   AllActors.Num());
-
-					AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
-
-					if (BaseAI)
+					HitPawn->Tags.AddUnique(TEXT("SelectedPawn"));
+					if (HitPawn->Tags.Contains(TEXT("SelectedPawn")))
 					{
-						BaseAI->SelectedDecalComp->SetVisibility(true);
-
-						//UnitDecals(BaseAI);
-						UE_LOG(LogTemp, Warning, TEXT("MBaseAI"));
+						AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
+						if (BaseAI)
+						{
+							BaseAI->SelectedDecalComp->SetVisibility(true);
+							UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
+						}
 					}
 				}
 			}
-		}*/
+			// If it currently has a few elements 
+			else if (SelectedUnits.Num() > 1)
+			{
+				/*UE_LOG(LogTemp, Warning, TEXT("not empty"));
+				SelectedUnits.Empty();
+				SelectedUnits.AddUnique(HitPawn);
+				AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn);
+				if (BaseAI)
+				{
+					BaseAI->SelectedDecalComp->SetVisibility(true);
+					UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
+				}*/
+			}
+		}
 	}
 }
+
+
 void AUserController::UnitDecals(AGenericBaseAI* HitPawn)
 {
 	if(HitPawn)
@@ -519,7 +526,7 @@ void AUserController::UpdateFlow()
 
 					if(PlayerController->DeprojectScreenPositionToWorld(Boxsize.X, Boxsize.Y, BoxLocation, BoxExtent))
 					{
-						DrawDebugBox(GetWorld(), BoxLocation, BoxExtent, FQuat::Identity, FColor::Green, true, -1.0f, 0, 10.0f);
+						//DrawDebugBox(GetWorld(), BoxLocation, BoxExtent, FQuat::Identity, FColor::Green, true, -1.0f, 0, 10.0f);
 					
 						// Create a box representing the selection rectangle
 						FBox2D SelectionBox(InitialMousePosition, NewMousePosition);
@@ -538,11 +545,11 @@ void AUserController::UpdateFlow()
 						}
 
 						// Log the locations of the edges
-						UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X,
+						/*UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X,
 							   InitialMousePosition.Y);
 						UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
 						UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
-						UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);
+						UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);*/
 					}
 				}
 			}
