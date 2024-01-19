@@ -251,10 +251,34 @@ void AUserController::StartBoxSelection()
 	{
 		bIsSelecting = true;
 		UnitSelection();
+		
 		if (bNotHit)
 		{
+			//  loops through all the actors in the class 
+			for (AActor* Actor : SelectedUnits)
+			{
+				// makes sure they are GenAi class
+				if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
+				{
+					// turns vis off
+					GenAI->SelectedDecalComp->SetVisibility(false);
+				}
+			}
+
+			// Clear the SelectedUnits array after processing all elements
 			SelectedUnits.Empty();
-		
+			
+			/*SelectedUnits.Empty();
+			if(SelectedUnits.IsEmpty())
+			{
+				for(AActor* Actor : SelectedUnits)
+				{
+					if(const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
+					{
+							GenAI->SelectedDecalComp->SetVisibility(false);
+					}
+				}
+			}*/
 			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
 		}
 		
