@@ -33,6 +33,9 @@ class RTS_API AUserController : public APlayerController
 	AUserController* MyController = this;
 	
 	USelectionInterface* SelectionInterface;
+
+	UPROPERTY(EditAnywhere, Category="Decal")
+	UDecalComponent* RClick_Decal;
 public:
 	
 	AUserController();
@@ -120,6 +123,7 @@ private:
 
 	
 public:
+	
 	void EventKey();
 	UFUNCTION(BlueprintCallable)
 	void StartBoxSelection();
@@ -157,7 +161,8 @@ public:
 	void UnitDecals(AGenericBaseAI* HitPawn);
 
 	void CleanUpDecal(APawn* HitPawn);
-	
+
+	void REvent_PlayDecal(const FVector& Location);
 	// Updates the Marquee edges
 	UFUNCTION(BlueprintCallable)
 	void UpdateFlow();

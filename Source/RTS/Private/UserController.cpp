@@ -35,7 +35,13 @@ AUserController::AUserController()
 	SelectionArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SelectionArea"));
 	SelectionArea->SetBoxExtent(FVector(0));
 
-	
+	// Create Decal Comp
+	RClick_Decal = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalComponent"));
+	RClick_Decal->SetupAttachment(RootComponent);
+
+	// Set Decal Material
+	//UMaterialInterface* DecalMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("Material'Content/AIContent/GenericBaseAI/Decal_Movement.uasset'"));
+	//RClick_Decal->SetDecalMaterial(DecalMaterial);
 }
 
 void AUserController::OnPossess(APawn* InPawn)
@@ -276,6 +282,9 @@ void AUserController::EventKey()
 					// Draw a debug box at the hit location
 					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false, 1, 0, 5.0f);
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
+					
+					// Spawns Decal at the resulting location
+					REvent_PlayDecal(HitResult.Location);
 				}
 			}
 		}
@@ -502,6 +511,12 @@ void AUserController::CleanUpDecal(APawn* HitPawn)
 	{
 		Gen->SelectedDecalComp->SetVisibility(false);
 	}
+}
+
+void AUserController::REvent_PlayDecal(const FVector& Location)
+{
+	
+	
 }
 
 
