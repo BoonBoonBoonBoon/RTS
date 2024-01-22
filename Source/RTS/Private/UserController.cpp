@@ -27,9 +27,10 @@ AUserController::AUserController()
 	bIsSelecting = false;
 
 	// Create a decal in the world to show the cursor's location
-	CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
+	/*CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
 	CursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
 	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
+	*/
 
 	SelectionArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SelectionArea"));
 	SelectionArea->SetBoxExtent(FVector(0));
@@ -231,17 +232,55 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAction("BoxSelection", IE_Pressed, this, &AUserController::StartBoxSelection);
 	InputComponent->BindAction("MultiSelection", IE_Pressed, this, &AUserController::MultiSelect);
 	InputComponent->BindAction("UpdateBoxSelection", IE_Released, this, &AUserController::EndBoxSelection);
+
+	InputComponent->BindAction("ActionKey", IE_Pressed, this, &AUserController::EventKey);
 }
 
-void AUserController::DecalVis(AGenericBaseAI* HitActor, bool Selected)
+
+void AUserController::EventKey()
 {
-	/*AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(HitActor);
-	if(Selected)
+	// Get where is being clicked.
+	if(GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
-		GenAI->SelectedDecalComp->SetVisibility(false);
-	}*/
-}
+		FVector WorldMouseLocation, WorldMouseDirection;
+		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 
+		// Get the mouse cursor position in world space
+		if (UGameplayStatics::DeprojectScreenToWorld(PlayerController,
+													 FVector2D(InitialMousePosition.X, InitialMousePosition.Y),
+													 WorldMouseLocation, WorldMouseDirection))
+		{
+			// Perform a line trace to detect pawns
+			FHitResult HitResult;
+			FCollisionQueryParams CollisionParams;
+			CollisionParams.AddIgnoredActor(this); // Ignore the controller itself
+
+			float TraceDistance = 7000.f;
+			
+			FVector DebugBoxExtent(50.0f, 50.0f, 50.0f);
+
+			if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldMouseLocation,
+													 WorldMouseLocation + WorldMouseDirection * TraceDistance,
+													 ECC_Visibility, CollisionParams))
+			{
+				// Check if the hit actor is a pawn
+				if(APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
+				{
+					// Draw a debug box at the hit location
+					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false, 1, 0, 5.0f);
+
+					// Then call function with location to move units too
+					UE_LOG(LogTemp, Warning, TEXT("Hit Pawn"));
+				} else
+				{
+					// Draw a debug box at the hit location
+					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false, 1, 0, 5.0f);
+					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
+				}
+			}
+		}
+	}
+}
 
 void AUserController::StartBoxSelection()
 {
@@ -375,28 +414,18 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 {
 	if (HitPawn)
 	{
-		// Log information about the selected pawn
-		//FString PawnName = HitPawn->GetName();
-		//UE_LOG(LogTemp, Warning, TEXT("Selected Pawn: %s"), *PawnName);
-
 		bIsDecalSelect = true;
 
-		// if it isnt multi selct we empty the array first
+		// If it isn't multi-select, empty the array first
 		if (MultiselectCond)
 		{
-			//SelectedUnits.Empty();
-			//CleanUpDecal(HitPawn);
-
 			// Loops through all possible actors 
 			SelectedUnits.AddUnique(HitPawn);
 			for (AActor* HitPawn : SelectedUnits)
 			{
-				//	UE_LOG(LogTemp, Warning, TEXT("Selected Unit: %s"), *HitPawn->GetName());
-
 				HitPawn->Tags.AddUnique(TEXT("SelectedPawn"));
 				if (HitPawn->Tags.Contains(TEXT("SelectedPawn")))
 				{
-					
 					if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn))
 					{
 						BaseAI->SelectedDecalComp->SetVisibility(true);
@@ -408,8 +437,6 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 		else
 		{
 			// Single Left Click
-
-			// If its Empty
 			if (SelectedUnits.Num() == 0)
 			{
 				UE_LOG(LogTemp, Warning, TEXT("empty"));
@@ -436,7 +463,7 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 				// Loops through all the elements and turns vis off
 				for (AActor* Pawns : SelectedUnits)
 				{
-					if(AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Pawns))
+					if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Pawns))
 					{
 						BaseAI->SelectedDecalComp->SetVisibility(false);
 					}
@@ -449,7 +476,7 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 
 				for (AActor* NewPawn : SelectedUnits)
 				{
-					if(AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(NewPawn))
+					if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(NewPawn))
 					{
 						// sets the new elements vis 
 						BaseAI->SelectedDecalComp->SetVisibility(true);

@@ -26,6 +26,7 @@ class RTS_API AUserController : public APlayerController
 {
 	GENERATED_BODY()
 
+	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
 	AUserCharacter* UserCharacter;
 	
 	UPROPERTY()
@@ -57,6 +58,9 @@ protected:
 	FVector2D MousePosition;
 
 public:
+
+	FVector2D TargetLocation;
+	
 	UPROPERTY(BlueprintReadWrite)
 	FVector2D InitialMousePosition;
 	
@@ -70,6 +74,8 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool CursorMoved = false;
 
+
+	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObjectsInContainer
 	TArray<AActor*> ActorsInSelection;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -99,21 +105,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
-	void DecalVis(AGenericBaseAI* HitActor, bool Selected);
 private:
-
-	/*
-	FVector TargetLocation; 
-	FRotator TargetRotation;
-
-	bool CanRotate;
 	
-	float RotateSpeed = 2.f;
-	float RotatePitchMin = 10.f;
-	float RotatePitchMax = 80.f;
-	*/
-
-
 	float TargetZoom = 3000.f;
 	float ZoomSpeed = 2.f;
 	
@@ -125,10 +118,9 @@ private:
 	float MouseDownTime;
 	float Dist;
 
-	UDecalComponent* CursorToWorld;
 	
 public:
-
+	void EventKey();
 	UFUNCTION(BlueprintCallable)
 	void StartBoxSelection();
 	UFUNCTION(BlueprintCallable)
@@ -169,9 +161,6 @@ public:
 	// Updates the Marquee edges
 	UFUNCTION(BlueprintCallable)
 	void UpdateFlow();
-	
-	// Draws The Marquee Tool 
-	void Draw2DSSquare(const FVector Edge1, FVector2D& Edge2); // Direction?
 	
 	FHitResult bHit; 
 	

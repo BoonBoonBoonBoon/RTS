@@ -23,7 +23,6 @@ AGenericBaseAI::AGenericBaseAI()
 void AGenericBaseAI::BeginPlay()
 {
 	Super::BeginPlay();
-
 	SelectedDecalComp->SetVisibility(false);
 }
 
