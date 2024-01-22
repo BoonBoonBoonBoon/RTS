@@ -10,6 +10,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
+#include "Engine/DecalActor.h"
 #include "Kismet/GameplayStatics.h"
 #include "UserController.generated.h"
 
@@ -34,8 +35,7 @@ class RTS_API AUserController : public APlayerController
 	
 	USelectionInterface* SelectionInterface;
 
-	UPROPERTY(EditAnywhere, Category="Decal")
-	UDecalComponent* RClick_Decal;
+	//ADecalActor* RClick_Decal;
 public:
 	
 	AUserController();

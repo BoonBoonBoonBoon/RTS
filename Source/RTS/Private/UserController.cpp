@@ -4,6 +4,7 @@
 #include "UserController.h"
 
 #include "InteractiveToolManager.h"
+#include "RClick_Decal.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "Camera/CameraComponent.h"
@@ -35,13 +36,6 @@ AUserController::AUserController()
 	SelectionArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SelectionArea"));
 	SelectionArea->SetBoxExtent(FVector(0));
 
-	// Create Decal Comp
-	RClick_Decal = CreateDefaultSubobject<UDecalComponent>(TEXT("DecalComponent"));
-	RClick_Decal->SetupAttachment(RootComponent);
-
-	// Set Decal Material
-	//UMaterialInterface* DecalMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("Material'Content/AIContent/GenericBaseAI/Decal_Movement.uasset'"));
-	//RClick_Decal->SetDecalMaterial(DecalMaterial);
 }
 
 void AUserController::OnPossess(APawn* InPawn)
@@ -282,6 +276,15 @@ void AUserController::EventKey()
 					// Draw a debug box at the hit location
 					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false, 1, 0, 5.0f);
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
+
+
+					// Spawn the decal at the hit location
+					//UMaterialInterface* DecalMaterial = YourDecalMaterial; // Set your decal material here
+					//float DecalSize = 100.0f; // Set the size of the decal
+
+					
+					//UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, FVector(DecalSize), HitResult.Location)
+
 					
 					// Spawns Decal at the resulting location
 					REvent_PlayDecal(HitResult.Location);
@@ -515,8 +518,14 @@ void AUserController::CleanUpDecal(APawn* HitPawn)
 
 void AUserController::REvent_PlayDecal(const FVector& Location)
 {
+	ADecalActor* DecalActor = GetWorld()->SpawnActor<ADecalActor>(ARClick_Decal::StaticClass(), Location, FRotator::ZeroRotator);
+
+	/*//if(ARClick_Decal* RC = GetWorld()->SpawnActor())
+	{
+	}*/
 	
-	
+	// Spawn your decal actor at the hit location
+	//ADecalActor* DecalActor = GetWorld()->SpawnActor<ADecalActor>(ADecalActor::StaticClass(), Location, FRotator::ZeroRotator);
 }
 
 
