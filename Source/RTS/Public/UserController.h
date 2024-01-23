@@ -4,14 +4,14 @@
 
 
 #include "CoreMinimal.h"
+#include "NiagaraSystem.h"
 #include "UserCharacter.h"
-#include "GameFramework/PlayerController.h"
-#include "RTS/Public/Interfaces/SelectionInterface.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "Engine/DecalActor.h"
-#include "Kismet/GameplayStatics.h"
+#include "GameFramework/PlayerController.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "RTS/Public/Interfaces/SelectionInterface.h"
 #include "UserController.generated.h"
 
 
@@ -35,8 +35,11 @@ class RTS_API AUserController : public APlayerController
 	
 	USelectionInterface* SelectionInterface;
 
-	//ADecalActor* RClick_Decal;
+	
 public:
+	/** FX Class that we will spawn when clicking */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UNiagaraSystem* FXCursor;
 	
 	AUserController();
 	virtual void OnPossess(APawn* InPawn) override;
