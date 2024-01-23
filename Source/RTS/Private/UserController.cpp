@@ -283,6 +283,7 @@ void AUserController::EventKey()
 					UNiagaraSystem* NiagaraSystem = FXCursor; // Set your Niagara system asset here
 					UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystem, HitResult.Location, FRotator::ZeroRotator, FVector(1.0f));
 				}
+					/*
 					// Spawn the decal at the hit location
 					UMaterialInterface* DecalMaterial = Decal; // Set your decal material here
 					float DecalSize = 100.0f; // Set the size of the decal
@@ -293,7 +294,7 @@ void AUserController::EventKey()
 					
 					// Spawns Decal at the resulting location
 					REvent_PlayDecal(HitResult.Location);
-				
+					*/
 			}
 		}
 	}
