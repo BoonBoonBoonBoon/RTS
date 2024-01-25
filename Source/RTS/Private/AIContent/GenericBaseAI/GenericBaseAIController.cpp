@@ -3,3 +3,6 @@
 
 #include "AIContent/GenericBaseAI/GenericBaseAIController.h"
 
+AGenericBaseAIController::AGenericBaseAIController()
+{
+}

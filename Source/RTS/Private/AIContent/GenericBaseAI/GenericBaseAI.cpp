@@ -5,6 +5,8 @@
 
 #include "UserController.h"
 #include "Components/DecalComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "Perception/AISense_Sight.h"
 
 class AUserController; 
 
@@ -24,6 +26,16 @@ void AGenericBaseAI::BeginPlay()
 {
 	Super::BeginPlay();
 	SelectedDecalComp->SetVisibility(false);
+}
+
+void AGenericBaseAI::SetupStimulusSource()
+{
+	StimuliSourcePredator = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus Source"));
+	if(StimuliSourcePredator)
+	{
+		StimuliSourcePredator->RegisterForSense(TSubclassOf<UAISense_Sight>());
+		StimuliSourcePredator->RegisterWithPerceptionSystem();
+	}
 }
 
 // Called every frame

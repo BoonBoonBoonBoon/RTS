@@ -14,6 +14,9 @@ class RTS_API AGenericBaseAI : public ACharacter
 {
 	GENERATED_BODY()
 
+	// Used as a generator for the pawn to emit a stimuli. Need this as the AI will use this as a tool to percept.
+	class UAIPerceptionStimuliSourceComponent* StimuliSourcePredator;
+	
 public:
 	// Sets default values for this character's properties
 	AGenericBaseAI();
@@ -23,11 +26,13 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	AUserController* UserController;
-
+	
 	bool DecalHit = false;
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+	
+	void SetupStimulusSource();
 
 public:	
 	// Called every frame

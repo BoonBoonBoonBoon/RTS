@@ -23,6 +23,10 @@ FString UBTTask_MoveToLocationPathfinding::GetStaticDescription() const
 
 EBTNodeResult::Type UBTTask_MoveToLocationPathfinding::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+
+
+
+	
 	return Super::ExecuteTask(OwnerComp, NodeMemory);
 	
 }
