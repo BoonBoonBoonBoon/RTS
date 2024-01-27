@@ -21,6 +21,13 @@ class RTS_API AGenericBaseAIController : public AAIController
 public:
 
 	AGenericBaseAIController();
+
+	// Run the behaviour tree immediately. 
+	virtual void BeginPlay() override;
+	
+	// When Pawn is Possessed by controller, initialize the blackboard assets.
+	virtual void OnPossess(APawn* InPawn) override;
+	
 protected:
 
 	/**

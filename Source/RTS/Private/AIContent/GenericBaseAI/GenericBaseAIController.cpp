@@ -6,3 +6,33 @@
 AGenericBaseAIController::AGenericBaseAIController()
 {
 }
+
+void AGenericBaseAIController::BeginPlay()
+{
+	// If the behaviour tree is valid
+	if (IsValid(BT.Get()))
+	{
+		
+		// Run behaviour tree.
+		RunBehaviorTree(BT.Get());
+
+		// Then Run the BTComponent using the BT Asset.
+		BTComp->StartTree(*BT.Get());
+	};
+}
+
+void AGenericBaseAIController::OnPossess(APawn* InPawn)
+{
+	// Need to initialize the BT & BB.
+	// Check if Behaviour Tree is valid.
+	if(IsValid(BT.Get()))
+	{
+		// Check is BlackBoard comp is valid.
+		if(IsValid(Blackboard.Get()))
+		{
+			// boolean that checks if blackboard is initilaized.
+			// Get the blackboard asset for the Behaviour Tree. 
+			Blackboard->InitializeBlackboard((*BT.Get()->BlackboardAsset));
+		}
+	}
+}
