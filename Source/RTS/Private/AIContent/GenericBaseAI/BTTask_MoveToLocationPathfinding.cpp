@@ -3,6 +3,9 @@
 
 #include "AIContent/GenericBaseAI/BTTask_MoveToLocationPathfinding.h"
 
+#include "AIContent/GenericBaseAI/GenericBaseAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
+
 UBTTask_MoveToLocationPathfinding::UBTTask_MoveToLocationPathfinding()
 {
 	// Gives node name, What we see on bp node
@@ -23,10 +26,16 @@ FString UBTTask_MoveToLocationPathfinding::GetStaticDescription() const
 
 EBTNodeResult::Type UBTTask_MoveToLocationPathfinding::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
+	if (AAIController* AIController = OwnerComp.GetAIOwner())
+	{
+		FVector HitLocation = OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("HitLocationKey"));
+		AIController->MoveToLocation(HitLocation);
 
+		// Consider checking if the AI reached the destination and return success or failure accordingly.
+		return EBTNodeResult::Succeeded;
+	}
 
-
-	
-	return Super::ExecuteTask(OwnerComp, NodeMemory);
+	return EBTNodeResult::Failed;
+	//return Super::ExecuteTask(OwnerComp, NodeMemory);
 	
 }

@@ -277,24 +277,20 @@ void AUserController::EventKey()
 					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false, 1, 0, 5.0f);
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
-					//UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, FXCursor, HitResult.Location, FRotator::ZeroRotator, FVector(1.f, 1.f, 1.f), true, true, ENCPoolMethod::None, true);
+					if(BlackboardComponent)
+					{
+						// Set the value of the Blackboard key to the hit location
+						BlackboardComponent->SetValueAsVector(TEXT("HitLocationKey"), HitResult.Location);
+					}
 
+
+
+
+					
 					// Spawn the Niagara system at the hit location
-					UNiagaraSystem* NiagaraSystem = FXCursor; // Set your Niagara system asset here
-					UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystem, HitResult.Location, FRotator::ZeroRotator, FVector(1.0f));
+					//UNiagaraSystem* NiagaraSystem = FXCursor; // Set your Niagara system asset here
+					//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystem, HitResult.Location, FRotator::ZeroRotator, FVector(1.0f));
 				}
-					/*
-					// Spawn the decal at the hit location
-					UMaterialInterface* DecalMaterial = Decal; // Set your decal material here
-					float DecalSize = 100.0f; // Set the size of the decal
-
-					
-					UGameplayStatics::SpawnDecalAtLocation(GetWorld(), DecalMaterial, FVector(DecalSize), HitResult.Location)
-
-					
-					// Spawns Decal at the resulting location
-					REvent_PlayDecal(HitResult.Location);
-					*/
 			}
 		}
 	}

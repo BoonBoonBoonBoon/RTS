@@ -8,6 +8,7 @@
 #include "UserCharacter.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Engine/DecalActor.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -111,6 +112,8 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
+	UBlackboardComponent* BlackboardComponent;
+	
 private:
 	
 	float TargetZoom = 3000.f;
