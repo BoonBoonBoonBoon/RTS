@@ -4,8 +4,8 @@
 
 
 #include "CoreMinimal.h"
+#include "AIController.h"
 #include "NiagaraSystem.h"
-#include "UserCharacter.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "BehaviorTree/BlackboardComponent.h"
@@ -30,6 +30,8 @@ class RTS_API AUserController : public APlayerController
 
 	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
 	AUserCharacter* UserCharacter;
+
+	AAIController* AiCon;
 	
 	UPROPERTY()
 	AUserController* MyController = this;
@@ -65,8 +67,7 @@ protected:
 	FVector2D MousePosition;
 
 public:
-
-	FVector2D TargetLocation;
+	// FVector TargetLocation;
 	
 	UPROPERTY(BlueprintReadWrite)
 	FVector2D InitialMousePosition;

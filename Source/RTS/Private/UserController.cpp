@@ -3,6 +3,7 @@
 
 #include "UserController.h"
 
+#include "AIController.h"
 #include "InteractiveToolManager.h"
 #include "RClick_Decal.h"
 #include "UserCharacter.h"
@@ -11,9 +12,9 @@
 #include "Camera/PlayerCameraManager.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
-#include "Kismet/KismetMathLibrary.h"
+#include "NavigationSystem.h"
 #include "RTS\Public\Interfaces\SelectionInterface.h"
-#include "NiagaraFunctionLibrary.h"
+#include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "TestObjects/SelectionPawn.h"
 
@@ -264,36 +265,67 @@ void AUserController::EventKey()
 													 ECC_Visibility, CollisionParams))
 			{
 				// Check if the hit actor is a pawn
-				if(APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
+				if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
 				{
 					// Draw a debug box at the hit location
-					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false, 1, 0, 5.0f);
+					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false,
+					             1, 0, 5.0f);
 
 					// Then call function with location to move units too
 					UE_LOG(LogTemp, Warning, TEXT("Hit Pawn"));
-				} else
+				}
+				else
 				{
 					// Draw a debug box at the hit location
-					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false, 1, 0, 5.0f);
+					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false,
+					             1, 0, 5.0f);
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
-					/*for(AActor* Actors : SelectedUnits)
+					// Iterate through all selected units
+					if (SelectedUnits.Num() > 0)
 					{
-						// makes sure they are GenAi class
-						if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actors))
-						{*/
-							if(BlackboardComponent)
+						for (int32 i = 0; i < SelectedUnits.Num(); i++)
+						{
+							FVector TargetLocation = HitResult.Location;
+
+							// Check if the selected unit is a pawn and has a controller
+							if (APawn* SelectedPawn = Cast<APawn>(SelectedUnits[i]))
 							{
-								BlackboardComponent->SetValueAsBool(TEXT("ShouldMove"), true);
-								// Set the value of the Blackboard key to the hit location
-								BlackboardComponent->SetValueAsVector(TEXT("HitLocationKey"), HitResult.Location);
+								AController* Controller = SelectedPawn->GetController();
+
+								
 							}
-						/*
+						}
+					}
+						
+					/*
+					// Iterate through all selected units
+					if (SelectedUnits.Num() > 0)
+					{
+						for (int32 i = 0; i < SelectedUnits.Num(); i ++)
+						{
+							FVector TargetLocation = HitResult.Location;
+							UNavigationSystemV1::SimpleMoveToLocation(SelectedUnits[i]->GetController(), TargetLocation);
+							
 						}
 					}
 					*/
 
 
+					// Move the AI to the target location
+					/*
+					if (AAIController* AiController = Cast<AAIController>(GenAI->GetController()))
+					{
+						AiController->MoveToLocation(TargetLocation);
+					}
+					*/
+					
+					if (BlackboardComponent)
+					{
+						BlackboardComponent->SetValueAsBool(TEXT("ShouldMove"), true);
+						// Set the value of the Blackboard key to the hit location
+						BlackboardComponent->SetValueAsVector(TEXT("HitLocationKey"), HitResult.Location);
+					}
 					
 					// Spawn the Niagara system at the hit location
 					//UNiagaraSystem* NiagaraSystem = FXCursor; // Set your Niagara system asset here

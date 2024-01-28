@@ -54,12 +54,13 @@ EBTNodeResult::Type UBTTask_MoveToLocationPathfinding::ExecuteTask(UBehaviorTree
 
 				// Obtain the navigation system and find a random location
 				const UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-				if (IsValid(NavSystem) && NavSystem->FindPathToLocationSynchronously(GetWorld(), Origin, TargetLocation))
+				if (IsValid(NavSystem) && NavSystem->
+					FindPathToLocationSynchronously(GetWorld(), Origin, TargetLocation))
 				{
 					// The navigation system found a path to the target location.
 					// You might want to add logic here for handling the successful pathfinding.
 					// For example, you could call MoveToLocation or perform other actions.
-					
+
 					// Move the AI to the target location
 					AiController->MoveToLocation(TargetLocation);
 
