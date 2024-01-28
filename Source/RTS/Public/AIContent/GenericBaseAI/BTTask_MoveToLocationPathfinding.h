@@ -19,7 +19,10 @@ public:
 	UBTTask_MoveToLocationPathfinding();
 
 	virtual FString GetStaticDescription() const override;
-	
+
+	// For the SelectedUnits Array
+	UPROPERTY(EditAnywhere, Category = "Blackboard")
+	FBlackboardKeySelector UnitsArray;
 protected:
 	
 	// Return Type

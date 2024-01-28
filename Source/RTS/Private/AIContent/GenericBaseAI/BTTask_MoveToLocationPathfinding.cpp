@@ -3,6 +3,7 @@
 
 #include "AIContent/GenericBaseAI/BTTask_MoveToLocationPathfinding.h"
 
+#include "NavigationSystem.h"
 #include "AIContent/GenericBaseAI/GenericBaseAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
@@ -26,16 +27,46 @@ FString UBTTask_MoveToLocationPathfinding::GetStaticDescription() const
 
 EBTNodeResult::Type UBTTask_MoveToLocationPathfinding::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-	if (AAIController* AIController = OwnerComp.GetAIOwner())
+	// Empty initializer 
+	FNavLocation Location{};
+
+	// Get the AI pawn. Grab the AI controller of the owner component.
+	if (AAIController* AiController = OwnerComp.GetAIOwner())
 	{
-		FVector HitLocation = OwnerComp.GetBlackboardComponent()->GetValueAsVector(TEXT("HitLocationKey"));
-		AIController->MoveToLocation(HitLocation);
+		const APawn* AIPawn = AiController->GetPawn();
+		// Get Pawn Origin
+		const FVector Origin = AIPawn->GetActorLocation();
 
-		// Consider checking if the AI reached the destination and return success or failure accordingly.
-		return EBTNodeResult::Succeeded;
+		// Check if the Blackboard component is valid
+		if (UBlackboardComponent* BlackboardComp = OwnerComp.GetBlackboardComponent())
+		{
+			// Get the vector key name used in Blackboard
+			FName VectorKeyName = (TEXT("HitLocationKey"));
+
+			// Check if the key is valid and holds a vector value
+			if (BlackboardComp->IsVectorValueSet(VectorKeyName))
+			{
+				// Get the vector value from the Blackboard
+				FVector TargetLocation = BlackboardComp->GetValueAsVector(VectorKeyName);
+
+				// Set the location for navigation
+				Location.Location = TargetLocation;
+
+				// Obtain the navigation system and find a random location
+				const UNavigationSystemV1* NavSystem = UNavigationSystemV1::GetCurrent(GetWorld());
+				if (IsValid(NavSystem) && NavSystem->FindPathToLocationSynchronously(GetWorld(), Origin, TargetLocation))
+				{
+					// The navigation system found a path to the target location.
+					// You might want to add logic here for handling the successful pathfinding.
+					// For example, you could call MoveToLocation or perform other actions.
+					
+					// Move the AI to the target location
+					AiController->MoveToLocation(TargetLocation);
+
+					return EBTNodeResult::Succeeded;
+				}
+			}
+		}
 	}
-
 	return EBTNodeResult::Failed;
-	//return Super::ExecuteTask(OwnerComp, NodeMemory);
-	
 }

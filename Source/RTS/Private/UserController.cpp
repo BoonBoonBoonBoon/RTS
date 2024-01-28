@@ -277,13 +277,21 @@ void AUserController::EventKey()
 					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false, 1, 0, 5.0f);
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
-					if(BlackboardComponent)
+					/*for(AActor* Actors : SelectedUnits)
 					{
-						// Set the value of the Blackboard key to the hit location
-						BlackboardComponent->SetValueAsVector(TEXT("HitLocationKey"), HitResult.Location);
+						// makes sure they are GenAi class
+						if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actors))
+						{*/
+							if(BlackboardComponent)
+							{
+								BlackboardComponent->SetValueAsBool(TEXT("ShouldMove"), true);
+								// Set the value of the Blackboard key to the hit location
+								BlackboardComponent->SetValueAsVector(TEXT("HitLocationKey"), HitResult.Location);
+							}
+						/*
+						}
 					}
-
-
+					*/
 
 
 					
@@ -333,9 +341,14 @@ void AUserController::EndBoxSelection()
 	FVector2D SingleSelectionMouse;
 	MultiselectCond = false;
 	bIsDecalSelect = false;
-	
-	if (GetMousePosition(SingleSelectionMouse.X, SingleSelectionMouse.Y))
+
+	// At the end of each selection we check what units are selected so then
+	// We can communicate the units in the array to the BTTask Nodes
+	if(BlackboardComponent)
 	{
+		/*const FBlackboard::FKey ArrayKeyID = BlackboardComponent->GetKeyID(ArrayKeyID)
+		// Set the array value in the Blackboard
+		BlackboardComponent->SetValueAsObject(ArrayKeyID, SelectedUnits);*/
 	}
 }
 

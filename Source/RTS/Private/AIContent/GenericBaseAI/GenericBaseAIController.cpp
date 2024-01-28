@@ -5,6 +5,8 @@
 
 AGenericBaseAIController::AGenericBaseAIController()
 {
+	BBComp = CreateDefaultSubobject<UBlackboardComponent>("BlackBoard");	
+	BTComp = CreateDefaultSubobject<UBehaviorTreeComponent>(TEXT("BTComp"));
 }
 
 void AGenericBaseAIController::BeginPlay()
@@ -12,13 +14,15 @@ void AGenericBaseAIController::BeginPlay()
 	// If the behaviour tree is valid
 	if (IsValid(BT.Get()))
 	{
-		
-		// Run behaviour tree.
-		RunBehaviorTree(BT.Get());
+		if(IsValid(BTComp))
+		{
+			// Run behaviour tree.
+			RunBehaviorTree(BT.Get());
 
-		// Then Run the BTComponent using the BT Asset.
-		BTComp->StartTree(*BT.Get());
-	};
+			// Then Run the BTComponent using the BT Asset.
+			BTComp->StartTree(*BT.Get());
+		}
+	}
 }
 
 void AGenericBaseAIController::OnPossess(APawn* InPawn)

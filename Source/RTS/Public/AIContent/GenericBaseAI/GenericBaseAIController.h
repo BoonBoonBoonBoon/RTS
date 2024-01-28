@@ -11,6 +11,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GenericBaseAIController.generated.h"
 
+class UBehaviorTreeComponent;
 /**
  * 
  */
@@ -27,8 +28,6 @@ public:
 	
 	// When Pawn is Possessed by controller, initialize the blackboard assets.
 	virtual void OnPossess(APawn* InPawn) override;
-	
-protected:
 
 	/**
 	 * Blackboard is the same, but it’s a data store
