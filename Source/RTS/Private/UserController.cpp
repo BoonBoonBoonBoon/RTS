@@ -13,6 +13,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 #include "NavigationSystem.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "RTS\Public\Interfaces\SelectionInterface.h"
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
@@ -281,19 +282,30 @@ void AUserController::EventKey()
 					             1, 0, 5.0f);
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
-					// Iterate through all selected units
+					// if the array has a unit in it 
 					if (SelectedUnits.Num() > 0)
 					{
+						// Loop through how many units there are
 						for (int32 i = 0; i < SelectedUnits.Num(); i++)
 						{
-							FVector TargetLocation = HitResult.Location;
-
 							// Check if the selected unit is a pawn and has a controller
 							if (APawn* SelectedPawn = Cast<APawn>(SelectedUnits[i]))
 							{
-								AController* Controller = SelectedPawn->GetController();
-
 								
+								// Print the name of each pawn in the array
+								FString PawnName = SelectedPawn->GetName();
+								UE_LOG(LogTemp, Warning, TEXT("Selected Pawn Name: %s"), *PawnName);
+
+								GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
+
+								// Assign the hit location to the vector location
+								FVector TargetLocation = HitResult.Location + FVector(i / 2 * 100, i % 2 * 100, 0);
+								
+								if (AAIController* AiController = Cast<AAIController>(GenericBaseAI->GetController()))
+								{
+									UAIBlueprintHelperLibrary::SimpleMoveToLocation(AiController, TargetLocation);
+									UE_LOG(LogTemp, Warning, TEXT("Valid Controller"));
+								}
 							}
 						}
 					}

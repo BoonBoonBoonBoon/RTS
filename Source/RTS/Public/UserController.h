@@ -8,6 +8,7 @@
 #include "NiagaraSystem.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
+#include "AIContent/GenericBaseAI/GenericBaseAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Engine/DecalActor.h"
 #include "GameFramework/PlayerController.h"
@@ -31,6 +32,10 @@ class RTS_API AUserController : public APlayerController
 	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
 	AUserCharacter* UserCharacter;
 
+	AGenericBaseAIController* GenAIController;
+	
+	AGenericBaseAI* GenericBaseAI;
+	
 	AAIController* AiCon;
 	
 	UPROPERTY()
