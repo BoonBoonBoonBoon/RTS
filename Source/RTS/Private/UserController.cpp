@@ -238,6 +238,30 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAction("ActionKey", IE_Pressed, this, &AUserController::EventKey);
 }
 
+/*
+							// Print the name of each pawn in the array
+							FString PawnName = SelectedPawn->GetName();
+							UE_LOG(LogTemp, Warning, TEXT("Selected Pawn Name: %s"), *PawnName);
+
+							GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
+
+							// Assign the hit location to the vector location
+							FVector TargetLocation = HitResult.Location + FVector(i / 2 * 100, i % 2 * 100, 0);
+
+							AAIController* C = GenericBaseAI->GetAIController(GenericBaseAI);
+							if(C)
+							{
+								UAIBlueprintHelperLibrary::SimpleMoveToLocation(C, TargetLocation);
+								
+								UE_LOG(LogTemp, Warning, TEXT("Valid Controller"));
+							}*/
+	/*if (BlackboardComponent)
+					{
+						BlackboardComponent->SetValueAsBool(TEXT("ShouldMove"), true);
+						// Set the value of the Blackboard key to the hit location
+						BlackboardComponent->SetValueAsVector(TEXT("HitLocationKey"), HitResult.Location);
+					}*/
+				//}
 
 void AUserController::EventKey()
 {
@@ -279,69 +303,42 @@ void AUserController::EventKey()
 				{
 					// Draw a debug box at the hit location
 					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false,
-					             1, 0, 5.0f);
+								 1, 0, 5.0f);
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
 					// if the array has a unit in it 
 					if (SelectedUnits.Num() > 0)
 					{
-						// Loop through how many units there are
-						for (int32 i = 0; i < SelectedUnits.Num(); i++)
+						UE_LOG(LogTemp, Warning, TEXT("Num"));
+						for (AActor* Actor : SelectedUnits)
 						{
-							// Check if the selected unit is a pawn and has a controller
-							if (APawn* SelectedPawn = Cast<APawn>(SelectedUnits[i]))
+							UE_LOG(LogTemp, Warning, TEXT("ACtor"));
+							if(AGenericBaseAI* Gen = Cast<AGenericBaseAI>(Actor))
 							{
-								
-								// Print the name of each pawn in the array
-								FString PawnName = SelectedPawn->GetName();
-								UE_LOG(LogTemp, Warning, TEXT("Selected Pawn Name: %s"), *PawnName);
-
-								GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
-
-								// Assign the hit location to the vector location
-								FVector TargetLocation = HitResult.Location + FVector(i / 2 * 100, i % 2 * 100, 0);
-								
-								if (AAIController* AiController = Cast<AAIController>(GenericBaseAI->GetController()))
+								UE_LOG(LogTemp, Warning, TEXT("Gen"));
+								if(AAIController* Con = Cast<AAIController>(Gen->GetController()))
 								{
-									UAIBlueprintHelperLibrary::SimpleMoveToLocation(AiController, TargetLocation);
-									UE_LOG(LogTemp, Warning, TEXT("Valid Controller"));
+									// Log the controller's name
+									UE_LOG(LogTemp, Warning, TEXT("Controller Name: %s"), *Con->GetName());
+								}else
+								{
+									UE_LOG(LogTemp, Warning, TEXT("Con Failed"));
 								}
 							}
 						}
-					}
 						
-					/*
-					// Iterate through all selected units
-					if (SelectedUnits.Num() > 0)
-					{
-						for (int32 i = 0; i < SelectedUnits.Num(); i ++)
+						
+						/*// Loop through how many units there are
+						for (int32 i = 0; i < SelectedUnits.Num(); i++)
 						{
-							FVector TargetLocation = HitResult.Location;
-							UNavigationSystemV1::SimpleMoveToLocation(SelectedUnits[i]->GetController(), TargetLocation);
+							/#1#/ Check if the selected unit is a pawn and has a controller
+							if (APawn* SelectedPawn = Cast<APawn>(SelectedUnits[i]))
+							{
+								
 							
-						}
+							}#1#
+						}*/
 					}
-					*/
-
-
-					// Move the AI to the target location
-					/*
-					if (AAIController* AiController = Cast<AAIController>(GenAI->GetController()))
-					{
-						AiController->MoveToLocation(TargetLocation);
-					}
-					*/
-					
-					if (BlackboardComponent)
-					{
-						BlackboardComponent->SetValueAsBool(TEXT("ShouldMove"), true);
-						// Set the value of the Blackboard key to the hit location
-						BlackboardComponent->SetValueAsVector(TEXT("HitLocationKey"), HitResult.Location);
-					}
-					
-					// Spawn the Niagara system at the hit location
-					//UNiagaraSystem* NiagaraSystem = FXCursor; // Set your Niagara system asset here
-					//UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), NiagaraSystem, HitResult.Location, FRotator::ZeroRotator, FVector(1.0f));
 				}
 			}
 		}
@@ -350,6 +347,9 @@ void AUserController::EventKey()
 
 void AUserController::StartBoxSelection()
 {
+	/* Set this up at somepoint, can setup double click, this move camera around.*/
+	//UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, TargetLocation);
+	
 	// Get the Coordinates of the mouse when clicked
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{

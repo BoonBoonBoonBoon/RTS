@@ -29,6 +29,8 @@ public:
 	// When Pawn is Possessed by controller, initialize the blackboard assets.
 	virtual void OnPossess(APawn* InPawn) override;
 
+	void MoveToDest(const FVector& Destination);
+	
 	/**
 	 * Blackboard is the same, but it’s a data store
 	 * that the Behavior Tree uses to remember what other actors and locations the actor is behaving using/towards.

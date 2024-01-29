@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AIController.h"
 
 #include "GameFramework/Character.h"
 #include "GenericBaseAI.generated.h"
@@ -28,6 +29,8 @@ public:
 	AUserController* UserController;
 	
 	bool DecalHit = false;
+
+	AAIController* GetAIController(AGenericBaseAI* Actor);
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

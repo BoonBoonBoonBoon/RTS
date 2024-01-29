@@ -40,3 +40,12 @@ void AGenericBaseAIController::OnPossess(APawn* InPawn)
 		}
 	}
 }
+
+void AGenericBaseAIController::MoveToDest(const FVector& Destination)
+{
+	AAIController* aiController = Cast<AAIController>(this);
+	if(aiController)
+	{
+		aiController->MoveToLocation(Destination);
+	}
+}

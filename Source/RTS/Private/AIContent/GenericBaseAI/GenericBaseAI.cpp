@@ -21,6 +21,11 @@ AGenericBaseAI::AGenericBaseAI()
 	
 }
 
+AAIController* AGenericBaseAI::GetAIController(AGenericBaseAI* Actor)
+{
+	return Cast<AAIController>(Actor->GetController());
+}
+
 // Called when the game starts or when spawned
 void AGenericBaseAI::BeginPlay()
 {
