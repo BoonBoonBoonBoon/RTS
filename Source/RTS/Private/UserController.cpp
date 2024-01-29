@@ -315,34 +315,32 @@ void AUserController::EventKey()
 							UE_LOG(LogTemp, Warning, TEXT("ACtor"));
 							if(const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
 							{
-								if (AController* GenController = GenAI->GetController())
+								UE_LOG(LogTemp, Warning, TEXT("GenController"));
+								// Check the class of the controller
+								if (GenAI->GetController()->IsA<AController>())
 								{
-									UE_LOG(LogTemp, Warning, TEXT("GenController"));
-									// Check the class of the controller
-									/*if (GenController->IsA<AAIController>())
+									UE_LOG(LogTemp, Warning, TEXT("IsA"));
+									AAIController* Con = Cast<AAIController>(GenAI->GetController());
+									if (Con)
 									{
-										AAIController* Con = Cast<AAIController>(GenController);
-										if (Con)
-										{
-											// Log the controller's name
-											UE_LOG(LogTemp, Warning, TEXT("Controller Name: %s"), *Con->GetName());
-										}
-										else
-										{
-											UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
-										}
+										// Log the controller's name
+										UE_LOG(LogTemp, Warning, TEXT("Controller Name: %s"), *Con->GetName());
 									}
 									else
 									{
-										UE_LOG(LogTemp, Warning, TEXT("Controller is not of type AAIController"));
+										UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
 									}
-								} else
-								{
-									UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
-								}*/
 								}
+								else
+								{
+									UE_LOG(LogTemp, Warning, TEXT("Controller is not of type AAIController"));
+								}
+							} else
+							{
+								UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
 							}
 						}
+				
 					}
 				}
 			}
