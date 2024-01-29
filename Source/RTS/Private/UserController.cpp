@@ -313,31 +313,36 @@ void AUserController::EventKey()
 						for (AActor* Actor : SelectedUnits)
 						{
 							UE_LOG(LogTemp, Warning, TEXT("ACtor"));
-							if(AGenericBaseAI* Gen = Cast<AGenericBaseAI>(Actor))
+							if(const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
 							{
-								UE_LOG(LogTemp, Warning, TEXT("Gen"));
-								if(AAIController* Con = Cast<AAIController>(Gen->GetController()))
+								if (AController* GenController = GenAI->GetController())
 								{
-									// Log the controller's name
-									UE_LOG(LogTemp, Warning, TEXT("Controller Name: %s"), *Con->GetName());
-								}else
+									UE_LOG(LogTemp, Warning, TEXT("GenController"));
+									// Check the class of the controller
+									/*if (GenController->IsA<AAIController>())
+									{
+										AAIController* Con = Cast<AAIController>(GenController);
+										if (Con)
+										{
+											// Log the controller's name
+											UE_LOG(LogTemp, Warning, TEXT("Controller Name: %s"), *Con->GetName());
+										}
+										else
+										{
+											UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
+										}
+									}
+									else
+									{
+										UE_LOG(LogTemp, Warning, TEXT("Controller is not of type AAIController"));
+									}
+								} else
 								{
-									UE_LOG(LogTemp, Warning, TEXT("Con Failed"));
+									UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
+								}*/
 								}
 							}
 						}
-						
-						
-						/*// Loop through how many units there are
-						for (int32 i = 0; i < SelectedUnits.Num(); i++)
-						{
-							/#1#/ Check if the selected unit is a pawn and has a controller
-							if (APawn* SelectedPawn = Cast<APawn>(SelectedUnits[i]))
-							{
-								
-							
-							}#1#
-						}*/
 					}
 				}
 			}
