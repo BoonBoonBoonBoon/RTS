@@ -13,8 +13,8 @@
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 #include "NavigationSystem.h"
+
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "RTS\Public\Interfaces\SelectionInterface.h"
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "TestObjects/SelectionPawn.h"
@@ -306,6 +306,15 @@ void AUserController::EventKey()
 								 1, 0, 5.0f);
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
+					
+					GenericBaseAI->Con->MoveToDes(HitResult.Location);
+					
+
+
+
+
+
+					
 					// if the array has a unit in it 
 					if (SelectedUnits.Num() > 0)
 					{

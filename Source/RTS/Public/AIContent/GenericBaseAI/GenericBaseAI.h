@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "GenericController.h"
 
 #include "GameFramework/Character.h"
 #include "GenericBaseAI.generated.h"
@@ -26,7 +27,7 @@ public:
 	UDecalComponent* SelectedDecalComp;
 
 	UPROPERTY(EditAnywhere)
-	AUserController* UserController;
+	AGenericController* Con;
 	
 	bool DecalHit = false;
 

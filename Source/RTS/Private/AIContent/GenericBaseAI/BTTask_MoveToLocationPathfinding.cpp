@@ -2,9 +2,6 @@
 
 
 #include "AIContent/GenericBaseAI/BTTask_MoveToLocationPathfinding.h"
-
-#include "NavigationSystem.h"
-#include "AIContent/GenericBaseAI/GenericBaseAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
 UBTTask_MoveToLocationPathfinding::UBTTask_MoveToLocationPathfinding()
@@ -32,7 +29,7 @@ EBTNodeResult::Type UBTTask_MoveToLocationPathfinding::ExecuteTask(UBehaviorTree
 
 	// Get the AI pawn. Grab the AI controller of the owner component.
 	if (AAIController* AiController = OwnerComp.GetAIOwner())
-	{
+	{/*
 		const APawn* AIPawn = AiController->GetPawn();
 		// Get Pawn Origin
 		const FVector Origin = AIPawn->GetActorLocation();
@@ -67,7 +64,7 @@ EBTNodeResult::Type UBTTask_MoveToLocationPathfinding::ExecuteTask(UBehaviorTree
 					return EBTNodeResult::Succeeded;
 				}
 			}
-		}
+		}*/
 	}
 	return EBTNodeResult::Failed;
 }
