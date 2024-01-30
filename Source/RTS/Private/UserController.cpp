@@ -309,37 +309,41 @@ void AUserController::EventKey()
 					// if the array has a unit in it 
 					if (SelectedUnits.Num() > 0)
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Num"));
+						/*UE_LOG(LogTemp, Warning, TEXT("Num"));
 						for (AActor* Actor : SelectedUnits)
 						{
 							UE_LOG(LogTemp, Warning, TEXT("ACtor"));
 							if(const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
 							{
 								UE_LOG(LogTemp, Warning, TEXT("GenController"));
-								// Check the class of the controller
-								if (GenAI->GetController()->IsA<AController>())
+								// Check if the actor has a valid controller
+								if (AController* GenController = GenAI->GetController())
 								{
-									UE_LOG(LogTemp, Warning, TEXT("IsA"));
-									AAIController* Con = Cast<AAIController>(GenAI->GetController());
-									if (Con)
+									// Check the class of the controller
+									if (GenController->IsA<AController>())
 									{
-										// Log the controller's name
-										UE_LOG(LogTemp, Warning, TEXT("Controller Name: %s"), *Con->GetName());
+										UE_LOG(LogTemp, Warning, TEXT("IsA"));
+										AAIController* Con = Cast<AAIController>(GenAI->GetController());
+										if (Con)
+										{
+											// Log the controller's name
+											UE_LOG(LogTemp, Warning, TEXT("Controller Name: %s"), *Con->GetName());
+										}
+										else
+										{
+											UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
+										}
 									}
 									else
 									{
-										UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
+										UE_LOG(LogTemp, Warning, TEXT("Controller is not of type AAIController"));
 									}
-								}
-								else
+								} else
 								{
-									UE_LOG(LogTemp, Warning, TEXT("Controller is not of type AAIController"));
+									UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
 								}
-							} else
-							{
-								UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
 							}
-						}
+						}*/
 				
 					}
 				}

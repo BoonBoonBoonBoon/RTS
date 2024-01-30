@@ -31,7 +31,22 @@ void AGenericBaseAI::BeginPlay()
 {
 	Super::BeginPlay();
 	SelectedDecalComp->SetVisibility(false);
+
+	
+	/*// Spawn the AI controller
+	AGenericBaseAIController* NewAIController = GetWorld()->SpawnActor<AGenericBaseAIController>(AGenericBaseAIController::StaticClass());
+
+	// Assign the AI controller to the actor
+	if (NewAIController)
+	{
+		AController* C = Cast<AController>(NewAIController);
+		if (C)
+		{
+			C->Possess(this);
+		}
+	}*/
 }
+
 
 void AGenericBaseAI::SetupStimulusSource()
 {
@@ -47,6 +62,13 @@ void AGenericBaseAI::SetupStimulusSource()
 void AGenericBaseAI::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	UE_LOG(LogTemp, Warning, TEXT("GenControler>(GetController());"));
+	AGenericBaseAIController* ControllerAI = Cast<AGenericBaseAIController>(GetController());
+	if(ControllerAI)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GenControllerAGenericBaseAIController* ControllerAI = Cast<AGenericBaseAIController>(GetController());"));
+	}
+
 	
 }
 
