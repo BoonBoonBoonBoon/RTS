@@ -306,8 +306,8 @@ void AUserController::EventKey()
 								 1, 0, 5.0f);
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
-					
-					GenericBaseAI->Con->MoveToDes(HitResult.Location);
+					 // ISSUE HERE
+					//GenericBaseAI->Con->MoveToDes(HitResult.Location);
 					
 
 
