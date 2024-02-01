@@ -16,6 +16,10 @@ class RTS_API AGenericController : public AAIController
 
 public:
 
+	FVector* DestLoc;
+
+	virtual void Tick(float DeltaSeconds) override;
+	
 	AGenericController(FObjectInitializer const& ObjectInitializer);
 
 	// When pawn is Possessed by controller, initialize the blackboard assets.

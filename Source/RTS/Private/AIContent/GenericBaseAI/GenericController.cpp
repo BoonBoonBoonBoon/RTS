@@ -4,6 +4,13 @@
 #include "AIContent/GenericBaseAI/GenericController.h"
 
 
+void AGenericController::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+	
+	//MoveTo(*DestLoc);
+}
+
 AGenericController::AGenericController(FObjectInitializer const& ObjectInitializer)
 {
 }
@@ -27,5 +34,6 @@ void AGenericController::MoveToDes(FVector& Destination)
 	
 		// Print the hit location coordinates to the output log
 		UE_LOG(LogTemp, Warning, TEXT("Hit Location: X=%f, Y=%f, Z=%f"), Destination.X, Destination.Y, Destination.Z);
-	
+
+		//MoveToLocation(Destination);
 }

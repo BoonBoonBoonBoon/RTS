@@ -55,6 +55,15 @@ void AGenericBaseAI::SetupStimulusSource()
 	}
 }
 
+void AGenericBaseAI::MoveToDes(FVector& Destination)
+{
+	// Print the hit location coordinates to the output log
+	UE_LOG(LogTemp, Warning, TEXT("Hit Location: X=%f, Y=%f, Z=%f"), Destination.X, Destination.Y, Destination.Z);
+	//Con->MoveToLocation(Destination);
+	
+	
+}
+
 // Called every frame
 void AGenericBaseAI::Tick(float DeltaTime)
 {

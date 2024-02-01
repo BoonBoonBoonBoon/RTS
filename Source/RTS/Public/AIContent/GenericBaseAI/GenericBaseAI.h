@@ -38,7 +38,10 @@ protected:
 	
 	void SetupStimulusSource();
 
-public:	
+public:
+
+	void MoveToDes(FVector& Destination);
+	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

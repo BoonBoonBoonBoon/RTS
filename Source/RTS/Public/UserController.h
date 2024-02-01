@@ -99,6 +99,8 @@ public:
 
 protected:
 
+	bool CanMove = false;
+	
 	UBoxComponent* SelectionArea;
 	
 	// Returns the viewport Size

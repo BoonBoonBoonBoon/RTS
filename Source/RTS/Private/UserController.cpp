@@ -306,16 +306,29 @@ void AUserController::EventKey()
 								 1, 0, 5.0f);
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
-					 // ISSUE HERE
-					//GenericBaseAI->Con->MoveToDes(HitResult.Location);
+
+					/*
+					// Assuming you have a reference to the AI controller and a valid destination vector
+					FVector DestinationLocation = HitResult.Location; // Your destination vector
+
+					// Set the vector value in the Blackboard
+					if (UBlackboardComponent* BlackboardComp = GenericBaseAI->Con->GetBlackboardComponent())
+					{
+						CanMove =true;
+						if(CanMove){
+							BlackboardComp->SetValueAsBool(TEXT("CanMove"), CanMove);
+								
+							BlackboardComp->SetValueAsVector(TEXT("DestinationLocation"), DestinationLocation);
+						}
+					}
+					*/
 					
-
-
-
-
-
+					//GenericBaseAI->Con->DestLoc = &HitResult.Location;
+					// Wont let me access the controller from this controller.
 					
-					// if the array has a unit in it 
+					 //GenericBaseAI->MoveToDes(HitResult.Location);
+					
+					/*// if the array has a unit in it 
 					if (SelectedUnits.Num() > 0)
 					{
 						/*UE_LOG(LogTemp, Warning, TEXT("Num"));
@@ -352,9 +365,9 @@ void AUserController::EventKey()
 									UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
 								}
 							}
-						}*/
+						}#1#
 				
-					}
+					}*/
 				}
 			}
 		}
