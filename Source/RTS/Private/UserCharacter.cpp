@@ -37,6 +37,22 @@ AUserCharacter::AUserCharacter()
 	TopDownCameraComponent->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
 	TopDownCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
+	// Mini Map boom
+	MiniMapBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("MiniMapBoom"));
+	MiniMapBoom->SetupAttachment(RootComponent);
+	MiniMapBoom->SetUsingAbsoluteRotation(true); // Don't want arm to rotate when character does
+	MiniMapBoom->TargetArmLength = 3000.f;
+	MiniMapBoom->SetRelativeRotation(FRotator(-90.f, 0.f, 0.f));
+	MiniMapBoom->bDoCollisionTest = false; // Don't want to pull camera in when it collides with level
+	
+	// Create mini map camera...
+	/*
+	MiniMapCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("MiniMapCameraComponent"));
+	MiniMapCameraComponent->SetupAttachment(MiniMapBoom, USpringArmComponent::SocketName);
+	MiniMapCameraComponent->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
+	*/
+	
+	
 }
 
 // Called when the game starts or when spawned

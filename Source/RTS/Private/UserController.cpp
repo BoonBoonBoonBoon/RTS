@@ -307,67 +307,74 @@ void AUserController::EventKey()
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
 
-					/*
+					
 					// Assuming you have a reference to the AI controller and a valid destination vector
 					FVector DestinationLocation = HitResult.Location; // Your destination vector
 
-					// Set the vector value in the Blackboard
-					if (UBlackboardComponent* BlackboardComp = GenericBaseAI->Con->GetBlackboardComponent())
-					{
-						CanMove =true;
-						if(CanMove){
-							BlackboardComp->SetValueAsBool(TEXT("CanMove"), CanMove);
-								
-							BlackboardComp->SetValueAsVector(TEXT("DestinationLocation"), DestinationLocation);
-						}
-					}
-					*/
+					
 					
 					//GenericBaseAI->Con->DestLoc = &HitResult.Location;
 					// Wont let me access the controller from this controller.
+					FVector Location = HitResult.Location;
 					
-					 //GenericBaseAI->MoveToDes(HitResult.Location);
-					
-					/*// if the array has a unit in it 
+					UE_LOG(LogTemp, Warning, TEXT("Address %p"), &Location);
+					// if the array has a unit in it 
 					if (SelectedUnits.Num() > 0)
 					{
-						/*UE_LOG(LogTemp, Warning, TEXT("Num"));
+						//UE_LOG(LogTemp, Warning, TEXT("Num"));
 						for (AActor* Actor : SelectedUnits)
 						{
-							UE_LOG(LogTemp, Warning, TEXT("ACtor"));
+							//UE_LOG(LogTemp, Warning, TEXT("ACtor"));
 							if(const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
 							{
-								UE_LOG(LogTemp, Warning, TEXT("GenController"));
+								//UE_LOG(LogTemp, Warning, TEXT("GenController"));
 								// Check if the actor has a valid controller
 								if (AController* GenController = GenAI->GetController())
 								{
 									// Check the class of the controller
 									if (GenController->IsA<AController>())
 									{
-										UE_LOG(LogTemp, Warning, TEXT("IsA"));
+										//UE_LOG(LogTemp, Warning, TEXT("IsA"));
 										AAIController* Con = Cast<AAIController>(GenAI->GetController());
 										if (Con)
 										{
+											GenAI->Con->MoveToDes(Location);
+
+											
+											/*
+											// Set the vector value in the Blackboard
+											if (UBlackboardComponent* BlackboardComp = GenAI->Con->GetBlackboardComponent())
+											{
+												//CanMove =true;
+												//if(CanMove){
+													BlackboardComp->SetValueAsBool(TEXT("CanMove"), CanMove);
+								
+													BlackboardComp->SetValueAsVector(TEXT("DestinationLocation"), DestinationLocation);
+											//}
+											}
+											*/
+					
+											
 											// Log the controller's name
-											UE_LOG(LogTemp, Warning, TEXT("Controller Name: %s"), *Con->GetName());
+											//UE_LOG(LogTemp, Warning, TEXT("Controller Name: %s"), *Con->GetName());
 										}
 										else
 										{
-											UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
+											//UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
 										}
 									}
 									else
 									{
-										UE_LOG(LogTemp, Warning, TEXT("Controller is not of type AAIController"));
+										//UE_LOG(LogTemp, Warning, TEXT("Controller is not of type AAIController"));
 									}
 								} else
 								{
-									UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
+									//UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
 								}
 							}
-						}#1#
+						}
 				
-					}*/
+					}
 				}
 			}
 		}

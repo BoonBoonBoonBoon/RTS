@@ -31,9 +31,6 @@ class RTS_API AUserController : public APlayerController
 	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
 	AUserCharacter* UserCharacter;
 
-	//AGenericBaseAIController* GenAIController;
-	
-	AGenericBaseAI* GenericBaseAI;
 	
 	AAIController* AiCon;
 	
@@ -44,6 +41,13 @@ class RTS_API AUserController : public APlayerController
 
 	
 public:
+
+	//AGenericBaseAIController* GenAIController;
+
+	UPROPERTY(EditAnywhere)
+	AGenericBaseAI* GenericBaseAI;
+	
+	
 	/** FX Class that we will spawn when clicking */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UNiagaraSystem* FXCursor;
