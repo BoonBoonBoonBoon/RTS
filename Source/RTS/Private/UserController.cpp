@@ -338,7 +338,7 @@ void AUserController::EventKey()
 										AAIController* Con = Cast<AAIController>(GenAI->GetController());
 										if (Con)
 										{
-											GenAI->Con->MoveToDes(Location);
+											//GenAI->Con->MoveToDes(Location);
 
 											
 											/*
