@@ -45,7 +45,7 @@ public:
 	//AGenericBaseAIController* GenAIController;
 
 	UPROPERTY(EditAnywhere)
-	AGenericBaseAI* GenericBaseAI;
+	AGenericBaseAI* GenericBaseAI--;
 	
 	
 	/** FX Class that we will spawn when clicking */

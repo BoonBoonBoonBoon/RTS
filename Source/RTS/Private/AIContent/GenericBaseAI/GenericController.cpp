@@ -4,9 +4,23 @@
 #include "AIContent/GenericBaseAI/GenericController.h"
 
 
+void AGenericController::MovePawn()
+{
+	if(CheckValid)
+	{
+		MoveToLocation(MoveLoc);
+		CheckValid = false;
+	}
+}
+
 void AGenericController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+
+	if(CheckValid)
+	{
+		MovePawn();
+	}
 	
 	//MoveTo(*DestLoc);
 }
@@ -35,6 +49,6 @@ void AGenericController::MoveToDes(FVector& Destination)
 		// Print the hit location coordinates to the output log
 		//UE_LOG(LogTemp, Warning, TEXT("Hit Location: X=%f, Y=%f, Z=%f"), Destination.X, Destination.Y, Destination.Z);
 
-	UE_LOG(LogTemp, Warning, TEXT("Controller Address %p"), &Destination);
+	//UE_LOG(LogTemp, Warning, TEXT("Controller Address %p"), &Destination);
 		//MoveToLocation(Destination);
 }

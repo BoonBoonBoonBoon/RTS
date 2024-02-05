@@ -13,7 +13,6 @@
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 #include "NavigationSystem.h"
-
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
@@ -238,43 +237,19 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAction("ActionKey", IE_Pressed, this, &AUserController::EventKey);
 }
 
-/*
-							// Print the name of each pawn in the array
-							FString PawnName = SelectedPawn->GetName();
-							UE_LOG(LogTemp, Warning, TEXT("Selected Pawn Name: %s"), *PawnName);
-
-							GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
-
-							// Assign the hit location to the vector location
-							FVector TargetLocation = HitResult.Location + FVector(i / 2 * 100, i % 2 * 100, 0);
-
-							AAIController* C = GenericBaseAI->GetAIController(GenericBaseAI);
-							if(C)
-							{
-								UAIBlueprintHelperLibrary::SimpleMoveToLocation(C, TargetLocation);
-								
-								UE_LOG(LogTemp, Warning, TEXT("Valid Controller"));
-							}*/
-	/*if (BlackboardComponent)
-					{
-						BlackboardComponent->SetValueAsBool(TEXT("ShouldMove"), true);
-						// Set the value of the Blackboard key to the hit location
-						BlackboardComponent->SetValueAsVector(TEXT("HitLocationKey"), HitResult.Location);
-					}*/
-				//}
 
 void AUserController::EventKey()
 {
 	// Get where is being clicked.
-	if(GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
+	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
 		FVector WorldMouseLocation, WorldMouseDirection;
 		APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
 
 		// Get the mouse cursor position in world space
 		if (UGameplayStatics::DeprojectScreenToWorld(PlayerController,
-													 FVector2D(InitialMousePosition.X, InitialMousePosition.Y),
-													 WorldMouseLocation, WorldMouseDirection))
+		                                             FVector2D(InitialMousePosition.X, InitialMousePosition.Y),
+		                                             WorldMouseLocation, WorldMouseDirection))
 		{
 			// Perform a line trace to detect pawns
 			FHitResult HitResult;
@@ -282,12 +257,12 @@ void AUserController::EventKey()
 			CollisionParams.AddIgnoredActor(this); // Ignore the controller itself
 
 			float TraceDistance = 7000.f;
-			
+
 			FVector DebugBoxExtent(50.0f, 50.0f, 50.0f);
 
 			if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldMouseLocation,
-													 WorldMouseLocation + WorldMouseDirection * TraceDistance,
-													 ECC_Visibility, CollisionParams))
+			                                         WorldMouseLocation + WorldMouseDirection * TraceDistance,
+			                                         ECC_Visibility, CollisionParams))
 			{
 				// Check if the hit actor is a pawn
 				if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
@@ -303,77 +278,42 @@ void AUserController::EventKey()
 				{
 					// Draw a debug box at the hit location
 					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false,
-								 1, 0, 5.0f);
+					             1, 0, 5.0f);
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
 
-					
 					// Assuming you have a reference to the AI controller and a valid destination vector
-					FVector DestinationLocation = HitResult.Location; // Your destination vector
+					//FVector DestinationLocation = HitResult.Location; // Your destination vector
 
-					
-					
+
 					//GenericBaseAI->Con->DestLoc = &HitResult.Location;
 					// Wont let me access the controller from this controller.
 					FVector Location = HitResult.Location;
-					
+
 					UE_LOG(LogTemp, Warning, TEXT("Address %p"), &Location);
 					// if the array has a unit in it 
 					if (SelectedUnits.Num() > 0)
 					{
-						//UE_LOG(LogTemp, Warning, TEXT("Num"));
 						for (AActor* Actor : SelectedUnits)
 						{
-							//UE_LOG(LogTemp, Warning, TEXT("ACtor"));
-							if(const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
+							if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
 							{
-								//UE_LOG(LogTemp, Warning, TEXT("GenController"));
 								// Check if the actor has a valid controller
 								if (AController* GenController = GenAI->GetController())
 								{
 									// Check the class of the controller
 									if (GenController->IsA<AController>())
 									{
-										//UE_LOG(LogTemp, Warning, TEXT("IsA"));
 										AAIController* Con = Cast<AAIController>(GenAI->GetController());
 										if (Con)
 										{
-											//GenAI->Con->MoveToDes(Location);
-
-											
-											/*
-											// Set the vector value in the Blackboard
-											if (UBlackboardComponent* BlackboardComp = GenAI->Con->GetBlackboardComponent())
-											{
-												//CanMove =true;
-												//if(CanMove){
-													BlackboardComp->SetValueAsBool(TEXT("CanMove"), CanMove);
-								
-													BlackboardComp->SetValueAsVector(TEXT("DestinationLocation"), DestinationLocation);
-											//}
-											}
-											*/
-					
-											
-											// Log the controller's name
-											//UE_LOG(LogTemp, Warning, TEXT("Controller Name: %s"), *Con->GetName());
-										}
-										else
-										{
-											//UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
+											GenAI->LocationToMove = Location;
+											GenAI->ValidHit = true;
 										}
 									}
-									else
-									{
-										//UE_LOG(LogTemp, Warning, TEXT("Controller is not of type AAIController"));
-									}
-								} else
-								{
-									//UE_LOG(LogTemp, Warning, TEXT("Con Cast Failed"));
 								}
 							}
 						}
-				
 					}
 				}
 			}
@@ -528,12 +468,12 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 		{
 			// Loops through all possible actors 
 			SelectedUnits.AddUnique(HitPawn);
-			for (AActor* HitPawn : SelectedUnits)
+			for (AActor* Src : SelectedUnits)
 			{
-				HitPawn->Tags.AddUnique(TEXT("SelectedPawn"));
-				if (HitPawn->Tags.Contains(TEXT("SelectedPawn")))
+				Src->Tags.AddUnique(TEXT("SelectedPawn"));
+				if (Src->Tags.Contains(TEXT("SelectedPawn")))
 				{
-					if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn))
+					if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
 					{
 						BaseAI->SelectedDecalComp->SetVisibility(true);
 						UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
@@ -549,12 +489,12 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 				UE_LOG(LogTemp, Warning, TEXT("empty"));
 
 				SelectedUnits.AddUnique(HitPawn);
-				for (AActor* HitPawn : SelectedUnits)
+				for (AActor* Src : SelectedUnits)
 				{
-					HitPawn->Tags.AddUnique(TEXT("SelectedPawn"));
-					if (HitPawn->Tags.Contains(TEXT("SelectedPawn")))
+					Src->Tags.AddUnique(TEXT("SelectedPawn"));
+					if (Src->Tags.Contains(TEXT("SelectedPawn")))
 					{
-						if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn))
+						if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
 						{
 							BaseAI->SelectedDecalComp->SetVisibility(true);
 							UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
@@ -654,16 +594,6 @@ void AUserController::UpdateFlow()
 					// Find the other two edges of the rectangle
 					FVector2D Edge1(InitialMousePosition.X + SelectionWidth, InitialMousePosition.Y);
 					FVector2D Edge2(InitialMousePosition.X, InitialMousePosition.Y + SelectionHeight);
-
-					/*
-					FVector BoxExtent = FVector(SelectionWidth / 2, SelectionHeight / 2, 20);
-
-					// Add an offset to the starting position of the box (adjust the offset as needed)
-					FVector BoxSpawnLocation = MouseWorldStart + FVector(0.0f, 0.0f, 1000.0f);
-					
-					// Draw a debug box at the initial mouse position with dynamic scaling
-					DrawDebugBox(GetWorld(), BoxSpawnLocation, BoxExtent, FQuat::Identity, FColor::Red, true, -1.0f, 0, 10.0f);
-					*/
 
 					FVector2D Boxsize = NewMousePosition - InitialMousePosition;
 

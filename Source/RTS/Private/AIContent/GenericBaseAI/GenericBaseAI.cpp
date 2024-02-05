@@ -22,6 +22,26 @@ AGenericBaseAI::AGenericBaseAI()
 	
 }
 
+void AGenericBaseAI::MovePTR()
+{
+	if(ValidHit)
+	{
+		if(AController* CTRL = GetController()){
+			if(AGenericController* C = Cast<AGenericController>(CTRL))
+			{
+				C->CheckValid = true;
+				C->MoveLoc = LocationToMove;
+				// Log the name of the controller
+				UE_LOG(LogTemp, Warning, TEXT("Current Controller Name: %s"), *C->GetName());
+				ValidHit = false;
+			}else {
+				
+				UE_LOG(LogTemp, Warning, TEXT("AGenericController* C = Cast<AGenericController>(CTRL) Failed"));
+			}
+		}
+	}
+}
+
 AAIController* AGenericBaseAI::GetAIController(AGenericBaseAI* Actor)
 {
 	return Cast<AAIController>(Actor->GetController());
@@ -33,7 +53,7 @@ void AGenericBaseAI::BeginPlay()
 	Super::BeginPlay();
 	SelectedDecalComp->SetVisibility(false);
 
-	if(AController* C = GetController())
+	/*if(AController* C = GetController())
 	{
 		// Log the name of the controller
 		UE_LOG(LogTemp, Warning, TEXT("Current Controller Name: %s"), *C->GetName());
@@ -41,6 +61,7 @@ void AGenericBaseAI::BeginPlay()
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No controller found."));
 	}
+	*/
 	
 }
 
@@ -69,6 +90,11 @@ void AGenericBaseAI::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if(ValidHit)
+	{
+		MovePTR();
+	}
+	
 
 	
 

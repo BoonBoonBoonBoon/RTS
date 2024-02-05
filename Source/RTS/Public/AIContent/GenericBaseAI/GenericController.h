@@ -16,6 +16,10 @@ class RTS_API AGenericController : public AAIController
 
 public:
 
+	mutable FVector MoveLoc;
+	mutable bool CheckValid;
+	void MovePawn();
+	
 	FVector* DestLoc;
 
 	virtual void Tick(float DeltaSeconds) override;

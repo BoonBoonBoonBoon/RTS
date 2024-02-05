@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "GenericController.h"
-
 #include "GameFramework/Character.h"
 #include "GenericBaseAI.generated.h"
 
@@ -28,6 +27,13 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	AGenericController* Con;
+
+	// Takes in the vector where we want to move to 
+	mutable FVector LocationToMove;
+	// Checks if the vector is valid
+	mutable bool ValidHit;
+	void MovePTR();
+
 	
 	bool DecalHit = false;
 
