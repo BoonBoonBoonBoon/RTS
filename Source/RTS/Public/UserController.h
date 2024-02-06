@@ -10,6 +10,7 @@
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Engine/DecalActor.h"
+#include "EQS/WayPointActor.h"
 #include "GameFramework/PlayerController.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "RTS/Public/Interfaces/SelectionInterface.h"
@@ -45,8 +46,8 @@ public:
 	//AGenericBaseAIController* GenAIController;
 
 	UPROPERTY(EditAnywhere)
-	AGenericBaseAI* GenericBaseAI--;
-	
+	AGenericBaseAI* GenericBaseAI;
+	AWayPointActor* WayPointActor;
 	
 	/** FX Class that we will spawn when clicking */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

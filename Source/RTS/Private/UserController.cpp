@@ -14,6 +14,7 @@
 #include "Components/DecalComponent.h"
 #include "NavigationSystem.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "EQS/WayPointActor.h"
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
 #include "TestObjects/SelectionPawn.h"
@@ -298,7 +299,7 @@ void AUserController::EventKey()
 						{
 							if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
 							{
-								// Check if the actor has a valid controller
+								// Check if the actor has a va  lid controller
 								if (AController* GenController = GenAI->GetController())
 								{
 									// Check the class of the controller
@@ -309,6 +310,9 @@ void AUserController::EventKey()
 										{
 											GenAI->LocationToMove = Location;
 											GenAI->ValidHit = true;
+
+											// Waypoint 
+											WayPointActor->SpawnActorLocation(HitResult.Location);
 										}
 									}
 								}
