@@ -22,6 +22,10 @@ AGenericBaseAI::AGenericBaseAI()
 	
 }
 
+void AGenericBaseAI::MyQueryFinished(TSharedPtr<FEnvQueryResult> Result)
+{
+}
+
 void AGenericBaseAI::MovePTR()
 {
 	if(ValidHit)

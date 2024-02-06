@@ -312,7 +312,7 @@ void AUserController::EventKey()
 											GenAI->ValidHit = true;
 
 											// Waypoint 
-											WayPointActor->SpawnActorLocation(HitResult.Location);
+											//WayPointActor->SpawnActorLocation(HitResult.Location);
 										}
 									}
 								}

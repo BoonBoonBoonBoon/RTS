@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "GenericController.h"
+#include "EnvironmentQuery/EnvQuery.h"
+#include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/Character.h"
 #include "GenericBaseAI.generated.h"
 
@@ -22,6 +24,16 @@ public:
 	// Sets default values for this character's properties
 	AGenericBaseAI();
 
+	// EQS Query asset 
+	UPROPERTY()
+	UEnvQuery* MyQuery;
+
+	// struct, which is used to execute the EQS query. 
+	FEnvQueryRequest MyQueryRequest;
+
+	void MyQueryFinished(TSharedPtr<FEnvQueryResult> Result);
+
+	
 	UPROPERTY(EditAnywhere)
 	UDecalComponent* SelectedDecalComp;
 
@@ -33,7 +45,6 @@ public:
 	// Checks if the vector is valid
 	mutable bool ValidHit;
 	void MovePTR();
-
 	
 	bool DecalHit = false;
 

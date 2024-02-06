@@ -14,7 +14,7 @@ AWayPointActor::AWayPointActor()
 void AWayPointActor::SpawnActorLocation(const FVector& SpawnLocation)
 {
 	// Define the spawn parameters
-	FActorSpawnParameters SpawnParams;
+	/*FActorSpawnParameters SpawnParams;
 	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
 	// Spawn the actor at the specified location
@@ -22,7 +22,7 @@ void AWayPointActor::SpawnActorLocation(const FVector& SpawnLocation)
 	if(NewActor)
 	{
 		
-	}
+	}*/
 }
 
 // Called when the game starts or when spawned
