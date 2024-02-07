@@ -593,8 +593,8 @@ void AUserController::UpdateFlow()
 					// Deproject current screen coordinates to world coordinates
 					FVector CurrentMouseWorldLocation, CurrentMouseWorldDirection;
 					PlayerController->DeprojectScreenPositionToWorld(NewMousePosition.X, NewMousePosition.Y,
-																	 CurrentMouseWorldLocation,
-																	 CurrentMouseWorldDirection);
+					                                                 CurrentMouseWorldLocation,
+					                                                 CurrentMouseWorldDirection);
 
 					// Calculate the extent of the rectangle in X and Y directions
 					float SelectionWidth = FMath::Abs(NewMousePosition.X - InitialMousePosition.X);
@@ -607,67 +607,74 @@ void AUserController::UpdateFlow()
 					FVector2D Boxsize = NewMousePosition - InitialMousePosition;
 
 					float ZOffset = 2000.0f;
-					
+
 					FVector BoxExtent(Boxsize.X / 2, Boxsize.Y / 2, 10.f);
 					FVector BoxLocation = FVector((InitialMousePosition + NewMousePosition) / 2, ZOffset);
 
-					if(PlayerController->DeprojectScreenPositionToWorld(Boxsize.X, Boxsize.Y, BoxLocation, BoxExtent))
+					if (PlayerController->DeprojectScreenPositionToWorld(Boxsize.X, Boxsize.Y, BoxLocation, BoxExtent))
 					{
 						//DrawDebugBox(GetWorld(), BoxLocation, BoxExtent, FQuat::Identity, FColor::Green, true, -1.0f, 0, 10.0f);
-					
+
 						// Create a box representing the selection rectangle
 						FBox2D SelectionBox(InitialMousePosition, NewMousePosition);
-						UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASelectionPawn::StaticClass(), ActorsInSelection);
+						UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASelectionPawn::StaticClass(),
+						                                      ActorsInSelection);
 
-						
+
 						CollisionBox = NewObject<UBoxComponent>(this);
-						if(CollisionBox)
+						if (CollisionBox)
 						{
 							// Attach the collision box component to the UserController
-							CollisionBox->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+							CollisionBox->AttachToComponent(RootComponent,
+							                                FAttachmentTransformRules::KeepWorldTransform);
 							CollisionBox->SetWorldLocation(BoxHitLocation);
-
-							// Set the initial size of the collision box
-						//	CollisionBox->SetBoxExtent(FVector(100.0f, 100.0f, 100.0f)); // Adjust the size as needed
-
-							//UE::Math::TVector2<double> MarqueeToolSize = NewMousePosition - InitialMousePosition;
-							//FVector MarqueeToolSize =InitialMousePosition - NewMousePosition;
-
 							CollisionBox->SetBoxExtent(BoxExtent);
-							
-							if(CollisionBox)
+
+							if (CollisionBox)
 							{
+								// Update Location
+								CollisionBox->SetWorldLocation(BoxLocation);
+								// Update the size 
 								CollisionBox->SetBoxExtent(BoxExtent * 0.5f);
-							}
-							
-							//FVector MarqueeToolSTart = InitialMousePosition
-							
-						} 
 
-						
-						/*
-						for (AActor* Actor : ActorsInSelection)
-						{
-							// Get the actor's 2D location
-							FVector2D ActorLocation(Actor->GetActorLocation().X, Actor->GetActorLocation().Y);
+								// Draw a debug box around the collision box
+								FVector BoxCenter = CollisionBox->GetComponentLocation();
+								FVector BoxExtented = CollisionBox->GetScaledBoxExtent();
+								FQuat BoxRotation = CollisionBox->GetComponentQuat();
+								DrawDebugBox(GetWorld(), BoxCenter, BoxExtented, BoxRotation, FColor::Green, false, -1.0f, 0, 10.0f);
 
-							// Check if the actor is within the selection box and of the correct type
-							if (SelectionBox.IsInside(ActorLocation) && Actor->IsA(ASelectionPawn::StaticClass()))
-							{
-								UE_LOG(LogTemp, Warning, TEXT("Selected Actor: %s"), *Actor->GetName());
+								
+								// Create a collision query parameters object
+								FCollisionQueryParams CollisionParams;
+								CollisionParams.AddIgnoredActor(this);
+								// Ignore the player controller in the collision check
+
+								TArray<AActor*> OverlappingActors;
+
+								// Looks specifically to overlap any of GenAI Class 
+								CollisionBox->GetOverlappingActors(OverlappingActors, AGenericBaseAI::StaticClass());
+
+								// Iterate over the overlapping actors and select the units
+								for (AActor* Actor : OverlappingActors)
+								{
+									AGenericBaseAI* Unit = Cast<AGenericBaseAI>(Actor);
+									if (Unit)
+									{
+										// Log the name of the unit
+										UE_LOG(LogTemp, Warning, TEXT("Unit Name: %s"), *Unit->GetName());
+									}
+								}
 							}
 						}
-						*/
-
-						// Log the locations of the edges
-						/*UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X,
-							   InitialMousePosition.Y);
-						UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
-						UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
-						UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);*/
 					}
 				}
 			}
 		}
 	}
 }
+// Log the locations of the edges
+/*UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X,
+	   InitialMousePosition.Y);
+UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
+UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
+UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);*/
