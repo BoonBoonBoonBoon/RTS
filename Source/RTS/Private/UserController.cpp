@@ -14,6 +14,7 @@
 #include "Components/DecalComponent.h"
 #include "NavigationSystem.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Components/CapsuleComponent.h"
 #include "EQS/WayPointActor.h"
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
@@ -162,7 +163,7 @@ void AUserController::EdgeScrolling_WASD_Left(float Value)
 void AUserController::MoveCamera(const FVector& Direction)
 {
 	// Returns the current view target 
-	APlayerCameraManager* CameraManager = Cast<APlayerCameraManager>(GetViewTarget());
+	//APlayerCameraManager* CameraManager = Cast<APlayerCameraManager>(GetViewTarget());
 
 	if (AActor* ViewTarget = GetViewTarget())
 	{
@@ -431,9 +432,11 @@ void AUserController::UnitSelection()
 												 WorldMouseLocation + WorldMouseDirection * TraceDistance,
 												 ECC_Visibility, CollisionParams))
 		{
-			// Check if the hit actor is a pawn
-			APawn* HitPawn = Cast<APawn>(HitResult.GetActor());
+			// The Spawn Location for the collison box to spawn
+			BoxHitLocation = HitResult.Location;
 
+			
+			
 			// Check if its either
 			// Damageable
 			// Resource
@@ -444,6 +447,8 @@ void AUserController::UnitSelection()
 			// But if i dont multiselect the next one it will just move the next one.
 			//
 
+			// Check if the hit actor is a pawn
+			APawn* HitPawn = Cast<APawn>(HitResult.GetActor());
 
 			if (HitPawn)
 			{
@@ -614,6 +619,33 @@ void AUserController::UpdateFlow()
 						FBox2D SelectionBox(InitialMousePosition, NewMousePosition);
 						UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASelectionPawn::StaticClass(), ActorsInSelection);
 
+						
+						CollisionBox = NewObject<UBoxComponent>(this);
+						if(CollisionBox)
+						{
+							// Attach the collision box component to the UserController
+							CollisionBox->AttachToComponent(RootComponent, FAttachmentTransformRules::KeepWorldTransform);
+							CollisionBox->SetWorldLocation(BoxHitLocation);
+
+							// Set the initial size of the collision box
+						//	CollisionBox->SetBoxExtent(FVector(100.0f, 100.0f, 100.0f)); // Adjust the size as needed
+
+							//UE::Math::TVector2<double> MarqueeToolSize = NewMousePosition - InitialMousePosition;
+							//FVector MarqueeToolSize =InitialMousePosition - NewMousePosition;
+
+							CollisionBox->SetBoxExtent(BoxExtent);
+							
+							if(CollisionBox)
+							{
+								CollisionBox->SetBoxExtent(BoxExtent * 0.5f);
+							}
+							
+							//FVector MarqueeToolSTart = InitialMousePosition
+							
+						} 
+
+						
+						/*
 						for (AActor* Actor : ActorsInSelection)
 						{
 							// Get the actor's 2D location
@@ -625,6 +657,7 @@ void AUserController::UpdateFlow()
 								UE_LOG(LogTemp, Warning, TEXT("Selected Actor: %s"), *Actor->GetName());
 							}
 						}
+						*/
 
 						// Log the locations of the edges
 						/*UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X,

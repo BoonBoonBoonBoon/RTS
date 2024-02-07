@@ -45,6 +45,14 @@ public:
 
 	//AGenericBaseAIController* GenAIController;
 
+	// The Box to be drawn
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* CollisionBox;
+	// The area the box spawns 
+	FVector BoxHitLocation;
+
+	
+	
 	UPROPERTY(EditAnywhere)
 	AGenericBaseAI* GenericBaseAI;
 	AWayPointActor* WayPointActor;
