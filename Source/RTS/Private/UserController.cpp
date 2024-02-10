@@ -552,26 +552,6 @@ void AUserController::UnitDecals(AGenericBaseAI* HitPawn)
 	}
 }
 
-void AUserController::CleanUpDecal(APawn* HitPawn)
-{
-	if (AGenericBaseAI* Gen = Cast<AGenericBaseAI>(HitPawn))
-	{
-		Gen->SelectedDecalComp->SetVisibility(false);
-	}
-}
-
-void AUserController::REvent_PlayDecal(const FVector& Location)
-{
-	ADecalActor* DecalActor = GetWorld()->SpawnActor<ADecalActor>(ARClick_Decal::StaticClass(), Location, FRotator::ZeroRotator);
-
-	/*//if(ARClick_Decal* RC = GetWorld()->SpawnActor())
-	{
-	}*/
-	
-	// Spawn your decal actor at the hit location
-	//ADecalActor* DecalActor = GetWorld()->SpawnActor<ADecalActor>(ADecalActor::StaticClass(), Location, FRotator::ZeroRotator);
-}
-
 
 void AUserController::UpdateFlow()
 {
