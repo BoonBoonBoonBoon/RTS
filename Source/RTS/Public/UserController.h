@@ -114,8 +114,14 @@ protected:
 
 	bool CanMove = false;
 	
+	UPROPERTY()
 	UBoxComponent* SelectionArea;
-	
+
+	float dist;
+	FVector SelectionSize; 
+	FVector CenterMouseLocation;
+	FVector MouseStart;
+	FVector MouseEnd; 
 	// Returns the viewport Size
 	FVector2D ViewportSize;
 
