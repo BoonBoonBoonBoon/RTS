@@ -114,7 +114,7 @@ protected:
 
 	bool CanMove = false;
 	
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	UBoxComponent* SelectionArea;
 
 	float dist;

@@ -566,17 +566,8 @@ void AUserController::UpdateFlow()
 		// Checks if the mouse has been moved
 		if (HasCursorMoved())
 		{
-			// The final destination of the Mouse 
-			MouseEnd = bHit.Location;
-			
-			// Calculate the center location of the mouse locations 
-			CenterMouseLocation = FVector((MouseStart + MouseEnd) / 2.5 );
-			dist = FVector::Dist(MouseEnd, MouseStart) / 2;
-			SelectionSize = FVector(dist,dist,100);
 			
 			FVector MouseWorldStart, MouseWorldDirection;
-
-			DrawDebugBox(GetWorld(), CenterMouseLocation, SelectionSize, FQuat(0,0,0,0), FColor::Black);
 
 			
 			// Checks the Current mouse position in Comparison to the Initial Mouse Position 
@@ -592,22 +583,57 @@ void AUserController::UpdateFlow()
 					PlayerController->DeprojectScreenPositionToWorld(NewMousePosition.X, NewMousePosition.Y,
 					                                                 CurrentMouseWorldLocation,
 					                                                 CurrentMouseWorldDirection);
+					// The final destination of the Mouse 
+					MouseEnd = bHit.Location;
+			
+					// Calculate the center location of the mouse locations 
+					CenterMouseLocation = FVector((MouseStart + MouseEnd) / 2 );
+					dist = FVector::Dist(MouseEnd, MouseStart) / 2;
+					SelectionSize = FVector(dist,dist,100);
+			
+					DrawDebugBox(GetWorld(), CenterMouseLocation, SelectionSize, FQuat(0,0,0,0), FColor::Black);
 					
-					
-					SelectionArea->SetWorldLocation(SelectionSize);
-					SelectionArea->SetBoxExtent(SelectionSize);
+					//SelectionArea->SetWorldLocation(SelectionSize);
+					SelectionArea->SetWorldLocation(CenterMouseLocation);
+					SelectionArea->SetBoxExtent(SelectionSize / 2 );
 
 					// Look for specific Actors 
 					TArray<AActor*> ActorsToBeFound;
-					
 					SelectionArea->GetOverlappingActors(ActorsToBeFound);
-
+					// Log the number of actors in the array
+					UE_LOG(LogTemp, Warning, TEXT("Number of actors found: %d"), ActorsToBeFound.Num());
 					
-					if(ActorsToBeFound.Num() > 0)
+					// Log the names of overlapped actors
+					for (AActor* Actor : ActorsToBeFound) // Breakpoint 
 					{
-						// empty out the currently selected units. 
-						//SelectedUnits.Empty();
+						UE_LOG(LogTemp, Warning, TEXT("Overlapped Actor Name: %s"), *Actor->GetName());
 					}
+					
+					/*if(ActorsToBeFound.Num() > 0)
+					{*/
+						// empty out the currently selected units. 
+					//	SelectedUnits.Empty();
+
+						// Loop through the new actors
+						/*for(AActor* Actor : ActorsToBeFound)
+						{
+							if(AGenericBaseAI* AI = Cast<AGenericBaseAI>(Actor))
+							{
+								UE_LOG(LogTemp, Warning, TEXT("Cast Complete"));
+								FString ActorName = AI->GetName();
+								UE_LOG(LogTemp, Warning, TEXT("Actor Name: %s"), *ActorName);
+								//SelectedUnits.Add(Actor);
+							} else
+							{
+								UE_LOG(LogTemp, Warning, TEXT("No Actor"));
+							}*/
+							/*
+							 *  Loop through all the actors then fill them into the selected units array
+							 *  Need to make a way to deselect them when its not hovering over them too?
+							 */
+					//	}
+						
+					//}
 				}
 			}
 		}
