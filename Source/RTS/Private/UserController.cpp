@@ -600,13 +600,20 @@ void AUserController::UpdateFlow()
 					// Look for specific Actors 
 					TArray<AActor*> ActorsToBeFound;
 					SelectionArea->GetOverlappingActors(ActorsToBeFound);
-					// Log the number of actors in the array
-					UE_LOG(LogTemp, Warning, TEXT("Number of actors found: %d"), ActorsToBeFound.Num());
 					
 					// Log the names of overlapped actors
-					for (AActor* Actor : ActorsToBeFound) // Breakpoint 
+					for (AActor* Actor : ActorsToBeFound)
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Overlapped Actor Name: %s"), *Actor->GetName());
+						if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Actor))
+						{
+							// Log Names 
+						//	UE_LOG(LogTemp, Warning, TEXT("Overlapped Actor Name: %s"), *BaseAI->GetName());
+							
+							// Log the number of actors in the array
+						//	UE_LOG(LogTemp, Warning, TEXT("Number of actors found: %d"), ActorsToBeFound.Num());
+
+							SelectedUnits.Add(BaseAI);
+						}
 					}
 					
 					/*if(ActorsToBeFound.Num() > 0)
