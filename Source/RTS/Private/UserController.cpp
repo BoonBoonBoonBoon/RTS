@@ -4,21 +4,15 @@
 #include "UserController.h"
 
 #include "AIController.h"
-
-#include "NavigationSystem.h"
-#include "RClick_Decal.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
-#include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/BoxComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "Components/DecalComponent.h"
-#include "EQS/WayPointActor.h"
 #include "GameFramework/Pawn.h"
 #include "Kismet/GameplayStatics.h"
-#include "TestObjects/SelectionPawn.h"
+
 
 #define mTraceChannel ECollisionChannel::ECC_Pawn
 
@@ -37,10 +31,9 @@ AUserController::AUserController()
 	CursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
 	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
 	*/
-	
+
 	SelectionArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SelectionArea"));
 	SelectionArea->SetBoxExtent(FVector(0));
-
 }
 
 void AUserController::OnPossess(APawn* InPawn)
@@ -81,7 +74,7 @@ void AUserController::EdgeScrolling()
 			FVector LeftVector = FVector::CrossProduct(ForwardVector, FVector::UpVector);
 			LeftVector.Normalize();
 			MoveCamera(LeftVector);
-		
+
 			bCursorMove = true;
 		}
 		else if (MousePosition.X > 1850)
@@ -91,17 +84,17 @@ void AUserController::EdgeScrolling()
 			FVector RightVector = -FVector::CrossProduct(ForwardVector, FVector::UpVector);
 			RightVector.Normalize();
 			MoveCamera(RightVector);
-			
-			
+
+
 			bCursorMove = true;
 		}
-		
+
 		// Move Forward
 		if (MousePosition.Y < 50)
 		{
 			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
 			MoveCamera(ForwardVector);
-			
+
 			bCursorMove = true;
 		}
 		else if (MousePosition.Y > 920)
@@ -110,12 +103,11 @@ void AUserController::EdgeScrolling()
 			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
 			FVector OppositeForwardVector = -ForwardVector;
 			MoveCamera(OppositeForwardVector);
-			
+
 			bCursorMove = true;
 		}
-		
+
 		bCursorMove = false;
-		
 	}
 }
 
@@ -199,7 +191,7 @@ void AUserController::MoveCamera(const FVector& Direction)
 void AUserController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-		
+
 	// Checks if we are valid to dispose of the selection decal
 	/*if (MultiselectCond)
 	{
@@ -210,22 +202,18 @@ void AUserController::PlayerTick(float DeltaTime)
 
 	// Defined User Macro, Gets Trace to pawn under cursor. 
 	GetHitResultUnderCursor(mTraceChannel, true, bHit);
-
-	
 }
 
 void AUserController::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
 	UserCharacter = Cast<AUserCharacter>(GetPawn());
 
 
 	// Quick fills the array, Will be removed on first interaction.
 	//AActor* TempActor = nullptr;
 	//SelectedUnits.Add(TempActor);
-
-	
 }
 
 void AUserController::SetupInputComponent()
@@ -274,6 +262,7 @@ void AUserController::EventKey()
 			                                         ECC_Visibility, CollisionParams))
 			{
 				// Check if the hit actor is a pawn
+				// ReSharper disable once CppDeclaratorNeverUsed
 				if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
 				{
 					// Draw a debug box at the hit location
@@ -290,13 +279,6 @@ void AUserController::EventKey()
 					             1, 0, 5.0f);
 					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
-
-					// Assuming you have a reference to the AI controller and a valid destination vector
-					//FVector DestinationLocation = HitResult.Location; // Your destination vector
-
-
-					//GenericBaseAI->Con->DestLoc = &HitResult.Location;
-					// Wont let me access the controller from this controller.
 					FVector Location = HitResult.Location;
 
 					UE_LOG(LogTemp, Warning, TEXT("Address %p"), &Location);
@@ -337,13 +319,13 @@ void AUserController::StartBoxSelection()
 {
 	/* Set this up at somepoint, can setup double click, this move camera around.*/
 	//UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, TargetLocation);
-	
+
 	// Get the Coordinates of the mouse when clicked
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
 		bIsSelecting = true;
 		UnitSelection();
-		
+
 		if (bNotHit)
 		{
 			//  loops through all the actors in the class 
@@ -370,13 +352,13 @@ void AUserController::EndBoxSelection()
 	bIsSelecting = false;
 	//UE_LOG(LogTemp, Warning, TEXT("StartBoxSelection ended"));
 	CursorMoved = false;
-	FVector2D SingleSelectionMouse;
+	//FVector2D SingleSelectionMouse;
 	MultiselectCond = false;
 	bIsDecalSelect = false;
 
 	// At the end of each selection we check what units are selected so then
 	// We can communicate the units in the array to the BTTask Nodes
-	if(BlackboardComponent)
+	if (BlackboardComponent)
 	{
 		/*const FBlackboard::FKey ArrayKeyID = BlackboardComponent->GetKeyID(ArrayKeyID)
 		// Set the array value in the Blackboard
@@ -436,8 +418,8 @@ void AUserController::UnitSelection()
 		FVector DebugBoxExtent(50.0f, 50.0f, 50.0f);
 
 		if (GetWorld()->LineTraceSingleByChannel(HitResult, WorldMouseLocation,
-												 WorldMouseLocation + WorldMouseDirection * TraceDistance,
-												 ECC_Visibility, CollisionParams))
+		                                         WorldMouseLocation + WorldMouseDirection * TraceDistance,
+		                                         ECC_Visibility, CollisionParams))
 		{
 			// The Spawn Location for the collison box to spawn
 			//BoxHitLocation = HitResult.Location;
@@ -464,8 +446,9 @@ void AUserController::UnitSelection()
 				// Will run no matter what 
 				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
 				bNotHit = false;
-			} else {
-			
+			}
+			else
+			{
 				bNotHit = true;
 			}
 		}
@@ -549,10 +532,26 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 	}
 }
 
+void AUserController::HandleMarqueePawnSelection(AActor* HitPawn)
+{
+	if (HitPawn) // Validate the Actor 
+	{
+		if (!SelectedUnits.Contains(HitPawn))
+		{
+			SelectedUnits.Add(HitPawn);
+
+			if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn))
+			{
+				BaseAI->SelectedDecalComp->SetVisibility(true);
+			}
+		}
+	}
+}
+
 
 void AUserController::UnitDecals(AGenericBaseAI* HitPawn)
 {
-	if(HitPawn)
+	if (HitPawn)
 	{
 		Decals->DecalHit = true;
 	}
@@ -566,10 +565,8 @@ void AUserController::UpdateFlow()
 		// Checks if the mouse has been moved
 		if (HasCursorMoved())
 		{
-			
 			FVector MouseWorldStart, MouseWorldDirection;
 
-			
 			// Checks the Current mouse position in Comparison to the Initial Mouse Position 
 			if (GetMousePosition(NewMousePosition.X, NewMousePosition.Y))
 			{
@@ -578,160 +575,52 @@ void AUserController::UpdateFlow()
 					PlayerController->DeprojectScreenPositionToWorld(InitialMousePosition.X, InitialMousePosition.Y,
 					                                                 MouseWorldStart, MouseWorldDirection))
 				{
-					// Deproject current screen coordinates to world coordinates
+					// De-project current screen coordinates to world coordinates
 					FVector CurrentMouseWorldLocation, CurrentMouseWorldDirection;
 					PlayerController->DeprojectScreenPositionToWorld(NewMousePosition.X, NewMousePosition.Y,
 					                                                 CurrentMouseWorldLocation,
 					                                                 CurrentMouseWorldDirection);
 					// The final destination of the Mouse 
 					MouseEnd = bHit.Location;
-			
-					// Calculate the center location of the mouse locations 
-					CenterMouseLocation = FVector((MouseStart + MouseEnd) / 2 );
-					dist = FVector::Dist(MouseEnd, MouseStart) / 2;
-					SelectionSize = FVector(dist,dist,100);
-			
-					DrawDebugBox(GetWorld(), CenterMouseLocation, SelectionSize, FQuat(0,0,0,0), FColor::Black);
-					
-					//SelectionArea->SetWorldLocation(SelectionSize);
-					SelectionArea->SetWorldLocation(CenterMouseLocation);
-					SelectionArea->SetBoxExtent(SelectionSize / 2 );
 
-					// Look for specific Actors 
+					// Calculate the center location of the mouse locations 
+					CenterMouseLocation = FVector((MouseStart + MouseEnd) / 2);
+					dist = FVector::Dist(MouseEnd, MouseStart) / 2;
+					SelectionSize = FVector(dist, dist, 100);
+
+					//DrawDebugBox(GetWorld(), CenterMouseLocation, SelectionSize, FQuat(0,0,0,0), FColor::Black);
+
+					SelectionArea->SetWorldLocation(CenterMouseLocation);
+					SelectionArea->SetBoxExtent(SelectionSize / 2);
+
+					// retrieve all actors currently overlapping with the selection area and store them in the ATBF array.
 					TArray<AActor*> ActorsToBeFound;
 					SelectionArea->GetOverlappingActors(ActorsToBeFound);
-					
-					// Log the names of overlapped actors
-					for (AActor* Actor : ActorsToBeFound)
-					{
-						if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Actor))
-						{
-							// Log Names 
-						//	UE_LOG(LogTemp, Warning, TEXT("Overlapped Actor Name: %s"), *BaseAI->GetName());
-							
-							// Log the number of actors in the array
-						//	UE_LOG(LogTemp, Warning, TEXT("Number of actors found: %d"), ActorsToBeFound.Num());
 
-							SelectedUnits.Add(BaseAI);
+					// iterate over all previously selected units stored in the SU array.
+					for (AActor* SelectedActor : SelectedUnits)
+					{
+						// For each selected actor we check if it's still present in the ActorsToBeFound array.
+						// (ie. still overlapping with the selection area).
+						if (!ActorsToBeFound.Contains(SelectedActor))
+						{
+							// If the actor is not found in the ATBF array,it's no longer overlapping,
+							// so we deselect it by hiding its selection decal and removing it from the SU array.
+							if (const AGenericBaseAI* AI = Cast<AGenericBaseAI>(SelectedActor))
+							{
+								AI->SelectedDecalComp->SetVisibility(false);
+							}
+							SelectedUnits.Remove(SelectedActor);
 						}
 					}
-					
-					/*if(ActorsToBeFound.Num() > 0)
-					{*/
-						// empty out the currently selected units. 
-					//	SelectedUnits.Empty();
 
-						// Loop through the new actors
-						/*for(AActor* Actor : ActorsToBeFound)
-						{
-							if(AGenericBaseAI* AI = Cast<AGenericBaseAI>(Actor))
-							{
-								UE_LOG(LogTemp, Warning, TEXT("Cast Complete"));
-								FString ActorName = AI->GetName();
-								UE_LOG(LogTemp, Warning, TEXT("Actor Name: %s"), *ActorName);
-								//SelectedUnits.Add(Actor);
-							} else
-							{
-								UE_LOG(LogTemp, Warning, TEXT("No Actor"));
-							}*/
-							/*
-							 *  Loop through all the actors then fill them into the selected units array
-							 *  Need to make a way to deselect them when its not hovering over them too?
-							 */
-					//	}
-						
-					//}
+					// Iterate through newly overlapped actors and select them
+					for (AActor* Actor : ActorsToBeFound)
+					{
+						HandleMarqueePawnSelection(Actor);
+					}
 				}
 			}
 		}
 	}
 }
-
-
-
-// Log the locations of the edges
-/*UE_LOG(LogTemp, Warning, TEXT("Start: (%.2f, %.2f)"), InitialMousePosition.X,
-	   InitialMousePosition.Y);
-UE_LOG(LogTemp, Warning, TEXT("Edge1: (%.2f, %.2f)"), Edge1.X, Edge1.Y);
-UE_LOG(LogTemp, Warning, TEXT("Edge2: (%.2f, %.2f)"), Edge2.X, Edge2.Y);
-UE_LOG(LogTemp, Warning, TEXT("End: (%.2f, %.2f)"), NewMousePosition.X, NewMousePosition.Y);*/
-
-
-
-
-/*// Calculate the extent of the rectangle in X and Y directions
-					float SelectionWidth = FMath::Abs(NewMousePosition.X - InitialMousePosition.X);
-					float SelectionHeight = FMath::Abs(NewMousePosition.Y - InitialMousePosition.Y);
-
-					// Find the other two edges of the rectangle
-					FVector2D Edge1(InitialMousePosition.X + SelectionWidth, InitialMousePosition.Y);
-					FVector2D Edge2(InitialMousePosition.X, InitialMousePosition.Y + SelectionHeight);
-
-					
-					FVector2D Boxsize = NewMousePosition - InitialMousePosition;
-
-					float ZOffset = 2000.0f;
-
-					FVector BoxExtent(Boxsize.X / 2, Boxsize.Y / 2, 10.f);
-					FVector BoxLocation = FVector((InitialMousePosition + NewMousePosition) / 2, ZOffset);
-					
-					
-					
-					if (PlayerController->DeprojectScreenPositionToWorld(Boxsize.X, Boxsize.Y, BoxLocation, BoxExtent))
-					{
-					
-						
-						//DrawDebugBox(GetWorld(), BoxLocation, BoxExtent, FQuat::Identity, FColor::Green, true, -1.0f, 0, 10.0f);
-						// Create a box representing the selection rectangle
-						FBox2D SelectionBox(InitialMousePosition, NewMousePosition);
-						UGameplayStatics::GetAllActorsOfClass(GetWorld(), ASelectionPawn::StaticClass(),
-						                                      ActorsInSelection);
-
-
-						
-						CollisionBox = NewObject<UBoxComponent>(this);
-						if (CollisionBox)
-						{
-							// Attach the collision box component to the UserController
-							CollisionBox->AttachToComponent(RootComponent,
-							                                FAttachmentTransformRules::KeepWorldTransform);
-							CollisionBox->SetWorldLocation(BoxHitLocation);
-							CollisionBox->SetBoxExtent(BoxExtent);
-
-							if (CollisionBox)
-							{
-								// Update Location
-								CollisionBox->SetWorldLocation(BoxLocation);
-								// Update the size 
-								CollisionBox->SetBoxExtent(BoxExtent * 0.5f);
-
-								// Draw a debug box around the collision box
-								FVector BoxCenter = CollisionBox->GetComponentLocation();
-								FVector BoxExtented = CollisionBox->GetScaledBoxExtent();
-								FQuat BoxRotation = CollisionBox->GetComponentQuat();
-								DrawDebugBox(GetWorld(), BoxCenter, BoxExtented, BoxRotation, FColor::Green, false, -1.0f, 0, 10.0f);
-
-								
-								// Create a collision query parameters object
-								FCollisionQueryParams CollisionParams;
-								CollisionParams.AddIgnoredActor(this);
-								// Ignore the player controller in the collision check
-
-								TArray<AActor*> OverlappingActors;
-
-								// Looks specifically to overlap any of GenAI Class 
-								CollisionBox->GetOverlappingActors(OverlappingActors, AGenericBaseAI::StaticClass());
-
-								// Iterate over the overlapping actors and select the units
-								for (AActor* Actor : OverlappingActors)
-								{
-									AGenericBaseAI* Unit = Cast<AGenericBaseAI>(Actor);
-									if (Unit)
-									{
-										// Log the name of the unit
-										UE_LOG(LogTemp, Warning, TEXT("Unit Name: %s"), *Unit->GetName());
-									}
-								}
-							}
-						}
-					}*/

@@ -171,7 +171,7 @@ public:
 
 	// Checks if we are selecting multiple ai
 	bool MultiselectCond;
-	
+
 	// Checks if the cursor has moved from it original location
 	UFUNCTION(BlueprintCallable)
 	bool HasCursorMoved();
@@ -185,10 +185,12 @@ public:
 
 	bool bNotHit;
 
-	// What happens when pawn selected
+	
+	// What happens when pawn selected (Single or MultiSelect) 
 	UFUNCTION(BlueprintCallable)
 	void HandlePawnSelection(APawn* HitPawn);
-
+	void HandleMarqueePawnSelection(AActor* HitPawn);
+	
 	// Logic for the Units decal apearing and disapearing
 	void UnitDecals(AGenericBaseAI* HitPawn);
 	
