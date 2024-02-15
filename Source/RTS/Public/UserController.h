@@ -9,6 +9,7 @@
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Components/WidgetInteractionComponent.h"
 #include "Engine/DecalActor.h"
 #include "EQS/WayPointActor.h"
 #include "GameFramework/PlayerController.h"
@@ -74,6 +75,10 @@ public:
 	// Moves the camera in the direction of the cursor direction
 	void MoveCamera(const FVector& Direction);
 
+	UPROPERTY(EditAnywhere)
+	UWidgetInteractionComponent* WidgetInteractionComponent; // ??????
+	
+	void CursorToWidget();
 
 protected:
 	
