@@ -9,11 +9,9 @@
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "BehaviorTree/BlackboardComponent.h"
-#include "Components/WidgetInteractionComponent.h"
 #include "Engine/DecalActor.h"
 #include "EQS/WayPointActor.h"
 #include "GameFramework/PlayerController.h"
-#include "GameFramework/SpringArmComponent.h"
 #include "RTS/Public/Interfaces/SelectionInterface.h"
 #include "UserController.generated.h"
 
@@ -30,111 +28,91 @@ class RTS_API AUserController : public APlayerController
 {
 	GENERATED_BODY()
 
-	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
-	AUserCharacter* UserCharacter;
-
-	
-	AAIController* AiCon;
-	
-	UPROPERTY()
-	AUserController* MyController = this;
-	
-	USelectionInterface* SelectionInterface;
-
-	
 public:
-
-	//AGenericBaseAIController* GenAIController;
-
-	// The Box to be drawn
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* CollisionBox;
-	// The area the box spawns 
-	FVector BoxHitLocation;
-
-	
-	
-	UPROPERTY(EditAnywhere)
-	AGenericBaseAI* GenericBaseAI;
-	AWayPointActor* WayPointActor;
-	
-	/** FX Class that we will spawn when clicking */
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UNiagaraSystem* FXCursor;
 	
 	AUserController();
 	virtual void OnPossess(APawn* InPawn) override;
-	
-	// Checks if the cursor is near the edges of the screen and moves it accordingly 
+
+	// Camera Movement Edge of Screen
 	void EdgeScrolling();
 	void EdgeScrolling_WASD_Up(float Value);
 	void EdgeScrolling_WASD_Down(float Value); 
 	void EdgeScrolling_WASD_Right(float Value); 
 	void EdgeScrolling_WASD_Left(float Value); 
-
-	// Moves the camera in the direction of the cursor direction
+	
 	void MoveCamera(const FVector& Direction);
-
-	UPROPERTY(EditAnywhere)
-	UWidgetInteractionComponent* WidgetInteractionComponent; // ??????
 	
 	void CursorToWidget();
+	void EventKey(); // Movement and Attack Direction
+
+	
+	void StartBoxSelection(); // User Input to select Actor
+	void EndBoxSelection(); // End of User Input
+	void MultiSelect(); // User Input With intent of Selection Multiple Units
+	bool HasCursorMoved(); 
+	
+	void UnitSelection(); // Raycasts to Actors to check Hit Result
+	void HandlePawnSelection(APawn* HitPawn); 
+	
+	void HandleMarqueePawnSelection(AActor* HitPawn); // Selects Actors Hit by Tool
+	void UpdateFlow(); // Draws Marquee Selection Tool 
+
 
 protected:
 	
-	//FORCEINLINE class AUserCharacter* GetUserCharacter() const { return UserCharacter; }
-	//int32 ArmLength = GetUserCharacter()->GetCameraBoom()->TargetArmLength;
-	
-	// The Cursors Location
-	FVector2D MousePosition;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UNiagaraSystem* FXCursor;
+
+	UPROPERTY(EditAnywhere)
+	AGenericBaseAI* GenericBaseAI;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<AActor*> SelectedUnits;
+	
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* SelectionArea;
+	
+	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
+	UBlackboardComponent* BlackboardComponent; // ? maybe delete
+	
+	UPROPERTY(EditAnywhere)
+	AGenericBaseAI* Decals;
+	
+	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
+	AUserCharacter* UserCharacter;
+	
+	
 public:
-	// FVector TargetLocation;
 	
 	UPROPERTY(BlueprintReadWrite)
-	FVector2D InitialMousePosition;
+	FVector2D InitialMousePosition; // 2D World Space Current Mouse Position
 	
-	//NewMousePos
+	FVector2D MousePosition;
+	
 	UPROPERTY(BlueprintReadWrite)
 	FVector2D NewMousePosition;
-
-	FVector2D STEdge1;
-	FVector2D STEdge2;
-
+	
 	UPROPERTY(BlueprintReadWrite)
 	bool CursorMoved = false;
-
-
+	
 	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObjectsInContainer
 	TArray<AActor*> ActorsInSelection;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsDecalSelect = false;
 
-	bool SelectionProcessed = false;
-
-
 
 protected:
-
-	bool CanMove = false;
 	
-	UPROPERTY(EditAnywhere)
-	UBoxComponent* SelectionArea;
-
 	float dist;
 	FVector SelectionSize; 
 	FVector CenterMouseLocation;
 	FVector MouseStart;
-	FVector MouseEnd; 
-	// Returns the viewport Size
-	FVector2D ViewportSize;
+	FVector MouseEnd;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box Selection")
 	bool bIsSelecting;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box Selection")
-	bool bIsMultiSelecting;
 	
 	bool bCheckCursor;
 	bool bCursorMove;
@@ -143,65 +121,15 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
-	UBlackboardComponent* BlackboardComponent;
-	
-private:
-	
-	float TargetZoom = 3000.f;
-	float ZoomSpeed = 2.f;
-	
-	// Susceptible to Change
-	int32 MaxZoom = 4000.f;
-	int32 MinZoom = 500.f;
-
-	float ZoomRate = 30;
-	float MouseDownTime;
-	float Dist;
-
-	
 public:
-	
-	void EventKey();
-	UFUNCTION(BlueprintCallable)
-	void StartBoxSelection();
-	UFUNCTION(BlueprintCallable)
-	void EndBoxSelection();
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<AActor*> SelectedUnits;
-
-	// Shift + LMS for multi-selection of individual units 
-	UFUNCTION()
-	void MultiSelect();
 
 	// Checks if we are selecting multiple ai
 	bool MultiselectCond;
-
-	// Checks if the cursor has moved from it original location
-	UFUNCTION(BlueprintCallable)
-	bool HasCursorMoved();
 	
-	// Hits the units that are selected
-	UFUNCTION(BlueprintCallable)
-	void UnitSelection();
-
-	UPROPERTY(EditAnywhere)
-	AGenericBaseAI* Decals;
-
 	bool bNotHit;
-
-	
-	// What happens when pawn selected (Single or MultiSelect) 
-	UFUNCTION(BlueprintCallable)
-	void HandlePawnSelection(APawn* HitPawn);
-	void HandleMarqueePawnSelection(AActor* HitPawn);
 	
 	// Logic for the Units decal apearing and disapearing
 	void UnitDecals(AGenericBaseAI* HitPawn);
-	
-	// Updates the Marquee edges
-	UFUNCTION(BlueprintCallable)
-	void UpdateFlow();
 	
 	FHitResult bHit; 
 	
