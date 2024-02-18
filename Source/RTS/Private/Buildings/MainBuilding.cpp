@@ -3,6 +3,8 @@
 
 #include "Buildings/MainBuilding.h"
 
+#include "Buildings/BarracksBuilding.h"
+
 // Sets default values
 AMainBuilding::AMainBuilding()
 {
@@ -11,11 +13,22 @@ AMainBuilding::AMainBuilding()
 
 }
 
+void AMainBuilding::SpawnUnits()
+{
+}
+
 // Called when the game starts or when spawned
 void AMainBuilding::BeginPlay()
 {
 	Super::BeginPlay();
-	
+	if (UChildActorComponent* ChildActor = FindComponentByClass<UChildActorComponent>())
+	{
+		if (ABarracksBuilding* BarracksBuilding = Cast<ABarracksBuilding>(ChildActor->GetChildActor()))
+		{
+			// The ChildActorComponent is of type ABarracksBuilding
+			BarracksBuilding->BuildingType = EBuildingTypes::Barracks;
+		}
+	}
 }
 
 // Called every frame

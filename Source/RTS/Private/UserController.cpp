@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
+#include "Buildings/BarracksBuilding.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/BoxComponent.h"
@@ -442,9 +443,39 @@ void AUserController::UnitSelection()
 
 			// Check if the hit actor is a pawn
 			APawn* HitPawn = Cast<APawn>(HitResult.GetActor());
-
 			if (HitPawn)
 			{
+				
+				if(AMainBuilding* HitBuilding = Cast<AMainBuilding>(HitPawn))
+				{
+					if (HitBuilding->BuildingType == EBuildingTypes::Barracks)
+					{
+						BuildingInterface->SpawnUnit(); 
+					}
+				}
+				
+				// Works -- But i dont why this Enum would work then
+				// Since i will have to cast everytime i want to use it???
+				// maybe this should only be done in the MainBuilding Cast?
+				// Moved it into main building, but now im consufed because how can we then define
+				// The children class of a certain building type? 
+				
+				/*if (HitBuilding && HitBuilding->BuildingType == EBuildingTypes::Barracks)
+				{*/
+				
+				// Check if it is of Type Barracks
+				/*//if(ABarracksBuilding* Barracks = Cast<ABarracksBuilding>(HitPawn))
+				if (HitPawn->IsA(ABarracksBuilding::StaticClass())) // Check if HitPawn is of type ABarracks
+				{
+					// HitPawn is of type ABarracks
+					// use EBuildingTypes enum for further processing
+					EBuildingTypes BuildingType = EBuildingTypes::Barracks;
+					
+					// Spawns Unit through interface 
+					BuildingInterface->SpawnUnit();
+				}*/
+				
+				
 				// Perform actions for the selected pawn
 				HandlePawnSelection(HitPawn);
 

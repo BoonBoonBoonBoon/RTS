@@ -88,11 +88,22 @@ public:
 		int32  owner;
 };
 
+// Types of Buildings
+UENUM(BlueprintType)
+enum class  EBuildingTypes : uint8 {
+	Hall,
+	Barracks,
+	Trader,
+	End
+};
+
 USTRUCT(BlueprintType)
-struct FBuildingStats : public FUnitStats
+struct FBuildingStats :  public FUnitStats
 {
 	GENERATED_USTRUCT_BODY()
 public:
+		
+	
 };
 
 USTRUCT(BlueprintType)

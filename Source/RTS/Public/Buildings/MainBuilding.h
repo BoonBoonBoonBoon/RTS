@@ -6,6 +6,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Interfaces/BuildingInterface.h"
+#include "../Enums/EnumsDatabase.h"
 #include "MainBuilding.generated.h"
 
 
@@ -18,6 +19,16 @@ public:
 	// Sets default values for this pawn's properties
 	AMainBuilding();
 
+	// Spawns the selected units into the current world.
+	void SpawnUnits();
+
+	UPROPERTY(EditAnywhere)
+	UDecalComponent* DecalComponent;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Building Type")
+	EBuildingTypes BuildingType;
+	
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

@@ -7,6 +7,8 @@
 #include "AIController.h"
 #include "NiagaraSystem.h"
 #include "UserCharacter.h"
+#include "Enums/EnumsDatabase.h"
+#include "Interfaces\BuildingInterface.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Engine/DecalActor.h"
@@ -52,7 +54,8 @@ public:
 	bool HasCursorMoved(); 
 	
 	void UnitSelection(); // Raycasts to Actors to check Hit Result
-	void HandlePawnSelection(APawn* HitPawn); 
+	void HandlePawnSelection(APawn* HitPawn);
+	
 	
 	void HandleMarqueePawnSelection(AActor* HitPawn); // Selects Actors Hit by Tool
 	void UpdateFlow(); // Draws Marquee Selection Tool 
@@ -81,7 +84,12 @@ protected:
 	
 	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
 	AUserCharacter* UserCharacter;
-	
+
+	// Building Interface that stores important Data for the building
+	IBuildingInterface* BuildingInterface;
+
+	// Checks What the type of building a pawn is
+	EBuildingTypes* BuildingType;
 	
 public:
 	
