@@ -8,6 +8,8 @@ ABarracksBuilding::ABarracksBuilding()
 	BuildingType = EBuildingTypes::Barracks;
 }
 
+/*
 void ABarracksBuilding::SpawnUnit()
 {
 }
+*/

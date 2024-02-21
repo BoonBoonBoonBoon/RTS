@@ -4,20 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Buildings/MainBuilding.h"
-#include "BarracksBuilding.generated.h"
+#include "MarketplaceBuilding.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RTS_API ABarracksBuilding : public AMainBuilding
+class RTS_API AMarketplaceBuilding : public AMainBuilding
 {
 	GENERATED_BODY()
-
 public:
-	ABarracksBuilding();
-
-	//void SpawnUnit();
+	
+	AMarketplaceBuilding();
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Building Type")
 	EBuildingTypes Type;

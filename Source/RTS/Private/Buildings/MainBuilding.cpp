@@ -4,6 +4,7 @@
 #include "Buildings/MainBuilding.h"
 
 #include "Buildings/BarracksBuilding.h"
+#include "Buildings/MarketplaceBuilding.h"
 
 // Sets default values
 AMainBuilding::AMainBuilding()
@@ -13,9 +14,9 @@ AMainBuilding::AMainBuilding()
 
 }
 
-void AMainBuilding::SpawnUnits()
+/*void AMainBuilding::SpawnUnits()
 {
-}
+}*/
 
 // Called when the game starts or when spawned
 void AMainBuilding::BeginPlay()
@@ -27,6 +28,10 @@ void AMainBuilding::BeginPlay()
 		{
 			// The ChildActorComponent is of type ABarracksBuilding
 			BarracksBuilding->BuildingType = EBuildingTypes::Barracks;
+		}
+		else if(AMarketplaceBuilding* MarketplaceBuilding = Cast<AMarketplaceBuilding>(ChildActor->GetChildActor()))
+		{
+			MarketplaceBuilding->BuildingType = EBuildingTypes::Trader;
 		}
 	}
 }

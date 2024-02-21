@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "UserController.h"
 #include "UObject/Interface.h"
 #include "../Enums/EnumsDatabase.h"
 #include "BuildingInterface.generated.h"
@@ -23,5 +24,18 @@ class RTS_API IBuildingInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+
+	// Called every frame
+	//virtual void Tick(float DeltaTime);
+	
+	void BuildingSelection(APawn* HitObject, AController* Controller);
+	
+	// Units are purchased
+	void PurchaseUnit();
+	// Units are spawned
 	void SpawnUnit();
+	// Purchase Materials from trader
+	void PurchaseGoods();
+
+	bool bHasSelectedBuild = false; // Empties array for building
 };

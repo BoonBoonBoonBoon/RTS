@@ -56,22 +56,20 @@ public:
 	void UnitSelection(); // Raycasts to Actors to check Hit Result
 	void HandlePawnSelection(APawn* HitPawn);
 	
-	
 	void HandleMarqueePawnSelection(AActor* HitPawn); // Selects Actors Hit by Tool
 	void UpdateFlow(); // Draws Marquee Selection Tool 
 
 
 protected:
-	
+	// Building Interface that stores important Data for the building
+
+	IBuildingInterface* BuildingInterface;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UNiagaraSystem* FXCursor;
 
 	UPROPERTY(EditAnywhere)
 	AGenericBaseAI* GenericBaseAI;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<AActor*> SelectedUnits;
 	
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* SelectionArea;
@@ -85,14 +83,13 @@ protected:
 	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
 	AUserCharacter* UserCharacter;
 
-	// Building Interface that stores important Data for the building
-	IBuildingInterface* BuildingInterface;
-
 	// Checks What the type of building a pawn is
 	EBuildingTypes* BuildingType;
 	
 public:
+
 	
+
 	UPROPERTY(BlueprintReadWrite)
 	FVector2D InitialMousePosition; // 2D World Space Current Mouse Position
 	
@@ -110,6 +107,8 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bIsDecalSelect = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<AActor*> SelectedUnits;
 
 protected:
 	

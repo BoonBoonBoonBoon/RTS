@@ -20,7 +20,7 @@ public:
 	AMainBuilding();
 
 	// Spawns the selected units into the current world.
-	void SpawnUnits();
+	//void SpawnUnits();
 
 	UPROPERTY(EditAnywhere)
 	UDecalComponent* DecalComponent;
