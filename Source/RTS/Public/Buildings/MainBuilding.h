@@ -9,6 +9,8 @@
 #include "../Enums/EnumsDatabase.h"
 #include "MainBuilding.generated.h"
 
+class UDecalComponent;
+class UBoxComponent;
 
 UCLASS()
 class RTS_API AMainBuilding : public APawn, public IBuildingInterface
@@ -22,12 +24,15 @@ public:
 	// Spawns the selected units into the current world.
 	//void SpawnUnits();
 
+	
 	UPROPERTY(EditAnywhere)
-	UDecalComponent* DecalComponent;
+	UDecalComponent* SelectedDecalComp;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Building Type")
 	EBuildingTypes BuildingType;
-	
+
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* BoxComponent;
 	
 protected:
 	// Called when the game starts or when spawned

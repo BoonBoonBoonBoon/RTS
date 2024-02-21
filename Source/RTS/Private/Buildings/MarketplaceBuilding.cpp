@@ -6,4 +6,5 @@
 AMarketplaceBuilding::AMarketplaceBuilding()
 {
 	BuildingType = EBuildingTypes::Trader;
+	
 }
