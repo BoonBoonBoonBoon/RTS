@@ -6,7 +6,6 @@
 #include "AIController.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
-#include "Buildings/BarracksBuilding.h"
 #include "Camera/CameraComponent.h"
 #include "Camera/PlayerCameraManager.h"
 #include "Components/BoxComponent.h"
@@ -445,8 +444,19 @@ void AUserController::UnitSelection()
 			APawn* HitPawn = Cast<APawn>(HitResult.GetActor());
 			if (HitPawn)
 			{
+				if(AMainBuilding* Build = Cast<AMainBuilding>(HitPawn))
+				{
+					EBuildingTypes BuildingType = BuildingInterface->GetBuildingType(Build);
+
+					// Convert the enum to a string for logging
+					FString BuildingTypeName = UEnum::GetValueAsString(BuildingType);
+
+					// Log the building type name
+					UE_LOG(LogTemp, Warning, TEXT("Building type name: %s"), *BuildingTypeName);
+				}
+				
 				// Cast to main building so we can access the buildingtypes
-				if(AMainBuilding* HitBuilding = Cast<AMainBuilding>(HitPawn))
+				/*if(AMainBuilding* HitBuilding = Cast<AMainBuilding>(HitPawn))
 				{
 					if (HitBuilding->BuildingType == EBuildingTypes::Barracks)
 					{
@@ -455,7 +465,7 @@ void AUserController::UnitSelection()
 					{
 						BuildingInterface->BuildingSelection(HitBuilding, this);
 					}
-				}
+				}*/
 				
 				// Perform actions for the selected pawn
 				HandlePawnSelection(HitPawn);

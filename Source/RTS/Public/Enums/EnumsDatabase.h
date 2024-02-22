@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Buildings/MainBuilding.h"
 #include "EnumsDatabase.generated.h"
 
 
@@ -83,19 +84,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 		int32  team;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 		int32  owner;
 };
 
-// Types of Buildings
-UENUM(BlueprintType)
-enum class  EBuildingTypes : uint8 {
-	Hall,
-	Barracks,
-	Trader,
-	End
-};
 
 USTRUCT(BlueprintType)
 struct FBuildingStats :  public FUnitStats
@@ -131,6 +123,6 @@ class RTS_API UEnumsDatabase : public UObject
 	
 public:
 	
-	/*EnumsDatabase();
-	~EnumsDatabase();*/
+		//EBuildingTypes GetBuildingType(AMainBuilding)
+	
 };

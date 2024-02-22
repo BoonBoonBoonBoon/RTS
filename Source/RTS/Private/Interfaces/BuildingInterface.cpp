@@ -2,14 +2,19 @@
 
 
 #include "Interfaces/BuildingInterface.h"
-
 #include "Buildings/MainBuilding.h"
 #include "Components/DecalComponent.h"
 
-/*void IBuildingInterface::Tick(float DeltaTime)
+
+EBuildingTypes IBuildingInterface::GetBuildingType(AMainBuilding* Building)
 {
-	UE_LOG(LogTemp, Warning, TEXT("TICK"));
-}*/
+	if (Building)
+	{
+		return Building->BuildingType;
+	}
+	// Return a default value or an "invalid" type if needed
+	return EBuildingTypes::Invalid;
+}
 
 void IBuildingInterface::BuildingSelection(APawn* HitObject, AController* Controller)
 {

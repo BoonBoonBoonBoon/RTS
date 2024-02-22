@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "UserController.h"
 #include "UObject/Interface.h"
-#include "../Enums/EnumsDatabase.h"
 #include "BuildingInterface.generated.h"
 
 // This class does not need to be modified.
@@ -25,8 +24,9 @@ class RTS_API IBuildingInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	// Called every frame
-	//virtual void Tick(float DeltaTime);
+	// Its he type VVVV Figure out a way to do it without EbuildingTypes or something?????
+	// Maybe aadd parameter?
+	static EBuildingTypes GetBuildingType(AMainBuilding* Building);
 	
 	void BuildingSelection(APawn* HitObject, AController* Controller);
 	
@@ -38,4 +38,13 @@ public:
 	void PurchaseGoods();
 
 	bool bHasSelectedBuild = false; // Empties array for building
+};
+
+// Types of Buildings
+UENUM(BlueprintType)
+enum class  EBuildingTypes : uint8 {
+	Hall,
+	Barracks,
+	Trader,
+	Invalid
 };

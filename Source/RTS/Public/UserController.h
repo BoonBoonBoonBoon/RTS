@@ -7,10 +7,10 @@
 #include "AIController.h"
 #include "NiagaraSystem.h"
 #include "UserCharacter.h"
-#include "Enums/EnumsDatabase.h"
 #include "Interfaces\BuildingInterface.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "Engine/DecalActor.h"
+#include "Enums/EnumsDatabase.h"
 #include "GameFramework/PlayerController.h"
 #include "UserController.generated.h"
 
@@ -55,10 +55,7 @@ public:
 	
 	void HandleMarqueePawnSelection(AActor* HitPawn); // Selects Actors Hit by Tool
 	void UpdateFlow(); // Draws Marquee Selection Tool 
-
 	
-	//IBuildingInterface* BuildingInterface;
-
 protected:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -81,11 +78,14 @@ protected:
 
 	// Checks What the type of building a pawn is
 	EBuildingTypes* BuildingType;
+
+private:
+		
+	// Building Interface that stores important Data for the building;
+	IBuildingInterface * BuildingInterface;
 	
 public:
-	
-	// Building Interface that stores important Data for the building;
-	 class IBuildingInterface * BuildingInterface;
+
 	
 	UPROPERTY(BlueprintReadWrite)
 	FVector2D InitialMousePosition; // 2D World Space Current Mouse Position

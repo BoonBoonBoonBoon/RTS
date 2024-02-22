@@ -6,14 +6,13 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
 #include "Interfaces/BuildingInterface.h"
-#include "../Enums/EnumsDatabase.h"
 #include "MainBuilding.generated.h"
 
 class UDecalComponent;
 class UBoxComponent;
 
 UCLASS()
-class RTS_API AMainBuilding : public APawn, public IBuildingInterface
+class RTS_API AMainBuilding : public APawn
 {
 	GENERATED_BODY()
 
