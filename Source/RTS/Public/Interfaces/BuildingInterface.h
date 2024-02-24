@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "BuildingInterface.generated.h"
 
+//class EBuildingTypes;	// Forward Declaration
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UBuildingInterface : public UInterface
@@ -16,6 +17,21 @@ class UBuildingInterface : public UInterface
 /**
  * 
  */
+
+// Types of Buildings
+UENUM(BlueprintType)
+enum class  EBuildingTypes : uint8
+{
+	Hall,
+	Barracks,
+	Trader,
+	Invalid
+};
+
+
+const char* to_string(EBuildingTypes e);
+
+
 class RTS_API IBuildingInterface
 {
 	GENERATED_BODY()
@@ -25,8 +41,9 @@ public:
 
 	// Its he type VVVV Figure out a way to do it without EbuildingTypes or something?????
 	// Maybe aadd parameter?
-	//static EBuildingTypes GetBuildingType(AMainBuilding* Building);
-	
+	static EBuildingTypes GetBuildingType(const APawn* Building);
+
+	void AssignBuildingType(EBuildingTypes BuildingType);
 	//void BuildingSelection(APawn* HitObject, AController* Controller);
 	
 	// Units are purchased
@@ -39,14 +56,3 @@ public:
 	bool bHasSelectedBuild = false; // Empties array for building
 };
 
-// Types of Buildings
-UENUM(BlueprintType)
-enum class  EBuildingTypes : uint8
-{
-	Hall,
-	Barracks,
-	Trader,
-	Invalid
-};
-
-const char* to_string(EBuildingTypes e);

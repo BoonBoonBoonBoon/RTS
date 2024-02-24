@@ -6,6 +6,7 @@
 #include "Buildings/MainBuilding.h"
 #include "MarketplaceBuilding.generated.h"
 
+
 /**
  * 
  */
@@ -17,6 +18,5 @@ public:
 	
 	AMarketplaceBuilding();
 	
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Building Type")
-	EBuildingTypes Type;*/
+	//void GetBuildingType(enum EBuildingTypes BuildingType);
 };

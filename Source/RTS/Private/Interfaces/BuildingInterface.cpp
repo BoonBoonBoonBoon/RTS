@@ -2,19 +2,45 @@
 
 
 #include "Interfaces/BuildingInterface.h"
-#include "Components/DecalComponent.h"
+#include "Buildings/BarracksBuilding.h"
+#include "Buildings/MainBuilding.h"
+#include "Buildings/MarketplaceBuilding.h"
 
 
-/*EBuildingTypes IBuildingInterface::GetBuildingType(AMainBuilding* Building)
+EBuildingTypes IBuildingInterface::GetBuildingType(const APawn* Building)
 {
-	if (Building)
+	if(Building)
 	{
-		//return Building->BuildingType;
-		return EBuildingTypes::Invalid;
+ 		if(const AMainBuilding* MBuilding = Cast<AMainBuilding>(Building))
+		{
+			return GetBuildingType(MBuilding);
+		}
+		else if(const ABarracksBuilding* BBuilding = Cast<ABarracksBuilding>(Building))
+		{
+			return GetBuildingType(BBuilding);
+		}
+		else if(const AMarketplaceBuilding* TBuilding = Cast<AMarketplaceBuilding>(Building))
+		{
+			return GetBuildingType(TBuilding);
+		}
 	}
-	// Return a default value or an "invalid" type if needed
-	return EBuildingTypes::Invalid;
-}*/
+}
+
+void IBuildingInterface::AssignBuildingType(EBuildingTypes BuildingType)
+{
+}
+
+
+/*
+if (Building)
+{
+	//return EBuildingTypes::Invalid;
+}
+// Return a default value or an "invalid" type if needed
+return EBuildingTypes::Invalid;
+*/
+
+
 
 /*void IBuildingInterface::BuildingSelection(APawn* HitObject, AController* Controller)
 {
@@ -49,7 +75,7 @@ void IBuildingInterface::SpawnUnit()
 
 void IBuildingInterface::PurchaseGoods()
 {
-	UE_PRIVATE_LOG(PREPROCESSOR_NOTHING, constexpr, LogTemp, Warning, L"Building Is Trader & Has interface ");
+	//UE_PRIVATE_LOG(PREPROCESSOR_NOTHING, constexpr, LogTemp, Warning, L"Building Is Trader & Has interface ");
 }
 
 const char* to_string(EBuildingTypes e)

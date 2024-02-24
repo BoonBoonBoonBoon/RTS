@@ -4,6 +4,8 @@
 #include "Buildings/MainBuilding.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
+#include "Interfaces/BuildingInterface.h"
+
 
 // Sets default values
 AMainBuilding::AMainBuilding()
@@ -18,6 +20,9 @@ AMainBuilding::AMainBuilding()
 	SelectedDecalComp = CreateDefaultSubobject<UDecalComponent>("Decal");
 	SelectedDecalComp->SetupAttachment(BoxComponent);
 	
+	// Set Tag to building
+	Tags.Add("Building");
+
 	
 }
 
@@ -29,6 +34,12 @@ AMainBuilding::AMainBuilding()
 void AMainBuilding::BeginPlay()
 {
 	Super::BeginPlay();
+	
+	UE_LOG(LogTemp, Warning, TEXT("Building tag added to %s"), *GetName());
+	
+	// EBuildingTypes BuildingType =IBuildingInterface::GetBuildingType(this);
+
+	
 	/*if (UChildActorComponent* ChildActor = FindComponentByClass<UChildActorComponent>())
 	{
 		if (ABarracksBuilding* BarracksBuilding = Cast<ABarracksBuilding>(ChildActor->GetChildActor()))

@@ -10,8 +10,10 @@
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 #include "GameFramework/Pawn.h"
+#include "Interfaces/BuildingInterface.h"
 #include "Kismet/GameplayStatics.h"
 
+class EbuildingTypes;
 
 #define mTraceChannel ECollisionChannel::ECC_Pawn
 
@@ -443,12 +445,51 @@ void AUserController::UnitSelection()
 			APawn* HitPawn = Cast<APawn>(HitResult.GetActor());
 			if (HitPawn)
 			{
-				// Dont Want to do a cast to here we want to cast to building interface
+				/*
+				UE_LOG(LogTemp, Warning, TEXT("HitPawn class: %s"), *HitPawn->GetClass()->GetName());
 
-				//BuildingInt
+				for (const FName& Tag : HitPawn->Tags)
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Tag: %s"), *Tag.ToString());
+				}
+				*/
 
+				
+				if(HitPawn->Tags.Contains("Building"))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Building Hit"));
+					
+					APawn* BuildingTypeName = Cast<APawn>(HitPawn);
+					
+						// If the building is a building
+						// Then we want to do something with it
+						BuildingInterface->GetBuildingType(HitPawn);
+					
+						// Log the name of the building
+						UE_LOG(LogTemp, Warning, TEXT("Building type name: %s"), BuildingTypeName);
+				}
+				else if(HitPawn->Owner->Tags.Contains(TEXT("Unit")))
+				{
+					// If the building is a unit
+					// Then we want to do something with it
+				}
+				else
+				{
+					
+				}
 
-
+				
+				/*if (BuildingInterface->BuildingTypes) // Check if the building interface is valid
+				{
+					BuildingInterface->GetBuildingType(HitPawn);
+					
+					//auto BuildingType = *BuildingInterface->BuildingTypes;
+					
+					
+					// Convert the enum to a string for logging
+					//FString BuildingTypeName = UEnum::GetValueAsString(BuildingType);
+					
+				}*/
 
 				
 				
