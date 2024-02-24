@@ -463,10 +463,22 @@ void AUserController::UnitSelection()
 					
 						// If the building is a building
 						// Then we want to do something with it
-						BuildingInterface->GetBuildingType(HitPawn);
+						//BuildingInterface->GetBuildingType(HitPawn);
+
 					
+						if(BuildingInterface)
+						{
+							EBuildingTypes B = BuildingInterface->GetBuildingType(HitPawn);
+							FString BuildingTypeName = UEnum::GetValueAsString(B);
+
+							//log the name of the building type
+							UE_LOG(LogTemp, Warning, TEXT("Building type name: %s"), *BuildingTypeName);
+						}
+
+					//UEnum::GetValueAsString(B);
 						// Log the name of the building
-						UE_LOG(LogTemp, Warning, TEXT("Building type name: %s"), BuildingTypeName);
+						//UE_LOG(LogTemp, Warning, TEXT("Building type name: %s"), BuildingTypeName);
+					
 				}
 				else if(HitPawn->Owner->Tags.Contains(TEXT("Unit")))
 				{

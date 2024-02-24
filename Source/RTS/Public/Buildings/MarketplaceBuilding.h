@@ -17,6 +17,9 @@ class RTS_API AMarketplaceBuilding : public AMainBuilding
 public:
 	
 	AMarketplaceBuilding();
+
+	EBuildingTypes GetBuildingType(EBuildingTypes BuildingType);
+	
 	
 	//void GetBuildingType(enum EBuildingTypes BuildingType);
 };

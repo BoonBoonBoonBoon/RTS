@@ -39,12 +39,20 @@ class RTS_API IBuildingInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	// Its he type VVVV Figure out a way to do it without EbuildingTypes or something?????
-	// Maybe aadd parameter?
+	IBuildingInterface();
+
+	// Returns the type of building
 	static EBuildingTypes GetBuildingType(const APawn* Building);
 
-	void AssignBuildingType(EBuildingTypes BuildingType);
-	//void BuildingSelection(APawn* HitObject, AController* Controller);
+	// Assigns the type of building
+	//static EBuildingTypes AssignBuildingType(const APawn* Building);
+
+	// Assigns the type of building
+	virtual void AssignBuildingType(EBuildingTypes BuildingType) = 0;
+	
+
+	
+	//void BuildingSelection(APawn* HitObject, AController* Controller)
 	
 	// Units are purchased
 	void PurchaseUnit();

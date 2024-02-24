@@ -37,22 +37,25 @@ void AMainBuilding::BeginPlay()
 	
 	UE_LOG(LogTemp, Warning, TEXT("Building tag added to %s"), *GetName());
 	
-	// EBuildingTypes BuildingType =IBuildingInterface::GetBuildingType(this);
+	
+	if (UChildActorComponent* ChildActor = FindComponentByClass<UChildActorComponent>())
+	{
+		/*for(const APawn* Building : ChildActor)
+		{
+			//BuildingType = IBuildingInterface::GetBuildingType(Building);
+		//	BuildingType = IBuildingInterface::AssignBuildingType(Building);
+			
+			BuildInt->AssignBuildingType(Building);
+			*/
+			
+			
+		//}
+	}
+}
+	
+// EBuildingTypes BuildingType =IBuildingInterface::GetBuildingType(this);
 
 	
-	/*if (UChildActorComponent* ChildActor = FindComponentByClass<UChildActorComponent>())
-	{
-		if (ABarracksBuilding* BarracksBuilding = Cast<ABarracksBuilding>(ChildActor->GetChildActor()))
-		{
-			// The ChildActorComponent is of type ABarracksBuilding
-			BarracksBuilding->BuildingType = EBuildingTypes::Barracks;
-		}
-		else if(AMarketplaceBuilding* MarketplaceBuilding = Cast<AMarketplaceBuilding>(ChildActor->GetChildActor()))
-		{
-			MarketplaceBuilding->BuildingType = EBuildingTypes::Trader;
-		}
-	}*/
-}
 
 // Called every frame
 void AMainBuilding::Tick(float DeltaTime)

@@ -23,12 +23,30 @@ EBuildingTypes IBuildingInterface::GetBuildingType(const APawn* Building)
 		{
 			return GetBuildingType(TBuilding);
 		}
+		
 	}
+	return {};
 }
 
-void IBuildingInterface::AssignBuildingType(EBuildingTypes BuildingType)
+/*EBuildingTypes IBuildingInterface::AssignBuildingType(const APawn* Building)
 {
-}
+	if(Building)
+	{
+		if(const AMainBuilding* MBuilding = Cast<AMainBuilding>(Building))
+		{
+			return EBuildingTypes::Invalid;
+		}
+		else if(const ABarracksBuilding* BBuilding = Cast<ABarracksBuilding>(Building))
+		{
+			return EBuildingTypes::Barracks;
+		}
+		else if(const AMarketplaceBuilding* TBuilding = Cast<AMarketplaceBuilding>(Building))
+		{
+			return EBuildingTypes::Trader;
+		}
+	}
+	return {};
+}*/
 
 
 /*
@@ -88,4 +106,8 @@ const char* to_string(EBuildingTypes e)
 	case EBuildingTypes::Invalid: return "Invalid";
 	default: return "unknown";
 	}
+}
+
+IBuildingInterface::IBuildingInterface()
+{
 }

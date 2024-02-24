@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Interfaces/BuildingInterface.h"
 #include "MainBuilding.generated.h"
 
 class UDecalComponent;
@@ -19,9 +20,12 @@ public:
 	// Sets default values for this pawn's properties
 	AMainBuilding();
 
+	// The building type of the current building.
+	IBuildingInterface* BuildInt;
+
+	
 	// Spawns the selected units into the current world.
 	//void SpawnUnits();
-
 	
 	UPROPERTY(EditAnywhere)
 	UDecalComponent* SelectedDecalComp;

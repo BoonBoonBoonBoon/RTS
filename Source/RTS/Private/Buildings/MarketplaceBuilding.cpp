@@ -8,6 +8,11 @@ AMarketplaceBuilding::AMarketplaceBuilding()
 	//BuildingType = EBuildingTypes::Trader;
 }
 
+EBuildingTypes AMarketplaceBuilding::GetBuildingType(EBuildingTypes BuildingType)
+{
+	return BuildingType = EBuildingTypes::Trader;
+}
+
 /*
 void AMarketplaceBuilding::GetBuildingType(EBuildingTypes BuildingType)
 {
