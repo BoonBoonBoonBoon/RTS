@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "UserController.h"
 #include "UObject/Interface.h"
 #include "BuildingInterface.generated.h"
 
@@ -26,9 +25,9 @@ public:
 
 	// Its he type VVVV Figure out a way to do it without EbuildingTypes or something?????
 	// Maybe aadd parameter?
-	static EBuildingTypes GetBuildingType(AMainBuilding* Building);
+	//static EBuildingTypes GetBuildingType(AMainBuilding* Building);
 	
-	void BuildingSelection(APawn* HitObject, AController* Controller);
+	//void BuildingSelection(APawn* HitObject, AController* Controller);
 	
 	// Units are purchased
 	void PurchaseUnit();
@@ -42,9 +41,12 @@ public:
 
 // Types of Buildings
 UENUM(BlueprintType)
-enum class  EBuildingTypes : uint8 {
+enum class  EBuildingTypes : uint8
+{
 	Hall,
 	Barracks,
 	Trader,
 	Invalid
 };
+
+const char* to_string(EBuildingTypes e);

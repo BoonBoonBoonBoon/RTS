@@ -2,21 +2,21 @@
 
 
 #include "Interfaces/BuildingInterface.h"
-#include "Buildings/MainBuilding.h"
 #include "Components/DecalComponent.h"
 
 
-EBuildingTypes IBuildingInterface::GetBuildingType(AMainBuilding* Building)
+/*EBuildingTypes IBuildingInterface::GetBuildingType(AMainBuilding* Building)
 {
 	if (Building)
 	{
-		return Building->BuildingType;
+		//return Building->BuildingType;
+		return EBuildingTypes::Invalid;
 	}
 	// Return a default value or an "invalid" type if needed
 	return EBuildingTypes::Invalid;
-}
+}*/
 
-void IBuildingInterface::BuildingSelection(APawn* HitObject, AController* Controller)
+/*void IBuildingInterface::BuildingSelection(APawn* HitObject, AController* Controller)
 {
 	if (AUserController* UserController = Cast<AUserController>(Controller))
 	{
@@ -34,7 +34,7 @@ void IBuildingInterface::BuildingSelection(APawn* HitObject, AController* Contro
 			}
 		}
 	}
-}
+}*/
 
 
 void IBuildingInterface::PurchaseUnit()
@@ -50,4 +50,16 @@ void IBuildingInterface::SpawnUnit()
 void IBuildingInterface::PurchaseGoods()
 {
 	UE_PRIVATE_LOG(PREPROCESSOR_NOTHING, constexpr, LogTemp, Warning, L"Building Is Trader & Has interface ");
+}
+
+const char* to_string(EBuildingTypes e)
+{
+	switch (e)
+	{
+	case EBuildingTypes::Hall: return "Hall";
+	case EBuildingTypes::Barracks: return "Barracks";
+	case EBuildingTypes::Trader: return "Trader";
+	case EBuildingTypes::Invalid: return "Invalid";
+	default: return "unknown";
+	}
 }

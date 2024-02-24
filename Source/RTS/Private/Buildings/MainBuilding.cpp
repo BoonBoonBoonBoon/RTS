@@ -2,9 +2,6 @@
 
 
 #include "Buildings/MainBuilding.h"
-
-#include "Buildings/BarracksBuilding.h"
-#include "Buildings/MarketplaceBuilding.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 
@@ -32,7 +29,7 @@ AMainBuilding::AMainBuilding()
 void AMainBuilding::BeginPlay()
 {
 	Super::BeginPlay();
-	if (UChildActorComponent* ChildActor = FindComponentByClass<UChildActorComponent>())
+	/*if (UChildActorComponent* ChildActor = FindComponentByClass<UChildActorComponent>())
 	{
 		if (ABarracksBuilding* BarracksBuilding = Cast<ABarracksBuilding>(ChildActor->GetChildActor()))
 		{
@@ -43,7 +40,7 @@ void AMainBuilding::BeginPlay()
 		{
 			MarketplaceBuilding->BuildingType = EBuildingTypes::Trader;
 		}
-	}
+	}*/
 }
 
 // Called every frame

@@ -5,7 +5,6 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "Interfaces/BuildingInterface.h"
 #include "MainBuilding.generated.h"
 
 class UDecalComponent;
@@ -26,9 +25,6 @@ public:
 	
 	UPROPERTY(EditAnywhere)
 	UDecalComponent* SelectedDecalComp;
-	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Building Type")
-	EBuildingTypes BuildingType;
 
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* BoxComponent;

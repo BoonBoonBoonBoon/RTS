@@ -5,7 +5,7 @@
 
 ABarracksBuilding::ABarracksBuilding()
 {
-	BuildingType = EBuildingTypes::Barracks;
+	//BuildingType = EBuildingTypes::Barracks;
 }
 
 /*

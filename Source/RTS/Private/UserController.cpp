@@ -2,7 +2,6 @@
 
 
 #include "UserController.h"
-
 #include "AIController.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
@@ -444,7 +443,16 @@ void AUserController::UnitSelection()
 			APawn* HitPawn = Cast<APawn>(HitResult.GetActor());
 			if (HitPawn)
 			{
-				if(AMainBuilding* Build = Cast<AMainBuilding>(HitPawn))
+				// Dont Want to do a cast to here we want to cast to building interface
+
+				//BuildingInt
+
+
+
+
+				
+				
+				/*if(AMainBuilding* Build = Cast<AMainBuilding>(HitPawn))
 				{
 					EBuildingTypes BuildingType = BuildingInterface->GetBuildingType(Build);
 
@@ -453,7 +461,7 @@ void AUserController::UnitSelection()
 
 					// Log the building type name
 					UE_LOG(LogTemp, Warning, TEXT("Building type name: %s"), *BuildingTypeName);
-				}
+				}*/
 				
 				// Cast to main building so we can access the buildingtypes
 				/*if(AMainBuilding* HitBuilding = Cast<AMainBuilding>(HitPawn))

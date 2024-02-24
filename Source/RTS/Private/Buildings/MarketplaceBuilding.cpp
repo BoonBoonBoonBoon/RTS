@@ -5,6 +5,6 @@
 
 AMarketplaceBuilding::AMarketplaceBuilding()
 {
-	BuildingType = EBuildingTypes::Trader;
+	//BuildingType = EBuildingTypes::Trader;
 	
 }

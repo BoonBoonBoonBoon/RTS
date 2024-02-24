@@ -7,14 +7,14 @@
 #include "AIController.h"
 #include "NiagaraSystem.h"
 #include "UserCharacter.h"
-#include "Interfaces\BuildingInterface.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "Engine/DecalActor.h"
-#include "Enums/EnumsDatabase.h"
 #include "GameFramework/PlayerController.h"
 #include "UserController.generated.h"
 
 
+class IBuildingInterface;
+//class EBuildingTypes;
 class UDecalComponent;
 class UBoxComponent;
 
@@ -75,15 +75,11 @@ protected:
 	
 	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
 	AUserCharacter* UserCharacter;
-
-	// Checks What the type of building a pawn is
-	EBuildingTypes* BuildingType;
-
-private:
-		
-	// Building Interface that stores important Data for the building;
-	IBuildingInterface * BuildingInterface;
 	
+	// Building Interface that stores important Data for the building;
+	//IBuildingInterface * BuildingInterface;
+	
+	TSharedPtr<IBuildingInterface> BuildingInterface;
 public:
 
 	

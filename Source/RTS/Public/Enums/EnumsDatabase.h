@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "Buildings/MainBuilding.h"
 #include "EnumsDatabase.generated.h"
 
 
@@ -89,6 +88,7 @@ public:
 };
 
 
+/*
 USTRUCT(BlueprintType)
 struct FBuildingStats :  public FUnitStats
 {
@@ -97,6 +97,9 @@ public:
 		
 	
 };
+*/
+
+
 
 USTRUCT(BlueprintType)
 struct FCharacterStats : public FUnitStats

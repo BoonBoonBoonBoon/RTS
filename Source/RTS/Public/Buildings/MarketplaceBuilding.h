@@ -17,6 +17,6 @@ public:
 	
 	AMarketplaceBuilding();
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Building Type")
-	EBuildingTypes Type;
+	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Building Type")
+	EBuildingTypes Type;*/
 };
