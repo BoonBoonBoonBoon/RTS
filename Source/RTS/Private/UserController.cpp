@@ -466,13 +466,13 @@ void AUserController::UnitSelection()
 						//BuildingInterface->GetBuildingType(HitPawn);
 
 					
-						if(BuildingInterface)
+						if(BuildingTypeName)
 						{
 							EBuildingTypes B = BuildingInterface->GetBuildingType(HitPawn);
-							FString BuildingTypeName = UEnum::GetValueAsString(B);
+							FString Building = UEnum::GetValueAsString(B);
 
 							//log the name of the building type
-							UE_LOG(LogTemp, Warning, TEXT("Building type name: %s"), *BuildingTypeName);
+							UE_LOG(LogTemp, Warning, TEXT("Building type name: %s"), *Building);
 						}
 
 					//UEnum::GetValueAsString(B);
