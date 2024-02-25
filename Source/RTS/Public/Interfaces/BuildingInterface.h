@@ -40,8 +40,6 @@ class RTS_API IBuildingInterface
 public:
 
 	IBuildingInterface();
-
-
 	
 	// Returns the type of building
 	static EBuildingTypes GetBuildingType(const APawn* Building);
@@ -49,13 +47,6 @@ public:
 	// Assigns the type of building
 
 	static EBuildingTypes AssignBuildingType(const APawn* Building);
-
-	// Assigns the type of building
-	//virtual void AssignBuildingType(EBuildingTypes BuildingType) = 0;
-	
-
-	
-	//void BuildingSelection(APawn* HitObject, AController* Controller)
 	
 	// Units are purchased
 	void PurchaseUnit();

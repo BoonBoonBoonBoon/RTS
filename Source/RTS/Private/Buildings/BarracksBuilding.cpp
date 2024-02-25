@@ -7,6 +7,7 @@ ABarracksBuilding::ABarracksBuilding()
 {
 	//BuildingType = EBuildingTypes::Barracks;
 
+	Tags.Add("Barracks");
 }
 
 /*

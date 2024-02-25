@@ -77,7 +77,7 @@ protected:
 	AUserCharacter* UserCharacter;
 	
 	// Building Interface that stores important Data for the building;
-	//IBuildingInterface * BuildingInterface;
+	IBuildingInterface * BuildingInterface;
 	
 	//TSharedPtr<IBuildingInterface> BuildingInterface;
 public:

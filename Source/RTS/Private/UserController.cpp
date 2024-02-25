@@ -462,15 +462,7 @@ void AUserController::UnitSelection()
 					// Check the building type instead of trying to cast to each building type
 					if (BuildingTypeName)
 					{
-						FString BTN = BuildingTypeName->GetClass()->GetName();
-						UE_LOG(LogTemp, Warning, TEXT("Building Hit"));
-
-						UE_LOG(LogTemp, Warning, TEXT("Building tag? %s"), *BTN);
-						
-						/*IBuildingInterface* BuildingInterface = Cast<IBuildingInterface>(BuildingTypeName);
-						BuildingInterface->AssignBuildingType(BuildingTypeName);
-				
-						// Convert enum value to string using UEnums::EnumToString*/
+						BuildingInterface->AssignBuildingType(BuildingTypeName); // Assign the building type
 					}
 				}
 				else if (HitPawn->Owner->Tags.Contains(TEXT("Unit")))
@@ -481,44 +473,6 @@ void AUserController::UnitSelection()
 				else
 				{
 				}
-
-				
-				/*if (BuildingInterface->BuildingTypes) // Check if the building interface is valid
-				{
-					BuildingInterface->GetBuildingType(HitPawn);
-					
-					//auto BuildingType = *BuildingInterface->BuildingTypes;
-					
-					
-					// Convert the enum to a string for logging
-					//FString BuildingTypeName = UEnum::GetValueAsString(BuildingType);
-					
-				}*/
-
-				
-				
-				/*if(AMainBuilding* Build = Cast<AMainBuilding>(HitPawn))
-				{
-					EBuildingTypes BuildingType = BuildingInterface->GetBuildingType(Build);
-
-					// Convert the enum to a string for logging
-					FString BuildingTypeName = UEnum::GetValueAsString(BuildingType);
-
-					// Log the building type name
-					UE_LOG(LogTemp, Warning, TEXT("Building type name: %s"), *BuildingTypeName);
-				}*/
-				
-				// Cast to main building so we can access the buildingtypes
-				/*if(AMainBuilding* HitBuilding = Cast<AMainBuilding>(HitPawn))
-				{
-					if (HitBuilding->BuildingType == EBuildingTypes::Barracks)
-					{
-						BuildingInterface->BuildingSelection(HitBuilding, this);
-					} else if(HitBuilding->BuildingType == EBuildingTypes::Trader)
-					{
-						BuildingInterface->BuildingSelection(HitBuilding, this);
-					}
-				}*/
 				
 				// Perform actions for the selected pawn
 				HandlePawnSelection(HitPawn);

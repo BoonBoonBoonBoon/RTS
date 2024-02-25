@@ -11,18 +11,13 @@ EBuildingTypes IBuildingInterface::GetBuildingType(const APawn* Building)
 {
 	if(Building)
 	{
- 		/*if(const AMainBuilding* MBuilding = Cast<AMainBuilding>(Building))
-		{
-			return GetBuildingType(MBuilding);
-		}
-		else */
 		if(const ABarracksBuilding* BBuilding = Cast<ABarracksBuilding>(Building))
 		{
-			//return GetBuildingType(BBuilding);
+			return GetBuildingType(BBuilding);
 		}
 		else if(const AMarketplaceBuilding* TBuilding = Cast<AMarketplaceBuilding>(Building))
 		{
-			//return GetBuildingType(TBuilding);
+			return {};
 		}
 	}
 	return {};
@@ -32,11 +27,7 @@ EBuildingTypes IBuildingInterface::AssignBuildingType(const APawn* Building)
 {
 	if(Building)
 	{
-		if(const AMainBuilding* MBuilding = Cast<AMainBuilding>(Building))
-		{
-			return EBuildingTypes::Invalid;
-		}
-		else if(const ABarracksBuilding* BBuilding = Cast<ABarracksBuilding>(Building))
+		if(const ABarracksBuilding* BBuilding = Cast<ABarracksBuilding>(Building))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Building type assigned: Barracks"));
 			return EBuildingTypes::Barracks;
@@ -45,6 +36,11 @@ EBuildingTypes IBuildingInterface::AssignBuildingType(const APawn* Building)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Building type assigned: Trader"));
 			return EBuildingTypes::Trader;
+		}
+		else if(const AMainBuilding* MBuilding = Cast<AMainBuilding>(Building))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Building type assigned: Main"));
+			return EBuildingTypes::Invalid;
 		}
 	}
 	return {};

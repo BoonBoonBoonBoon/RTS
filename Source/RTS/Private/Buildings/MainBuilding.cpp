@@ -31,7 +31,7 @@ AMainBuilding::AMainBuilding()
 	
 }
 
-EBuildingTypes AMainBuilding::AssignBuildingType(const APawn* Building)
+/*EBuildingTypes AMainBuilding::AssignBuildingType(const APawn* Building)
 {
 	if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Building))
 	{
@@ -68,7 +68,7 @@ void AMainBuilding::AssignChildrenBuildingTypes(const AMainBuilding* MainBuildin
 			// Loook up How to set a Pawn class to a specific enum and retrive that data?
 			////and then set the tag to that enum
 				
-			}*/
+			}#1#
 			
 		}
 		else if (const ABarracksBuilding* BarracksChild = Cast<ABarracksBuilding>(Child))
@@ -79,7 +79,7 @@ void AMainBuilding::AssignChildrenBuildingTypes(const AMainBuilding* MainBuildin
 			
 		}
 	}
-}
+}*/
 
 /*void AMainBuilding::SpawnUnits()
 {
@@ -91,9 +91,11 @@ void AMainBuilding::BeginPlay()
 	Super::BeginPlay();
 
 
+	/*
 	AssignBuildingType(this);
 	AssignChildrenBuildingTypes(this);
 	UE_LOG(LogTemp, Warning, TEXT("Building tag added to %s"), *GetName());
+	*/
 	
 	
 	/*if (UChildActorComponent* ChildActor = FindComponentByClass<UChildActorComponent>())

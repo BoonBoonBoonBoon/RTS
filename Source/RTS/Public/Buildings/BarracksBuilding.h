@@ -6,6 +6,7 @@
 #include "Buildings/MainBuilding.h"
 #include "BarracksBuilding.generated.h"
 
+
 /**
  * 
  */
@@ -17,6 +18,8 @@ class RTS_API ABarracksBuilding : public AMainBuilding
 public:
 	ABarracksBuilding();
 
+
+	
 	//void SpawnUnit();
 	
 	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Building Type")
