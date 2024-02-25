@@ -41,14 +41,17 @@ public:
 
 	IBuildingInterface();
 
+
+	
 	// Returns the type of building
 	static EBuildingTypes GetBuildingType(const APawn* Building);
 
 	// Assigns the type of building
-	//static EBuildingTypes AssignBuildingType(const APawn* Building);
+
+	static EBuildingTypes AssignBuildingType(const APawn* Building);
 
 	// Assigns the type of building
-	virtual void AssignBuildingType(EBuildingTypes BuildingType) = 0;
+	//virtual void AssignBuildingType(EBuildingTypes BuildingType) = 0;
 	
 
 	

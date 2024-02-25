@@ -2,11 +2,16 @@
 
 
 #include "Buildings/MainBuilding.h"
+
+#include "Buildings/BarracksBuilding.h"
+#include "Buildings/MarketplaceBuilding.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 #include "Interfaces/BuildingInterface.h"
 
 
+class AMarketplaceBuilding;
+class ABarracksBuilding;
 // Sets default values
 AMainBuilding::AMainBuilding()
 {
@@ -26,6 +31,56 @@ AMainBuilding::AMainBuilding()
 	
 }
 
+EBuildingTypes AMainBuilding::AssignBuildingType(const APawn* Building)
+{
+	if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Building))
+	{
+		return EBuildingTypes::Invalid;
+	}
+	else if (const ABarracksBuilding* Barracks = Cast<ABarracksBuilding>(Building))
+	{
+		return EBuildingTypes::Barracks;
+	}
+	else if (const AMarketplaceBuilding* Marketplace = Cast<AMarketplaceBuilding>(Building))
+	{
+		return EBuildingTypes::Trader;
+	}
+
+	return EBuildingTypes::Invalid;
+}
+
+void AMainBuilding::AssignChildrenBuildingTypes(const AMainBuilding* MainBuilding)
+{
+	TArray<AActor*> Children;
+	MainBuilding->GetAttachedActors(Children);
+
+	for (AActor* Child : Children)
+	{
+		if (const AMarketplaceBuilding* MarketplaceChild = Cast<AMarketplaceBuilding>(Child))
+		{
+			EBuildingTypes BuildingType = AssignBuildingType(MarketplaceChild);
+			// Additional logic for Marketplace child
+			/*if(static_cast<bool>(BuildingType))
+			{
+
+			Give the building the Tag (Barracks since this is impossible to setup idk how to access enums)
+
+			// Loook up How to set a Pawn class to a specific enum and retrive that data?
+			////and then set the tag to that enum
+				
+			}*/
+			
+		}
+		else if (const ABarracksBuilding* BarracksChild = Cast<ABarracksBuilding>(Child))
+		{
+			EBuildingTypes BuildingType = AssignBuildingType(BarracksChild);
+			// Additional logic for Barracks child
+
+			
+		}
+	}
+}
+
 /*void AMainBuilding::SpawnUnits()
 {
 }*/
@@ -34,11 +89,14 @@ AMainBuilding::AMainBuilding()
 void AMainBuilding::BeginPlay()
 {
 	Super::BeginPlay();
-	
+
+
+	AssignBuildingType(this);
+	AssignChildrenBuildingTypes(this);
 	UE_LOG(LogTemp, Warning, TEXT("Building tag added to %s"), *GetName());
 	
 	
-	if (UChildActorComponent* ChildActor = FindComponentByClass<UChildActorComponent>())
+	/*if (UChildActorComponent* ChildActor = FindComponentByClass<UChildActorComponent>())
 	{
 		/*for(const APawn* Building : ChildActor)
 		{
@@ -46,11 +104,9 @@ void AMainBuilding::BeginPlay()
 		//	BuildingType = IBuildingInterface::AssignBuildingType(Building);
 			
 			BuildInt->AssignBuildingType(Building);
-			*/
-			
-			
+			#1#
 		//}
-	}
+	}*/
 }
 	
 // EBuildingTypes BuildingType =IBuildingInterface::GetBuildingType(this);

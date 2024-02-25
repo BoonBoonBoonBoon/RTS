@@ -454,44 +454,32 @@ void AUserController::UnitSelection()
 				}
 				*/
 
-				
-				if(HitPawn->Tags.Contains("Building"))
+
+				if (HitPawn->Tags.Contains("Building"))
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Building Hit"));
-					
 					APawn* BuildingTypeName = Cast<APawn>(HitPawn);
-					
-						// If the building is a building
-						// Then we want to do something with it
-						//BuildingInterface->GetBuildingType(HitPawn);
 
-					
-						if(BuildingTypeName)
-						{
-							TSharedPtr<IBuildingInterface> BuildingInterface = BuildingTypeName->GetInterface<IBuildingInterface>();
-							
-							//BuildingInterface->GetBuildingType(HitPawn);
-							
-							/*EBuildingTypes B = BuildingInterface->GetBuildingType(HitPawn);
-							FString Building = UEnum::GetValueAsString(B);
-							*/
-							//log the name of the building type
-							//UE_LOG(LogTemp, Warning, TEXT("Building type name: %s"), *Building);
-						}
+					// Check the building type instead of trying to cast to each building type
+					if (BuildingTypeName)
+					{
+						FString BTN = BuildingTypeName->GetClass()->GetName();
+						UE_LOG(LogTemp, Warning, TEXT("Building Hit"));
 
-					//UEnum::GetValueAsString(B);
-						// Log the name of the building
-						//UE_LOG(LogTemp, Warning, TEXT("Building type name: %s"), BuildingTypeName);
-					
+						UE_LOG(LogTemp, Warning, TEXT("Building tag? %s"), *BTN);
+						
+						/*IBuildingInterface* BuildingInterface = Cast<IBuildingInterface>(BuildingTypeName);
+						BuildingInterface->AssignBuildingType(BuildingTypeName);
+				
+						// Convert enum value to string using UEnums::EnumToString*/
+					}
 				}
-				else if(HitPawn->Owner->Tags.Contains(TEXT("Unit")))
+				else if (HitPawn->Owner->Tags.Contains(TEXT("Unit")))
 				{
 					// If the building is a unit
 					// Then we want to do something with it
 				}
 				else
 				{
-					
 				}
 
 				

@@ -79,6 +79,7 @@ protected:
 	// Building Interface that stores important Data for the building;
 	//IBuildingInterface * BuildingInterface;
 	
+	//TSharedPtr<IBuildingInterface> BuildingInterface;
 public:
 
 	

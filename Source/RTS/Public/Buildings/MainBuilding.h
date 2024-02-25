@@ -20,6 +20,10 @@ public:
 	// Sets default values for this pawn's properties
 	AMainBuilding();
 
+	static EBuildingTypes AssignBuildingType(const APawn* Building);
+	static void AssignChildrenBuildingTypes(const AMainBuilding* MainBuilding);
+
+	
 	// The building type of the current building.
 	IBuildingInterface* BuildInt;
 

@@ -15,20 +15,20 @@ EBuildingTypes IBuildingInterface::GetBuildingType(const APawn* Building)
 		{
 			return GetBuildingType(MBuilding);
 		}
-		else */if(const ABarracksBuilding* BBuilding = Cast<ABarracksBuilding>(Building))
+		else */
+		if(const ABarracksBuilding* BBuilding = Cast<ABarracksBuilding>(Building))
 		{
-			return GetBuildingType(BBuilding);
+			//return GetBuildingType(BBuilding);
 		}
 		else if(const AMarketplaceBuilding* TBuilding = Cast<AMarketplaceBuilding>(Building))
 		{
-			return GetBuildingType(TBuilding);
+			//return GetBuildingType(TBuilding);
 		}
-		
 	}
 	return {};
 }
 
-/*EBuildingTypes IBuildingInterface::AssignBuildingType(const APawn* Building)
+EBuildingTypes IBuildingInterface::AssignBuildingType(const APawn* Building)
 {
 	if(Building)
 	{
@@ -38,15 +38,17 @@ EBuildingTypes IBuildingInterface::GetBuildingType(const APawn* Building)
 		}
 		else if(const ABarracksBuilding* BBuilding = Cast<ABarracksBuilding>(Building))
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Building type assigned: Barracks"));
 			return EBuildingTypes::Barracks;
 		}
 		else if(const AMarketplaceBuilding* TBuilding = Cast<AMarketplaceBuilding>(Building))
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Building type assigned: Trader"));
 			return EBuildingTypes::Trader;
 		}
 	}
 	return {};
-}*/
+}
 
 
 /*
@@ -110,4 +112,5 @@ const char* to_string(EBuildingTypes e)
 
 IBuildingInterface::IBuildingInterface()
 {
+	
 }
