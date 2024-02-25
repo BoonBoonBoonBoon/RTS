@@ -11,11 +11,11 @@ EBuildingTypes IBuildingInterface::GetBuildingType(const APawn* Building)
 {
 	if(Building)
 	{
- 		if(const AMainBuilding* MBuilding = Cast<AMainBuilding>(Building))
+ 		/*if(const AMainBuilding* MBuilding = Cast<AMainBuilding>(Building))
 		{
 			return GetBuildingType(MBuilding);
 		}
-		else if(const ABarracksBuilding* BBuilding = Cast<ABarracksBuilding>(Building))
+		else */if(const ABarracksBuilding* BBuilding = Cast<ABarracksBuilding>(Building))
 		{
 			return GetBuildingType(BBuilding);
 		}
