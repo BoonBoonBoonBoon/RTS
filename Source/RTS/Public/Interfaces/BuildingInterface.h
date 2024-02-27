@@ -41,12 +41,23 @@ public:
 
 	IBuildingInterface();
 	
-	// Returns the type of building
+	// Returns the type of building.
 	static EBuildingTypes GetBuildingType(const APawn* Building);
 
-	// Assigns the type of building
-
+	// Assigns the type of building.
 	static EBuildingTypes AssignBuildingType(const APawn* Building);
+
+	void CastTo(APawn* Pawn);
+
+	
+	// Selects the building for tasks 
+	void FillArray(TArray<APawn*> Building);
+
+	// Empties the array for building
+	void EmptyArray(TArray<APawn*> Building);
+
+	// Is the building selected
+	bool IsBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck);
 	
 	// Units are purchased
 	void PurchaseUnit();

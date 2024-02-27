@@ -56,16 +56,6 @@ void AGenericBaseAI::BeginPlay()
 {
 	Super::BeginPlay();
 	SelectedDecalComp->SetVisibility(false);
-
-	/*if(AController* C = GetController())
-	{
-		// Log the name of the controller
-		UE_LOG(LogTemp, Warning, TEXT("Current Controller Name: %s"), *C->GetName());
-	} else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("No controller found."));
-	}
-	*/
 	
 }
 

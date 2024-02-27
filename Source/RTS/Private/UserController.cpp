@@ -27,12 +27,6 @@ AUserController::AUserController()
 	// Used to check if we are drawing or selecting units.
 	bIsSelecting = false;
 
-	// Create a decal in the world to show the cursor's location
-	/*CursorToWorld = CreateDefaultSubobject<UDecalComponent>("CursorToWorld");
-	CursorToWorld->DecalSize = FVector(16.0f, 32.0f, 32.0f);
-	CursorToWorld->SetRelativeRotation(FRotator(90.0f, 0.0f, 0.0f).Quaternion());
-	*/
-
 	SelectionArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SelectionArea"));
 	SelectionArea->SetBoxExtent(FVector(0));
 }
@@ -53,7 +47,7 @@ void AUserController::EdgeScrolling()
 	GetMousePosition(MousePosition.X, MousePosition.Y);
 
 	// Check if the cursor is within the viewport bounds
-	bool bCursorOnScreen = MousePosition.X >= 0.0f && MousePosition.X <= static_cast<float>(ViewportSizeX)
+	const bool bCursorOnScreen = MousePosition.X >= 0.0f && MousePosition.X <= static_cast<float>(ViewportSizeX)
 		&& MousePosition.Y >= 0.0f && MousePosition.Y <= static_cast<float>(ViewportSizeY);
 
 	bCheckCursor = bCursorOnScreen;
@@ -61,7 +55,7 @@ void AUserController::EdgeScrolling()
 	// Actions to take is the cursor is on the screen
 	if (bCursorOnScreen)
 	{
-		FString MousePosString = FString::Printf(
+		const FString MousePosString = FString::Printf(
 			TEXT("Mouse Position: X=%.2f, Y=%.2f"), MousePosition.X, MousePosition.Y);
 
 		// Draw the string on the screen
@@ -71,7 +65,7 @@ void AUserController::EdgeScrolling()
 		if (MousePosition.X < 70)
 		{
 			// Moves the camera to the left
-			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+			const FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
 			FVector LeftVector = FVector::CrossProduct(ForwardVector, FVector::UpVector);
 			LeftVector.Normalize();
 			MoveCamera(LeftVector);
@@ -81,7 +75,7 @@ void AUserController::EdgeScrolling()
 		else if (MousePosition.X > 1850)
 		{
 			// Moves Camera to the right
-			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+			const FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
 			FVector RightVector = -FVector::CrossProduct(ForwardVector, FVector::UpVector);
 			RightVector.Normalize();
 			MoveCamera(RightVector);
@@ -93,7 +87,7 @@ void AUserController::EdgeScrolling()
 		// Move Forward
 		if (MousePosition.Y < 50)
 		{
-			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+			const FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
 			MoveCamera(ForwardVector);
 
 			bCursorMove = true;
@@ -101,8 +95,8 @@ void AUserController::EdgeScrolling()
 		else if (MousePosition.Y > 920)
 		{
 			// Backwards
-			FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
-			FVector OppositeForwardVector = -ForwardVector;
+			const FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+			const FVector OppositeForwardVector = -ForwardVector;
 			MoveCamera(OppositeForwardVector);
 
 			bCursorMove = true;
@@ -116,7 +110,7 @@ void AUserController::EdgeScrolling_WASD_Up(float Value)
 {
 	if (Value)
 	{
-		FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+		const FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
 		MoveCamera(ForwardVector);
 	}
 }
@@ -125,8 +119,8 @@ void AUserController::EdgeScrolling_WASD_Down(float Value)
 {
 	if (Value)
 	{
-		FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
-		FVector OppositeForwardVector = -ForwardVector;
+		const FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+		const FVector OppositeForwardVector = -ForwardVector;
 		MoveCamera(OppositeForwardVector);
 	}
 }
@@ -135,7 +129,7 @@ void AUserController::EdgeScrolling_WASD_Right(float Value)
 {
 	if (Value)
 	{
-		FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+		const FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
 		FVector RightVector = -FVector::CrossProduct(ForwardVector, FVector::UpVector);
 		RightVector.Normalize();
 		MoveCamera(RightVector);
@@ -147,7 +141,7 @@ void AUserController::EdgeScrolling_WASD_Left(float Value)
 {
 	if (Value)
 	{
-		FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
+		const FVector ForwardVector = UserCharacter->TopDownCameraComponent->GetForwardVector();
 		FVector LeftVector = FVector::CrossProduct(ForwardVector, FVector::UpVector);
 		LeftVector.Normalize();
 		MoveCamera(LeftVector);
@@ -157,14 +151,8 @@ void AUserController::EdgeScrolling_WASD_Left(float Value)
 
 void AUserController::MoveCamera(const FVector& Direction)
 {
-	// Returns the current view target 
-	//APlayerCameraManager* CameraManager = Cast<APlayerCameraManager>(GetViewTarget());
-
 	if (AActor* ViewTarget = GetViewTarget())
 	{
-		// Log information about the CameraManager
-		//UE_LOG(LogTemp, Warning, TEXT("ViewTarget found!"));
-
 		if (bCursorMove)
 		{
 			const float CameraSpeed = 500;
@@ -205,7 +193,7 @@ void AUserController::PlayerTick(float DeltaTime)
 	}*/
 	EdgeScrolling();
 	UpdateFlow();
-
+	UE_LOG(LogTemp, Warning, TEXT("Number of units in the array: %d"), SelectedBuilding.Num());
 	// Defined User Macro, Gets Trace to pawn under cursor. 
 	GetHitResultUnderCursor(mTraceChannel, true, bHit);
 }
@@ -323,15 +311,13 @@ void AUserController::EventKey()
 
 void AUserController::StartBoxSelection()
 {
-	/* Set this up at somepoint, can setup double click, this move camera around.*/
-	//UAIBlueprintHelperLibrary::SimpleMoveToLocation(this, TargetLocation);
-
 	// Get the Coordinates of the mouse when clicked
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
 		bIsSelecting = true;
+		
 		UnitSelection();
-
+		
 		if (bNotHit)
 		{
 			//  loops through all the actors in the class 
@@ -346,8 +332,12 @@ void AUserController::StartBoxSelection()
 					UE_LOG(LogTemp, Warning, TEXT("Array Wiped"));
 				}
 			}
-			// Clear the SelectedUnits array after processing all elements
+			for (APawn* dunno : SelectedBuilding)
+			{
+				BuildingInterface->CastTo(dunno);
+			}
 			SelectedUnits.Empty();
+			SelectedBuilding.Empty();
 		}
 	}
 }
@@ -427,43 +417,31 @@ void AUserController::UnitSelection()
 		                                         WorldMouseLocation + WorldMouseDirection * TraceDistance,
 		                                         ECC_Visibility, CollisionParams))
 		{
-			// The Spawn Location for the collison box to spawn
-			//BoxHitLocation = HitResult.Location;
-			MouseStart = bHit.Location;
-			//GetHitResultUnderCursor()
 			// Check if its either
 			// Damageable
 			// Resource
 
-			// Checks if multiselect, if so we dont need to click off deselect
+			MouseStart = bHit.Location;
 
-			// Want it so when i select with single or multi it will select.
-			// But if i dont multiselect the next one it will just move the next one.
-			//
-
-			// Check if the hit actor is a pawn
-			APawn* HitPawn = Cast<APawn>(HitResult.GetActor());
-			if (HitPawn)
+			if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
 			{
-				/*
-				UE_LOG(LogTemp, Warning, TEXT("HitPawn class: %s"), *HitPawn->GetClass()->GetName());
-
-				for (const FName& Tag : HitPawn->Tags)
+				if (BuildingInterface->IsBuildingSelected(SelectedBuilding, HitPawn))
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Tag: %s"), *Tag.ToString());
+					UE_LOG(LogTemp, Warning, TEXT("Returned True"));
+					return;
 				}
-				*/
-
+				else if (SelectedBuilding.Num() > 0) // Empties the Array before selecting a new building
+				{
+					BuildingInterface->EmptyArray(SelectedBuilding);
+				}
 
 				if (HitPawn->Tags.Contains("Building"))
 				{
-					APawn* BuildingTypeName = Cast<APawn>(HitPawn);
+					SelectedBuilding.AddUnique(HitPawn); // Adds the building to the array
 
-					// Check the building type instead of trying to cast to each building type
-					if (BuildingTypeName)
-					{
-						BuildingInterface->AssignBuildingType(BuildingTypeName); // Assign the building type
-					}
+					BuildingInterface->AssignBuildingType(HitPawn); // Assign the building type
+
+					BuildingInterface->FillArray(SelectedBuilding); // Selection process for the building
 				}
 				else if (HitPawn->Owner->Tags.Contains(TEXT("Unit")))
 				{
@@ -473,9 +451,9 @@ void AUserController::UnitSelection()
 				else
 				{
 				}
-				
+
 				// Perform actions for the selected pawn
-				HandlePawnSelection(HitPawn);
+				//HandlePawnSelection(HitPawn);
 
 				// Will run no matter what 
 				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);

@@ -103,6 +103,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> SelectedUnits;
 
+	// Stores the building type.
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<APawn*> SelectedBuilding;
 protected:
 	
 	float dist;
