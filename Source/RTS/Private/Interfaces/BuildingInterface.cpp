@@ -52,6 +52,7 @@ void IBuildingInterface::CastTo(APawn* Pawn)
 	if(const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Pawn))
 	{
 		MainBuilding->SelectedDecalComp->SetVisibility(false);
+		UE_LOG(LogTemp, Warning, TEXT("Array Wiped - Buildings"));
 	}	
 }
 

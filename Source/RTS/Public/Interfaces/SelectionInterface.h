@@ -39,7 +39,10 @@ public:
 	virtual void UnitSelection();
 
 	// What happens when pawn selected
-	void HandlePawnSelection(APawn* HitPawn);
+	void UnitSelection(TArray<AActor*> Selected, AActor* HitActor);
+
+	void MultiUnitSelection(TArray<AActor*> Selected, AActor* HitActor);
+	
 	// Updates the Marquee edges 
 	void Update();
 };

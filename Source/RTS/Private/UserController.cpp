@@ -6,7 +6,6 @@
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "Camera/CameraComponent.h"
-#include "Camera/PlayerCameraManager.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 #include "GameFramework/Pawn.h"
@@ -193,7 +192,7 @@ void AUserController::PlayerTick(float DeltaTime)
 	}*/
 	EdgeScrolling();
 	UpdateFlow();
-	UE_LOG(LogTemp, Warning, TEXT("Number of units in the array: %d"), SelectedBuilding.Num());
+	//UE_LOG(LogTemp, Warning, TEXT("Number of units in the array: %d"), SelectedBuilding.Num());
 	// Defined User Macro, Gets Trace to pawn under cursor. 
 	GetHitResultUnderCursor(mTraceChannel, true, bHit);
 }
@@ -294,9 +293,7 @@ void AUserController::EventKey()
 										{
 											GenAI->LocationToMove = Location;
 											GenAI->ValidHit = true;
-
-											// Waypoint 
-											//;pWayPointActor->SpawnActorLocation(HitResult.Location);
+											
 										}
 									}
 								}
@@ -329,15 +326,15 @@ void AUserController::StartBoxSelection()
 					// turns vis off
 					GenAI->SelectedDecalComp->SetVisibility(false);
 					//UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
-					UE_LOG(LogTemp, Warning, TEXT("Array Wiped"));
+					UE_LOG(LogTemp, Warning, TEXT("Array Wiped - Units"));
 				}
 			}
-			for (APawn* dunno : SelectedBuilding)
+			/*for (APawn* P : SelectedBuilding)
 			{
-				BuildingInterface->CastTo(dunno);
-			}
+				BuildingInterface->CastTo(P);
+			}*/
 			SelectedUnits.Empty();
-			SelectedBuilding.Empty();
+			//SelectedBuilding.Empty();
 		}
 	}
 }
@@ -346,9 +343,7 @@ void AUserController::StartBoxSelection()
 void AUserController::EndBoxSelection()
 {
 	bIsSelecting = false;
-	//UE_LOG(LogTemp, Warning, TEXT("StartBoxSelection ended"));
 	CursorMoved = false;
-	//FVector2D SingleSelectionMouse;
 	MultiselectCond = false;
 	bIsDecalSelect = false;
 
@@ -384,9 +379,7 @@ bool AUserController::HasCursorMoved()
 	{
 		CursorMoved = true;
 		return true;
-		//return CurrentCursor != InitialMousePosition;
 	}
-
 	return false;
 }
 
@@ -417,14 +410,26 @@ void AUserController::UnitSelection()
 		                                         WorldMouseLocation + WorldMouseDirection * TraceDistance,
 		                                         ECC_Visibility, CollisionParams))
 		{
-			// Check if its either
-			// Damageable
-			// Resource
-
 			MouseStart = bHit.Location;
 
-			if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
+			if(AActor* HitActor = HitResult.GetActor())
 			{
+				// Only hit One Type of pawn
+				if (HitActor->Tags.Contains("Unit"))
+				{
+					HandlePawnSelection(HitActor);
+				}
+				bNotHit = false;
+			}
+			else if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
+			{
+				if (HitPawn->Tags.Contains("Building"))
+				{
+				}
+
+
+				
+				/*
 				if (BuildingInterface->IsBuildingSelected(SelectedBuilding, HitPawn))
 				{
 					UE_LOG(LogTemp, Warning, TEXT("Returned True"));
@@ -434,8 +439,13 @@ void AUserController::UnitSelection()
 				{
 					BuildingInterface->EmptyArray(SelectedBuilding);
 				}
-
-				if (HitPawn->Tags.Contains("Building"))
+				
+				if (HitPawn->Owner->Tags.Contains(TEXT("Unit")))
+				{
+					// Perform actions for the selected pawn
+					HandlePawnSelection(HitPawn);
+				}
+				else if (HitPawn->Tags.Contains("Building"))
 				{
 					SelectedBuilding.AddUnique(HitPawn); // Adds the building to the array
 
@@ -443,18 +453,9 @@ void AUserController::UnitSelection()
 
 					BuildingInterface->FillArray(SelectedBuilding); // Selection process for the building
 				}
-				else if (HitPawn->Owner->Tags.Contains(TEXT("Unit")))
-				{
-					// If the building is a unit
-					// Then we want to do something with it
-				}
-				else
-				{
-				}
-
-				// Perform actions for the selected pawn
-				//HandlePawnSelection(HitPawn);
-
+				*/
+				
+				
 				// Will run no matter what 
 				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
 				bNotHit = false;
@@ -467,7 +468,7 @@ void AUserController::UnitSelection()
 	}
 }
 
-void AUserController::HandlePawnSelection(APawn* HitPawn)
+void AUserController::HandlePawnSelection(AActor* HitPawn)
 {
 	if (HitPawn)
 	{
@@ -476,69 +477,15 @@ void AUserController::HandlePawnSelection(APawn* HitPawn)
 		// If it isn't multi-select, empty the array first
 		if (MultiselectCond)
 		{
-			// Loops through all possible actors 
-			SelectedUnits.AddUnique(HitPawn);
-			for (AActor* Src : SelectedUnits)
-			{
-				Src->Tags.AddUnique(TEXT("SelectedPawn"));
-				if (Src->Tags.Contains(TEXT("SelectedPawn")))
-				{
-					if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
-					{
-						BaseAI->SelectedDecalComp->SetVisibility(true);
-						UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
-					}
-				}
-			}
+			UE_LOG(LogTemp, Warning, TEXT("HandlePawnSelection - MultiSelect"));
+			SelectionInterface->MultiUnitSelection(SelectedUnits, HitPawn);
 		}
 		else
 		{
 			// Single Left Click
 			if (SelectedUnits.Num() == 0)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("empty"));
-
-				SelectedUnits.AddUnique(HitPawn);
-				for (AActor* Src : SelectedUnits)
-				{
-					Src->Tags.AddUnique(TEXT("SelectedPawn"));
-					if (Src->Tags.Contains(TEXT("SelectedPawn")))
-					{
-						if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
-						{
-							BaseAI->SelectedDecalComp->SetVisibility(true);
-							UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
-						}
-					}
-				}
-			}
-			// If it currently has a few elements 
-			else if (SelectedUnits.Num() > 1 || SelectedUnits.Num() == 1)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("empty"));
-
-				// Loops through all the elements and turns vis off
-				for (AActor* Pawns : SelectedUnits)
-				{
-					if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Pawns))
-					{
-						BaseAI->SelectedDecalComp->SetVisibility(false);
-					}
-				}
-				// then empties array
-				SelectedUnits.Empty();
-
-				// adds the new incoming element
-				SelectedUnits.AddUnique(HitPawn);
-
-				for (AActor* NewPawn : SelectedUnits)
-				{
-					if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(NewPawn))
-					{
-						// sets the new elements vis 
-						BaseAI->SelectedDecalComp->SetVisibility(true);
-					}
-				}
+				SelectionInterface->UnitSelection(SelectedUnits, HitPawn);
 			}
 		}
 	}
@@ -610,6 +557,9 @@ void AUserController::UpdateFlow()
 					TArray<AActor*> ActorsToBeFound;
 					SelectionArea->GetOverlappingActors(ActorsToBeFound);
 
+					// Create an array to store actors that need to be removed
+					TArray<AActor*> ActorsToRemove;
+
 					// iterate over all previously selected units stored in the SU array.
 					for (AActor* SelectedActor : SelectedUnits)
 					{
@@ -617,14 +567,20 @@ void AUserController::UpdateFlow()
 						// (ie. still overlapping with the selection area).
 						if (!ActorsToBeFound.Contains(SelectedActor))
 						{
-							// If the actor is not found in the ATBF array,it's no longer overlapping,
-							// so we deselect it by hiding its selection decal and removing it from the SU array.
+							// If the actor is not found in the ATBF array, it's no longer overlapping,
+							// so we deselect it by hiding its selection decal and marking it for removal.
 							if (const AGenericBaseAI* AI = Cast<AGenericBaseAI>(SelectedActor))
 							{
 								AI->SelectedDecalComp->SetVisibility(false);
 							}
-							SelectedUnits.Remove(SelectedActor);
+							ActorsToRemove.Add(SelectedActor);
 						}
+					}
+
+					// Remove the actors that need to be removed
+					for (AActor* ActorToRemove : ActorsToRemove)
+					{
+						SelectedUnits.Remove(ActorToRemove);
 					}
 
 					// Iterate through newly overlapped actors and select them
@@ -637,3 +593,30 @@ void AUserController::UpdateFlow()
 		}
 	}
 }
+
+/*// retrieve all actors currently overlapping with the selection area and store them in the ATBF array.
+TArray<AActor*> ActorsToBeFound;
+SelectionArea->GetOverlappingActors(ActorsToBeFound);
+
+// iterate over all previously selected units stored in the SU array.
+for (AActor* SelectedActor : SelectedUnits)
+{
+	// For each selected actor we check if it's still present in the ActorsToBeFound array.
+	// (ie. still overlapping with the selection area).
+	if (!ActorsToBeFound.Contains(SelectedActor))
+	{
+		// If the actor is not found in the ATBF array,it's no longer overlapping,
+		// so we deselect it by hiding its selection decal and removing it from the SU array.
+		if (const AGenericBaseAI* AI = Cast<AGenericBaseAI>(SelectedActor))
+		{
+			AI->SelectedDecalComp->SetVisibility(false);
+		}
+		SelectedUnits.Remove(SelectedActor);
+	}
+}
+
+// Iterate through newly overlapped actors and select them
+for (AActor* Actor : ActorsToBeFound)
+{
+	HandleMarqueePawnSelection(Actor);
+}*/

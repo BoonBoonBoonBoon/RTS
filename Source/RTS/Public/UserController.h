@@ -10,6 +10,7 @@
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "Engine/DecalActor.h"
 #include "GameFramework/PlayerController.h"
+#include "Interfaces/SelectionInterface.h"
 #include "UserController.generated.h"
 
 
@@ -51,7 +52,7 @@ public:
 	bool HasCursorMoved(); 
 	
 	void UnitSelection(); // Raycasts to Actors to check Hit Result
-	void HandlePawnSelection(APawn* HitPawn);
+	void HandlePawnSelection(AActor* HitPawn);
 	
 	void HandleMarqueePawnSelection(AActor* HitPawn); // Selects Actors Hit by Tool
 	void UpdateFlow(); // Draws Marquee Selection Tool 
@@ -78,8 +79,9 @@ protected:
 	
 	// Building Interface that stores important Data for the building;
 	IBuildingInterface * BuildingInterface;
-	
-	//TSharedPtr<IBuildingInterface> BuildingInterface;
+
+	// Selection Interface that stores important Data for the Unit selection;
+	ISelectionInterface* SelectionInterface;
 public:
 
 	

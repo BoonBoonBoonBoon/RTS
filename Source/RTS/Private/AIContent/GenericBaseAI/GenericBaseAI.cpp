@@ -20,6 +20,8 @@ AGenericBaseAI::AGenericBaseAI()
 	SelectedDecalComp = CreateDefaultSubobject<UDecalComponent>("Decal");
 	SelectedDecalComp->SetupAttachment(RootComponent);
 	
+	// Set Tag to building
+	Tags.Add("Unit");
 }
 
 void AGenericBaseAI::MyQueryFinished(TSharedPtr<FEnvQueryResult> Result)
