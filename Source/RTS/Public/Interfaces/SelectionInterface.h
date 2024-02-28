@@ -42,7 +42,5 @@ public:
 	void UnitSelection(TArray<AActor*> Selected, AActor* HitActor);
 
 	void MultiUnitSelection(TArray<AActor*> Selected, AActor* HitActor);
-	
-	// Updates the Marquee edges 
-	void Update();
+
 };

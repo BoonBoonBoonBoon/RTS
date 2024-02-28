@@ -9,7 +9,7 @@
 // Add default functionality here for any ISelectionInterface functions that are not pure virtual.
 void ISelectionInterface::Tick(float DeltaTime)
 {
-	Update();
+	                
 }
 
 void ISelectionInterface::StartBoxSelection()
@@ -35,26 +35,20 @@ void ISelectionInterface::UnitSelection(TArray<AActor*> Selected, AActor* HitAct
 {
 	if (Selected.Num() == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("empty"));
-
+		// No units selected, add actor.
 		Selected.AddUnique(HitActor);
 		for (AActor* Src : Selected)
 		{
-			Src->Tags.AddUnique(TEXT("SelectedPawn"));
-			if (Src->Tags.Contains(TEXT("SelectedPawn")))
+			if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
 			{
-				if (const AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
-				{
-					BaseAI->SelectedDecalComp->SetVisibility(true);
-					UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), Selected.Num());
-				}
+				BaseAI->SelectedDecalComp->SetVisibility(true);
+				UE_LOG(LogTemp, Warning, TEXT("Unit Selection: %d"), Selected.Num());
 			}
 		}
-	} else
+	}
+	// Units already selected, clear previous selection and add the new HitActor
+	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("empty"));
-
-		// Loops through all the elements and turns vis off
 		for (AActor* Pawns : Selected)
 		{
 			if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Pawns))
@@ -64,7 +58,7 @@ void ISelectionInterface::UnitSelection(TArray<AActor*> Selected, AActor* HitAct
 		}
 		// then empties array
 		Selected.Empty();
-
+		UE_LOG(LogTemp, Warning, TEXT("Unit Selection (Select.Empty): %d"), Selected.Num());
 		// adds the new incoming element
 		Selected.AddUnique(HitActor);
 
@@ -72,12 +66,54 @@ void ISelectionInterface::UnitSelection(TArray<AActor*> Selected, AActor* HitAct
 		{
 			if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(NewPawn))
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Unit Selection (ForLoopAtEnd?): %d"), Selected.Num());
 				// sets the new elements vis 
 				BaseAI->SelectedDecalComp->SetVisibility(true);
 			}
 		}
 	}
 }
+/*if (Selected.Num() == 0)
+{
+	//UE_LOG(LogTemp, Warning, TEXT("empty"));
+
+	Selected.AddUnique(HitActor);
+	for (AActor* Src : Selected)
+	{
+		if (const AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
+		{
+			BaseAI->SelectedDecalComp->SetVisibility(true);
+			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), Selected.Num());
+		}
+	}
+}
+else
+{
+	UE_LOG(LogTemp, Warning, TEXT("empty"));
+
+	// Loops through all the elements and turns vis off
+	for (AActor* HitActor : Selected)
+	{
+		if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitActor))
+		{
+			BaseAI->SelectedDecalComp->SetVisibility(false);
+		}
+	}
+	// then empties array
+	Selected.Empty();
+
+	// adds the new incoming element
+	Selected.AddUnique(HitActor);
+
+	for (AActor* NewPawn : Selected)
+	{
+		if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(NewPawn))
+		{
+			// sets the new elements vis 
+			BaseAI->SelectedDecalComp->SetVisibility(true);
+		}
+	}
+}*/
 
 void ISelectionInterface::MultiUnitSelection(TArray<AActor*> Selected, AActor* HitActor)
 {
@@ -85,19 +121,11 @@ void ISelectionInterface::MultiUnitSelection(TArray<AActor*> Selected, AActor* H
 	Selected.AddUnique(HitActor);
 	for (AActor* Src : Selected)
 	{
-		Src->Tags.AddUnique(TEXT("SelectedPawn"));
-		if (Src->Tags.Contains(TEXT("SelectedPawn")))
+		if (const AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
 		{
-			if (const AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
-			{
-				BaseAI->SelectedDecalComp->SetVisibility(true);
-				UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), Selected.Num());
-			}
+			BaseAI->SelectedDecalComp->SetVisibility(true);
+			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), Selected.Num());
 		}
 	}
 }
 
-
-void ISelectionInterface::Update()
-{
-}

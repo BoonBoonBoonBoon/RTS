@@ -325,7 +325,7 @@ void AUserController::StartBoxSelection()
 				{
 					// turns vis off
 					GenAI->SelectedDecalComp->SetVisibility(false);
-					//UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
+					UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
 					UE_LOG(LogTemp, Warning, TEXT("Array Wiped - Units"));
 				}
 			}
@@ -334,7 +334,7 @@ void AUserController::StartBoxSelection()
 				BuildingInterface->CastTo(P);
 			}*/
 			SelectedUnits.Empty();
-			//SelectedBuilding.Empty();
+			SelectedBuilding.Empty();
 		}
 	}
 }
@@ -346,7 +346,7 @@ void AUserController::EndBoxSelection()
 	CursorMoved = false;
 	MultiselectCond = false;
 	bIsDecalSelect = false;
-
+	UE_LOG(LogTemp, Warning, TEXT("Start: %d"), SelectedUnits.Num());
 	// At the end of each selection we check what units are selected so then
 	// We can communicate the units in the array to the BTTask Nodes
 	if (BlackboardComponent)
@@ -364,6 +364,7 @@ void AUserController::MultiSelect()
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
 		MultiselectCond = true;
+		UE_LOG(LogTemp, Warning, TEXT("Multi - True"));
 		UnitSelection();
 	}
 }
@@ -410,25 +411,38 @@ void AUserController::UnitSelection()
 		                                         WorldMouseLocation + WorldMouseDirection * TraceDistance,
 		                                         ECC_Visibility, CollisionParams))
 		{
+			// Draw debug line from start to hit location
+			//DrawDebugLine(GetWorld(), WorldMouseLocation, HitResult.Location, FColor::Green, false, 2.0f, 0, 5.0f);
+
+			// Optionally, draw a debug box at the hit location
+			DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Red, false, 2.0f, 0,
+			             5.0f);
+
+
 			MouseStart = bHit.Location;
 
-			if(AActor* HitActor = HitResult.GetActor())
+			if (AActor* HitActor = HitResult.GetActor())
 			{
 				// Only hit One Type of pawn
 				if (HitActor->Tags.Contains("Unit"))
 				{
+					bNotHit = false;
 					HandlePawnSelection(HitActor);
+					DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
 				}
-				bNotHit = false;
+				
 			}
+			/*
 			else if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
 			{
 				if (HitPawn->Tags.Contains("Building"))
 				{
+					DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
+					bNotHit = false;
 				}
+				bNotHit = true;
+				*/
 
-
-				
 				/*
 				if (BuildingInterface->IsBuildingSelected(SelectedBuilding, HitPawn))
 				{
@@ -454,16 +468,12 @@ void AUserController::UnitSelection()
 					BuildingInterface->FillArray(SelectedBuilding); // Selection process for the building
 				}
 				*/
-				
-				
+
+
 				// Will run no matter what 
-				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
-				bNotHit = false;
-			}
-			else
-			{
-				bNotHit = true;
-			}
+				
+				
+			//}
 		}
 	}
 }
@@ -472,8 +482,6 @@ void AUserController::HandlePawnSelection(AActor* HitPawn)
 {
 	if (HitPawn)
 	{
-		bIsDecalSelect = true;
-
 		// If it isn't multi-select, empty the array first
 		if (MultiselectCond)
 		{
@@ -483,10 +491,8 @@ void AUserController::HandlePawnSelection(AActor* HitPawn)
 		else
 		{
 			// Single Left Click
-			if (SelectedUnits.Num() == 0)
-			{
-				SelectionInterface->UnitSelection(SelectedUnits, HitPawn);
-			}
+			UE_LOG(LogTemp, Warning, TEXT("HandlePawnSelection - SingleSelect"));
+			SelectionInterface->UnitSelection(SelectedUnits, HitPawn);
 		}
 	}
 }
