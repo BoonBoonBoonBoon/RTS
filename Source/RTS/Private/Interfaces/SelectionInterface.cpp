@@ -31,8 +31,9 @@ void ISelectionInterface::UnitSelection()
 {
 }
 
-void ISelectionInterface::UnitSelection(TArray<AActor*> Selected, AActor* HitActor)
+void ISelectionInterface::UnitSelection(TArray<AActor*> &Selected, AActor* HitActor)
 {
+	UE_LOG(LogTemp, Warning, TEXT("Units Pre: %d"), Selected.Num());
 	if (Selected.Num() == 0)
 	{
 		// No units selected, add actor.
@@ -115,7 +116,7 @@ else
 	}
 }*/
 
-void ISelectionInterface::MultiUnitSelection(TArray<AActor*> Selected, AActor* HitActor)
+void ISelectionInterface::MultiUnitSelection(TArray<AActor*> &Selected, AActor* HitActor)
 {
 	// Loops through all possible actors 
 	Selected.AddUnique(HitActor);

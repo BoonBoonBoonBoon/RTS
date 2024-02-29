@@ -39,8 +39,8 @@ public:
 	virtual void UnitSelection();
 
 	// What happens when pawn selected
-	void UnitSelection(TArray<AActor*> Selected, AActor* HitActor);
+	void UnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
 
-	void MultiUnitSelection(TArray<AActor*> Selected, AActor* HitActor);
+	void MultiUnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
 
 };

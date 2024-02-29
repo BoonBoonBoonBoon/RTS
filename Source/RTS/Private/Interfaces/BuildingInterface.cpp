@@ -44,6 +44,7 @@ EBuildingTypes IBuildingInterface::AssignBuildingType(const APawn* Building)
 			return EBuildingTypes::Invalid;
 		}
 	}
+	
 	return {};
 }
 
@@ -53,7 +54,7 @@ void IBuildingInterface::CastTo(APawn* Pawn)
 	{
 		MainBuilding->SelectedDecalComp->SetVisibility(false);
 		UE_LOG(LogTemp, Warning, TEXT("Array Wiped - Buildings"));
-	}	
+	}
 }
 
 

@@ -346,7 +346,7 @@ void AUserController::EndBoxSelection()
 	CursorMoved = false;
 	MultiselectCond = false;
 	bIsDecalSelect = false;
-	UE_LOG(LogTemp, Warning, TEXT("Start: %d"), SelectedUnits.Num());
+	UE_LOG(LogTemp, Warning, TEXT("END: %d"), SelectedUnits.Num());
 	// At the end of each selection we check what units are selected so then
 	// We can communicate the units in the array to the BTTask Nodes
 	if (BlackboardComponent)
@@ -424,12 +424,12 @@ void AUserController::UnitSelection()
 			if (AActor* HitActor = HitResult.GetActor())
 			{
 				// Only hit One Type of pawn
-				//if (HitActor->Tags.Contains("Unit"))
+			//	if (HitActor->Tags.Contains("Unit"))
 				//{
 					bNotHit = false;
 					HandlePawnSelection(HitActor);
 					DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
-				//}
+			//	}
 				
 			}
 			/*

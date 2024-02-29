@@ -25,7 +25,7 @@ enum class  EBuildingTypes : uint8
 	Hall,
 	Barracks,
 	Trader,
-	Invalid
+	Invalid,
 };
 
 
@@ -40,6 +40,8 @@ class RTS_API IBuildingInterface
 public:
 
 	IBuildingInterface();
+
+	TEnumAsByte<EBuildingTypes> BuildingType;
 	
 	// Returns the type of building.
 	static EBuildingTypes GetBuildingType(const APawn* Building);
