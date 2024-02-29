@@ -424,12 +424,12 @@ void AUserController::UnitSelection()
 			if (AActor* HitActor = HitResult.GetActor())
 			{
 				// Only hit One Type of pawn
-				if (HitActor->Tags.Contains("Unit"))
-				{
+				//if (HitActor->Tags.Contains("Unit"))
+				//{
 					bNotHit = false;
 					HandlePawnSelection(HitActor);
 					DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
-				}
+				//}
 				
 			}
 			/*
