@@ -19,6 +19,7 @@ class UBuildingInterface : public UInterface
  */
 
 // Types of Buildings
+/*
 UENUM(BlueprintType)
 enum class  EBuildingTypes : uint8
 {
@@ -27,9 +28,12 @@ enum class  EBuildingTypes : uint8
 	Trader,
 	Invalid,
 };
+*/
 
 
+/*
 const char* to_string(EBuildingTypes e);
+*/
 
 
 class RTS_API IBuildingInterface
@@ -39,7 +43,7 @@ class RTS_API IBuildingInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	IBuildingInterface();
+	/*IBuildingInterface();
 
 	TEnumAsByte<EBuildingTypes> BuildingType;
 	
@@ -68,6 +72,6 @@ public:
 	// Purchase Materials from trader
 	void PurchaseGoods();
 
-	bool bHasSelectedBuild = false; // Empties array for building
+	bool bHasSelectedBuild = false; // Empties array for building*/
 };
 

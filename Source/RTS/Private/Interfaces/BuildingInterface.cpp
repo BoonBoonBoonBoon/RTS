@@ -2,13 +2,13 @@
 
 
 #include "Interfaces/BuildingInterface.h"
-#include "Buildings/BarracksBuilding.h"
+/*#include "Buildings/BarracksBuilding.h"
 #include "Buildings/MainBuilding.h"
 #include "Buildings/MarketplaceBuilding.h"
-#include "Components/DecalComponent.h"
+#include "Components/DecalComponent.h"*/
 
 
-EBuildingTypes IBuildingInterface::GetBuildingType(const APawn* Building)
+/*EBuildingTypes IBuildingInterface::GetBuildingType(const APawn* Building)
 {
 	if(Building)
 	{
@@ -124,4 +124,4 @@ const char* to_string(EBuildingTypes e)
 IBuildingInterface::IBuildingInterface()
 {
 	
-}
+}*/

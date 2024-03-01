@@ -13,9 +13,31 @@ class USelectionInterface : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
+
+
+// Types of Buildings
+UENUM(BlueprintType)
+enum class  EBuildingTypes : uint8
+{
+	Hall,
+	Barracks,
+	Trader,
+	Invalid,
+};
+
+
+const char* to_string(EBuildingTypes e);
+
+
+UENUM(BlueprintType)
+enum class EUnitTypes : uint8
+{
+	Worker,
+	Military,
+	Unknown,
+};
+
+
 class RTS_API ISelectionInterface
 {
 	GENERATED_BODY()
@@ -23,24 +45,47 @@ class RTS_API ISelectionInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual void Tick(float DeltaTime);
+	// Good for Switch Statements Look into it?
+	//TEnumAsByte<EBuildingTypes> BuildingType;
+
+	TEnumAsByte<EUnitTypes> UnitT;
 	
-	UFUNCTION()
-	virtual void StartBoxSelection();
+	// Returns the type of building.
+	static EBuildingTypes GetBuildingType(const APawn* Building);
 
-	UFUNCTION()
-	virtual void EndBoxSelection();
+	// Assigns the type of building.
+	static EBuildingTypes AssignBuildingType(const APawn* Building);
 
-	// Checks if the cursor has moved from it original location 
-	bool HasCursorMoved();
+	// Casts the building to a pawn.
+	static void CastTo(APawn* Pawn);
 
+	// Selects the building for tasks.
+	static void FillArray(TArray<APawn*> Building);
+
+	// Empties the array for building.
+	static void EmptyArray(TArray<APawn*> Building);
+
+	// Returns the type of unit.
+	static EUnitTypes GetUnitType(const AActor* Unit);
+
+	//virtual bool IsUnitOftype(EUnitTypes UnitType) const;
+	
+	// Assigns the type of Unit.
+	static UClass* AssignUnitType(const AActor* Unit);
+	
+	// Check if a specific element is in the array.
+	static bool IsBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck);
+	
 	// Hits the units that are selected
 	UFUNCTION()
 	virtual void UnitSelection();
 
-	// What happens when pawn selected
-	void UnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
+	// SingleClick Selection Unit - Deselects Units and Selects New Units
+	static void UnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
 
-	void MultiUnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
+	// MultiClick Selection - Stores old units and Selects New Units
+	static void MultiUnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
 
+	
+	
 };

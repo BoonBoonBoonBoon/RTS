@@ -2,7 +2,6 @@
 
 
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
-
 #include "UserController.h"
 #include "AIContent/GenericBaseAI/GenericController.h"
 #include "Components/DecalComponent.h"
@@ -22,6 +21,8 @@ AGenericBaseAI::AGenericBaseAI()
 	
 	// Set Tag to building
 	Tags.Add("Unit");
+	
+	
 }
 
 void AGenericBaseAI::MyQueryFinished(TSharedPtr<FEnvQueryResult> Result)

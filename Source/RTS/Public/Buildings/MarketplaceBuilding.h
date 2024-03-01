@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Buildings/MainBuilding.h"
+#include "Interfaces/SelectionInterface.h"
 #include "MarketplaceBuilding.generated.h"
 
 

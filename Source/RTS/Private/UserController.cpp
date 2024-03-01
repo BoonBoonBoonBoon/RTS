@@ -9,7 +9,6 @@
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 #include "GameFramework/Pawn.h"
-#include "Interfaces/BuildingInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 class EbuildingTypes;
@@ -156,7 +155,7 @@ void AUserController::MoveCamera(const FVector& Direction)
 		{
 			const float CameraSpeed = 500;
 			// Get the current view target location
-			FVector NewCameraLocation = ViewTarget->GetActorLocation() + Direction * CameraSpeed * GetWorld()->
+			const FVector NewCameraLocation = ViewTarget->GetActorLocation() + Direction * CameraSpeed * GetWorld()->
 				GetDeltaSeconds();
 
 			// Set the new view target location
@@ -166,7 +165,7 @@ void AUserController::MoveCamera(const FVector& Direction)
 		{
 			const float CameraSpeed = 1000;
 			// Get the current view target location
-			FVector NewCameraLocation = ViewTarget->GetActorLocation() + Direction * CameraSpeed * GetWorld()->
+			const FVector NewCameraLocation = ViewTarget->GetActorLocation() + Direction * CameraSpeed * GetWorld()->
 				GetDeltaSeconds();
 
 			// Set the new view target location
@@ -184,15 +183,10 @@ void AUserController::CursorToWidget()
 void AUserController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
-
-	// Checks if we are valid to dispose of the selection decal
-	/*if (MultiselectCond)
-	{
-		CleanUpDecal(NULL);
-	}*/
+	
 	EdgeScrolling();
 	UpdateFlow();
-	//UE_LOG(LogTemp, Warning, TEXT("Number of units in the array: %d"), SelectedBuilding.Num());
+
 	// Defined User Macro, Gets Trace to pawn under cursor. 
 	GetHitResultUnderCursor(mTraceChannel, true, bHit);
 }
@@ -202,11 +196,7 @@ void AUserController::BeginPlay()
 	Super::BeginPlay();
 
 	UserCharacter = Cast<AUserCharacter>(GetPawn());
-
-
-	// Quick fills the array, Will be removed on first interaction.
-	//AActor* TempActor = nullptr;
-	//SelectedUnits.Add(TempActor);
+	
 }
 
 void AUserController::SetupInputComponent()
@@ -325,7 +315,7 @@ void AUserController::StartBoxSelection()
 				{
 					// turns vis off
 					GenAI->SelectedDecalComp->SetVisibility(false);
-					UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), SelectedUnits.Num());
+					UE_LOG(LogTemp, Warning, TEXT("StartBox - No hit - For Loop Arrray Count: %d"), SelectedUnits.Num());
 					UE_LOG(LogTemp, Warning, TEXT("Array Wiped - Units"));
 				}
 			}
@@ -335,6 +325,7 @@ void AUserController::StartBoxSelection()
 			}*/
 			SelectedUnits.Empty();
 			SelectedBuilding.Empty();
+			UE_LOG(LogTemp, Warning, TEXT("StartBox - NoHit - End Function Array Count: %d"), SelectedUnits.Num());
 		}
 	}
 }
@@ -346,7 +337,7 @@ void AUserController::EndBoxSelection()
 	CursorMoved = false;
 	MultiselectCond = false;
 	bIsDecalSelect = false;
-	UE_LOG(LogTemp, Warning, TEXT("END: %d"), SelectedUnits.Num());
+	UE_LOG(LogTemp, Warning, TEXT("EndBox - Array Count : %d"), SelectedUnits.Num());
 	// At the end of each selection we check what units are selected so then
 	// We can communicate the units in the array to the BTTask Nodes
 	if (BlackboardComponent)
@@ -411,10 +402,7 @@ void AUserController::UnitSelection()
 		                                         WorldMouseLocation + WorldMouseDirection * TraceDistance,
 		                                         ECC_Visibility, CollisionParams))
 		{
-			// Draw debug line from start to hit location
-			//DrawDebugLine(GetWorld(), WorldMouseLocation, HitResult.Location, FColor::Green, false, 2.0f, 0, 5.0f);
-
-			// Optionally, draw a debug box at the hit location
+			// draw a debug box at the hit location
 			DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Red, false, 2.0f, 0,
 			             5.0f);
 
@@ -423,15 +411,17 @@ void AUserController::UnitSelection()
 
 			if (AActor* HitActor = HitResult.GetActor())
 			{
-				// Only hit One Type of pawn
-			//	if (HitActor->Tags.Contains("Unit"))
-				//{
-					bNotHit = false;
-					HandlePawnSelection(HitActor);
-					DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
-			//	}
-				
+				bNotHit = false;
+				HandlePawnSelection(HitActor);
+				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
+			} else
+			{
+				bNotHit = true;
 			}
+
+	
+
+			
 			/*
 			else if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
 			{
@@ -476,6 +466,8 @@ void AUserController::UnitSelection()
 			//}
 		}
 	}
+	
+
 }
 
 void AUserController::HandlePawnSelection(AActor* HitPawn)

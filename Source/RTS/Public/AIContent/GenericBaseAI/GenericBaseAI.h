@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "GenericController.h"
-#include "EnvironmentQuery/EnvQuery.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/Character.h"
 #include "GenericBaseAI.generated.h"
@@ -23,7 +22,7 @@ class RTS_API AGenericBaseAI : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AGenericBaseAI();
-
+	
 	// EQS Query asset 
 	UPROPERTY()
 	UEnvQuery* MyQuery;
@@ -33,7 +32,6 @@ public:
 
 	void MyQueryFinished(TSharedPtr<FEnvQueryResult> Result);
 
-	
 	UPROPERTY(EditAnywhere)
 	UDecalComponent* SelectedDecalComp;
 

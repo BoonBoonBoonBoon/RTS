@@ -5,7 +5,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
-#include "Interfaces/BuildingInterface.h"
+//#include "Interfaces/BuildingInterface.h"
+#include "Interfaces/SelectionInterface.h"
 #include "MainBuilding.generated.h"
 
 class UDecalComponent;
@@ -26,9 +27,11 @@ public:
 	*/
 
 	
-	// The building type of the current building.
+	/*// The building type of the current building.
 	IBuildingInterface* BuildInt;
+	*/
 
+	ISelectionInterface* SelectionInterface;
 	
 	// Spawns the selected units into the current world.
 	//void SpawnUnits();

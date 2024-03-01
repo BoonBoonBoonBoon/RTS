@@ -3,6 +3,8 @@
 
 #include "Buildings/MarketplaceBuilding.h"
 
+#include "Interfaces/SelectionInterface.h"
+
 AMarketplaceBuilding::AMarketplaceBuilding()
 {
 	//BuildingType = EBuildingTypes::Trader;
