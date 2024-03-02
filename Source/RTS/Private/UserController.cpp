@@ -290,7 +290,6 @@ void AUserController::EventKey()
 										{
 											GenAI->LocationToMove = Location;
 											GenAI->ValidHit = true;
-											
 										}
 									}
 								}
@@ -333,8 +332,6 @@ void AUserController::StartBoxSelection()
 			UE_LOG(LogTemp, Warning, TEXT("L: 331 - StartBox - NoHit - End Function Unit Array Count: %d"), SelectedUnits.Num());
 			UE_LOG(LogTemp, Warning, TEXT("L: 332 - StartBox - NoHit - End Function Building Array Count: %d"), SelectedBuilding.Num());
 		}
-
-	
 	}
 }
 
@@ -516,7 +513,7 @@ void AUserController::HandlePawnSelection(AActor* HitPawn)
 			{
 				TArray<APawn*> PawnArray;
 				PawnArray.Add(Cast<APawn>(HitPawn));
-				SelectionInterface->UnitSelection(SelectedUnits,PawnArray, HitPawn);
+				SelectionInterface->UnitSelection(SelectedUnits, HitPawn);
 				PawnArray.Empty();
 			}
 		}
@@ -530,7 +527,7 @@ void AUserController::PawnSelectionHelper(AActor* HitPawn)
 	ActorArray.Add(HitPawn);
 	if(SelectedBuilding.IsEmpty())
 	{
-		SelectionInterface->UnitSelection(ActorArray,SelectedBuilding, HitPawn);
+		SelectionInterface->BuildingSelection(SelectedBuilding, Cast<APawn>(HitPawn));
 	} else
 	{
 		SelectionInterface->SwapActor(ActorArray, SelectedBuilding,HitPawn);

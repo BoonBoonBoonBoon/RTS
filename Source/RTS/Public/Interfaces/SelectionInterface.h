@@ -83,8 +83,10 @@ public:
 
 
 	// SingleClick Selection Unit - Deselects Units and Selects New Units
-	static void UnitSelection(TArray<AActor*> &Selected, TArray<APawn*> &PSelected, AActor* HitActor);
-
+	static void UnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
+	// SingleClick Selection Building - Deselects Buildings and Selects New Buildings
+	static void BuildingSelection(TArray<APawn*> &Building, APawn* HitPawn);
+	
 	void SwapActor(TArray<AActor*> &Selected,TArray<APawn*> &PSelected, AActor* HitActor);
 	
 	// MultiClick Selection - Stores old units and Selects New Units
@@ -95,4 +97,10 @@ public:
 	bool IsUnitSelected( const AActor* BuildingToCheck, const TArray<AActor*>& BuildingArray);
 
 	bool isBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck);
+
+
+
+
+
+	
 };

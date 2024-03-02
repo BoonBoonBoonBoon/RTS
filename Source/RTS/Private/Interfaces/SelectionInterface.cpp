@@ -149,25 +149,14 @@ void ISelectionInterface::UnitSelection()
 {
 }
 
-void ISelectionInterface::UnitSelection(TArray<AActor*>& Selected, TArray<APawn*>& PSelected, AActor* HitActor)
+void ISelectionInterface::UnitSelection(TArray<AActor*>& Selected, AActor* HitActor)
 {
 	UE_LOG(LogTemp, Warning, TEXT("I)L: 154 - Units Pre: %d"), Selected.Num());
-	UE_LOG(LogTemp, Warning, TEXT("I)L: 155 - Buildings Pre: %d"), PSelected.Num());
+
 
 	// If S Array or PS Array is empty
-	if (Selected.IsEmpty() || PSelected.IsEmpty())
+	if (Selected.IsEmpty())
 	{
-		// PS Array is empty, add actor.
-		PSelected.AddUnique(Cast<APawn>(HitActor));
-		for (APawn* SrcP : PSelected)
-		{
-			if (AMainBuilding* MBuilding = Cast<AMainBuilding>(SrcP))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("I)L: 166 - Building Set Visibility to True: %d"), PSelected.Num());
-				MBuilding->SelectedDecalComp->SetVisibility(true);
-			}
-		}
-		
 		// S Array is empty, add actor.
 		Selected.AddUnique(HitActor);
 		for (AActor* Src : Selected)
@@ -178,7 +167,6 @@ void ISelectionInterface::UnitSelection(TArray<AActor*>& Selected, TArray<APawn*
 				BaseAI->SelectedDecalComp->SetVisibility(true);
 			}
 		}
-		
 		/*} else if(PSelected.IsEmpty())
 		{
 			PSelected.AddUnique(Cast<APawn>(HitActor));
@@ -192,6 +180,25 @@ void ISelectionInterface::UnitSelection(TArray<AActor*>& Selected, TArray<APawn*
 			}
 		}*/
 		// Units already selected, clear previous selection and add the new HitActor
+	}
+}
+
+void ISelectionInterface::BuildingSelection(TArray<APawn*>& Building, APawn* HitPawn)
+{
+	UE_LOG(LogTemp, Warning, TEXT("I)L: 155 - Buildings Pre: %d"), Building.Num());
+	// If Array or PS Array is empty
+	if (Building.IsEmpty())
+	{
+		// Array is empty, add actor.
+		Building.AddUnique(Cast<APawn>(HitPawn));
+		for (APawn* SrcP : Building)
+		{
+			if (AMainBuilding* MBuilding = Cast<AMainBuilding>(SrcP))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("I)L: 166 - Building Set Visibility to True: %d"), Building.Num());
+				MBuilding->SelectedDecalComp->SetVisibility(true);
+			}
+		}
 	}
 }
 
