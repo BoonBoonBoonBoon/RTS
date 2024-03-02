@@ -49,9 +49,11 @@ public:
 	void StartBoxSelection(); // User Input to select Actor
 	void EndBoxSelection(); // End of User Input
 	void MultiSelect(); // User Input With intent of Selection Multiple Units
-	bool HasCursorMoved(); 
+	bool HasCursorMoved();
+
 	
-	void UnitSelection(); // Raycasts to Actors to check Hit Result
+	void CastToActor(); // Raycasts to Actors to check Hit Result
+	void CastActorHit(AActor* HitPawn);
 	void HandlePawnSelection(AActor* HitPawn);
 	void PawnSelectionHelper(AActor* HitPawn);
 	
@@ -135,7 +137,7 @@ public:
 	// Checks if we are selecting multiple ai
 	bool MultiselectCond;
 	
-	bool bNotHit;
+	bool bNotHit = false;
 	
 	// Logic for the Units decal apearing and disapearing
 	void UnitDecals(AGenericBaseAI* HitPawn);
