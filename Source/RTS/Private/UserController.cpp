@@ -432,12 +432,8 @@ void AUserController::CastToActor()
 			{
 				bNotHit = true;
 			}
-
-		
 		}
 	}
-	
-
 }
 
 void AUserController::CastActorHit(AActor* HitPawn)
