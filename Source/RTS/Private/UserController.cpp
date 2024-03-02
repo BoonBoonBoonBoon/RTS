@@ -18,6 +18,9 @@ class EbuildingTypes;
 //#include "InteractiveToolManager.h"
 AUserController::AUserController()
 {
+
+
+	
 	// Shows the mouse cursor && Handle it should use. 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Hand;
@@ -183,6 +186,10 @@ void AUserController::CursorToWidget()
 void AUserController::PlayerTick(float DeltaTime)
 {
 	Super::PlayerTick(DeltaTime);
+	//UE_LOG(LogTemp, Warning, TEXT("Unit Selection (ForLoopAtEnd?): %d"), SelectedUnits.Num());
+	//UE_LOG(LogTemp, Warning, TEXT("Building Selection (ForLoopAtEnd?): %d"), SelectedBuilding.Num());
+
+	
 	
 	EdgeScrolling();
 	UpdateFlow();
@@ -319,13 +326,13 @@ void AUserController::StartBoxSelection()
 					UE_LOG(LogTemp, Warning, TEXT("Array Wiped - Units"));
 				}
 			}
-			/*for (APawn* P : SelectedBuilding)
-			{
-				BuildingInterface->CastTo(P);
-			}*/
+			
+			SelectionInterface->NotHit(SelectedBuilding);
+			
 			SelectedUnits.Empty();
 			SelectedBuilding.Empty();
-			UE_LOG(LogTemp, Warning, TEXT("StartBox - NoHit - End Function Array Count: %d"), SelectedUnits.Num());
+			UE_LOG(LogTemp, Warning, TEXT("StartBox - NoHit - End Function Unit Array Count: %d"), SelectedUnits.Num());
+			UE_LOG(LogTemp, Warning, TEXT("StartBox - NoHit - End Function Building Array Count: %d"), SelectedBuilding.Num());
 		}
 	}
 }
@@ -337,7 +344,11 @@ void AUserController::EndBoxSelection()
 	CursorMoved = false;
 	MultiselectCond = false;
 	bIsDecalSelect = false;
-	UE_LOG(LogTemp, Warning, TEXT("EndBox - Array Count : %d"), SelectedUnits.Num());
+
+	UE_LOG(LogTemp, Warning, TEXT(" EndBox - Unit Array Count: %d"), SelectedUnits.Num());
+	UE_LOG(LogTemp, Warning, TEXT(" EndBox - Building Array Count: %d"), SelectedBuilding.Num());
+
+	
 	// At the end of each selection we check what units are selected so then
 	// We can communicate the units in the array to the BTTask Nodes
 	if (BlackboardComponent)
@@ -414,7 +425,14 @@ void AUserController::UnitSelection()
 				bNotHit = false;
 				HandlePawnSelection(HitActor);
 				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
-			} else
+			}
+			else if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
+			{
+				HandlePawnSelection(HitPawn);
+				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
+				bNotHit = false;
+			}
+			else
 			{
 				bNotHit = true;
 			}
@@ -470,6 +488,7 @@ void AUserController::UnitSelection()
 
 }
 
+
 void AUserController::HandlePawnSelection(AActor* HitPawn)
 {
 	if (HitPawn)
@@ -477,16 +496,52 @@ void AUserController::HandlePawnSelection(AActor* HitPawn)
 		// If it isn't multi-select, empty the array first
 		if (MultiselectCond)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("HandlePawnSelection - MultiSelect"));
-			SelectionInterface->MultiUnitSelection(SelectedUnits, HitPawn);
+			if (HitPawn->Tags.Contains("Building"))
+			{
+				PawnSelectionHelper(HitPawn);
+			}
+			else
+			{
+				SelectionInterface->MultiUnitSelection(SelectedUnits, HitPawn);
+			}
 		}
 		else
 		{
-			// Single Left Click
-			UE_LOG(LogTemp, Warning, TEXT("HandlePawnSelection - SingleSelect"));
-			SelectionInterface->UnitSelection(SelectedUnits, HitPawn);
+			if (HitPawn->Tags.Contains("Building"))
+			{
+				PawnSelectionHelper(HitPawn);
+			}
+			else
+			{
+				TArray<APawn*> PawnArray;
+				PawnArray.Add(Cast<APawn>(HitPawn));
+				SelectionInterface->UnitSelection(SelectedUnits,PawnArray, HitPawn);
+				PawnArray.Empty();
+			}
 		}
 	}
+}
+
+void AUserController::PawnSelectionHelper(AActor* HitPawn)
+{
+	// Fill the Temp array with an actor so it doesnt interfere with Logic.
+	TArray<AActor*> ActorArray;
+	ActorArray.Add(HitPawn);
+	SelectionInterface->UnitSelection(ActorArray,SelectedBuilding, HitPawn);
+	ActorArray.Empty();
+}
+
+TArray<AActor*> AUserController::ConvertPawnArrayToActorArray(const TArray<APawn*>& PawnArray)
+{
+	TArray<AActor*> ActorArray;
+
+	for (APawn* Src : PawnArray)
+	{
+		// Since APawn is a subclass of AActor, you can directly add it to the ActorArray
+		ActorArray.Add(Src);
+	}
+
+	return ActorArray;
 }
 
 

@@ -53,6 +53,9 @@ public:
 	
 	void UnitSelection(); // Raycasts to Actors to check Hit Result
 	void HandlePawnSelection(AActor* HitPawn);
+	void PawnSelectionHelper(AActor* HitPawn);
+	
+	TArray<AActor*> ConvertPawnArrayToActorArray(const TArray<APawn*>& PawnArray); // Converts Pawn Array to Actor Array
 	
 	void HandleMarqueePawnSelection(AActor* HitPawn); // Selects Actors Hit by Tool
 	void UpdateFlow(); // Draws Marquee Selection Tool 
@@ -108,6 +111,7 @@ public:
 	// Stores the building type.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<APawn*> SelectedBuilding;
+	
 protected:
 	
 	float dist;

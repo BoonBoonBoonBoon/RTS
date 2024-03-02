@@ -47,7 +47,8 @@ public:
 
 	// Good for Switch Statements Look into it?
 	//TEnumAsByte<EBuildingTypes> BuildingType;
-
+	
+	
 	TEnumAsByte<EUnitTypes> UnitT;
 	
 	// Returns the type of building.
@@ -81,11 +82,11 @@ public:
 	virtual void UnitSelection();
 
 	// SingleClick Selection Unit - Deselects Units and Selects New Units
-	static void UnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
+	static void UnitSelection(TArray<AActor*> &Selected, TArray<APawn*> &PSelected, AActor* HitActor);
 
 	// MultiClick Selection - Stores old units and Selects New Units
 	static void MultiUnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
 
-	
+	void NotHit(TArray<APawn*> Building);
 	
 };
