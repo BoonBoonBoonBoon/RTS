@@ -3,11 +3,13 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
+#include "Interfaces/ResourceInterface.h"
 #include "ResourceMain.generated.h"
 
 UCLASS()
-class RTS_API AResourceMain : public AActor
+class RTS_API AResourceMain : public AActor, public IResourceInterface
 {
 	GENERATED_BODY()
 	
@@ -15,7 +17,33 @@ public:
 	// Sets default values for this actor's properties
 	AResourceMain();
 
+	UPROPERTY(EditAnywhere)
+	UBoxComponent* CollisionComp;
 	
+	IResourceInterface* RInterface;
+	
+	
+	// Handles the collision.
+	void ObjectHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+	
+	// Called when this actor begins to overlap another actor
+	UFUNCTION( )
+	void BeginOverlap(UPrimitiveComponent* OverlappedComponent, 
+					  AActor* OtherActor, 
+					  UPrimitiveComponent* OtherComp, 
+					  int32 OtherBodyIndex, 
+					  bool bFromSweep, 
+					  const FHitResult &SweepResult );
+
+	
+	/*
+	// Called when this actor ends overlap with another actor
+	UFUNCTION()
+	void OnOverlapEnd(class AActor* OverlappedActor, class AActor* OtherActor);
+
+
+	void NumberOfObjects(int NumberOfObjects, TArray<AActor*> Objects);
+	*/
 
 protected:
 	// Called when the game starts or when spawned

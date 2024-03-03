@@ -13,17 +13,38 @@ class UResourceInterface : public UInterface
 	GENERATED_BODY()
 };
 
-/**
- * 
- */
+UENUM(BlueprintType)
+enum class  EResourceType : uint8 {
+	Wood,
+	Stone,
+	Gold,
+	Food,
+};
+
+USTRUCT(BlueprintType)
+struct FResourceStats
+{
+	GENERATED_USTRUCT_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	float  amount;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
+	EResourceType resourceType;
+};
+
+
 class RTS_API IResourceInterface
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-	//virtual FString GetEnumName();
-	//virtual void TakeResources(int32 amount);
-	//virtual EResourceType GetType();
-	//virtual int32 GetAmount();
+	
+	virtual FString GetEnumName();
+	virtual void TakeResources(int32 amount);
+	virtual EResourceType GetType(AActor* Actor);
+	virtual int32 GetAmount();
+
+	virtual EResourceType GetResourceType() const = 0;
 };

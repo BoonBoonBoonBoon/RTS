@@ -6,7 +6,7 @@
 #include "EnumsDatabase.generated.h"
 
 
-UENUM(BlueprintType)
+/*UENUM(BlueprintType)
 enum class  EResourceType : uint8 {
 	Wood,
 	Stone,
@@ -24,7 +24,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 		EResourceType resourceType;
-};
+};*/
 
 UENUM(BlueprintType)
 enum class  ECharacterType : uint8 {
