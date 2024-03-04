@@ -2,8 +2,6 @@
 
 
 #include "Resources/ResourceMain.h"
-
-#include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "Components/BoxComponent.h"
 
 
@@ -27,13 +25,21 @@ AResourceMain::AResourceMain()
 // then we can say "AiInv.Amount += 1;" and then we can say "IncomingInt = AiInv;" to send it back to the AI.
 
 
+EResourceType AResourceMain::GetResourceType() const
+{
+	return EResourceType::Invalid;
+}
+
 void AResourceMain::ObjectHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
 {
-	if (OtherActor->IsA<AGenericBaseAI>() && SelfActor->IsA<AResourceMain>())
-	{
-		RInterface->GetType(SelfActor); // we get type since in the constructors of the classes, We should know what type of resource it is.
+	//Going to have to get the other actor through the interface
+
+	RInterface->AssignResourceType(OtherActor);
+	//if (OtherActor->IsA(RInterface) && SelfActor->IsA<AResourceMain>())
+	//{
+		//RInterface->GetType(SelfActor); // we get type since in the constructors of the classes, We should know what type of resource it is.
 		UE_LOG(LogTemp, Warning, TEXT("AI overlapped with a resource: %s"), *OtherActor->GetName());
-	}
+	//}
 }
 
 void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,

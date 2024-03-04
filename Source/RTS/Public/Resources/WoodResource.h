@@ -17,6 +17,6 @@ class RTS_API AWoodResource : public AResourceMain
 	AWoodResource();
 
 	// Implement the GetType() function declared in the IResourceInterface
-	virtual EResourceType GetResourceType() const override;
-	
+	virtual EResourceType GetResourceType() const ;
+	///override
 };

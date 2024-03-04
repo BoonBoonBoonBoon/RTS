@@ -19,6 +19,7 @@ enum class  EResourceType : uint8 {
 	Stone,
 	Gold,
 	Food,
+	Invalid,
 };
 
 USTRUCT(BlueprintType)
@@ -41,10 +42,14 @@ class RTS_API IResourceInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	
-	virtual FString GetEnumName();
-	virtual void TakeResources(int32 amount);
-	virtual EResourceType GetType(AActor* Actor);
-	virtual int32 GetAmount();
-
+	///*virtual FString GetEnumName();
+	//virtual void TakeResources(int32 amount);
+	//EResourceType GetType(AActor* Actor);
+	//virtual int32 GetAmount();
+	
 	virtual EResourceType GetResourceType() const = 0;
+
+	void AssignResourceType(AActor* Actor);
+
+	AActor* ActorCollect;
 };

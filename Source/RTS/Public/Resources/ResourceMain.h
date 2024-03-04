@@ -21,7 +21,7 @@ public:
 	UBoxComponent* CollisionComp;
 	
 	IResourceInterface* RInterface;
-	
+	virtual EResourceType GetResourceType() const ;
 	
 	// Handles the collision.
 	void ObjectHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
