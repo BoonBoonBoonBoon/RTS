@@ -15,7 +15,7 @@ AResourceMain::AResourceMain()
 	CollisionComp = CreateDefaultSubobject<UBoxComponent>(TEXT("CollisionComp"));
 	CollisionComp->SetupAttachment(RootComponent);
 	CollisionComp->OnComponentBeginOverlap.AddDynamic(this, &AResourceMain::BeginOverlap);
-	
+	CollisionComp->OnComponentEndOverlap.AddDynamic(this, &AResourceMain::EndOverlap);
 }
 
 // To send resoucres we do a function thats called everytick and we say a certain timer
@@ -35,23 +35,44 @@ void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                  const FHitResult& SweepResult)
 {
-	//GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AResourceMain::ResourceTimer, 1, true);
+	if(OtherActor && OverlappedComponent->IsOverlappingActor(OtherActor))
+	{
+		if(!GetWorld()->GetTimerManager().IsTimerActive(TimerHandle))
+		{
+			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+			{
+				--TimeValue;
+				if (TimeValue <= 0)
+				{
+					++TimeValue;
+					RInterface->ResourceAmount(this, OtherActor, FVector(0), SweepResult);
+				}
+			}, TimeValue, true);
+		}
+	}
+}
+
+void AResourceMain::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	UE_LOG(LogTemp, Warning, TEXT("End overlap"));
+	if(OtherActor && !OverlappedComponent->IsOverlappingActor(OtherActor))
+	{
 	
-	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	}
+}
+
+void AResourceMain::SetResourceTimer()
+{
+	/*GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
 	{
 		--TimeValue;
-
-
-		// Check if the integer value has reached 0
 		if (TimeValue <= 0)
 		{
-			++TimeValue;
 			RInterface->ResourceAmount(this, OtherActor, FVector(0), SweepResult);
+			TimeValue = 1; // Reset TimeValue for next iteration
 		}
-	}, TimeValue, true);
-
-	// clear timer on end overlap
-	//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+	}, 1.0f, true);*/
 }
 
 

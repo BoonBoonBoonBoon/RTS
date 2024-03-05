@@ -25,7 +25,7 @@ public:
 
 	FTimerHandle TimerHandle;
 	
-	// Called when this actor begins to overlap another actor
+	// Called when this actor begins to overlap another actor.
 	UFUNCTION( )
 	void BeginOverlap(UPrimitiveComponent* OverlappedComponent, 
 					  AActor* OtherActor, 
@@ -34,6 +34,12 @@ public:
 					  bool bFromSweep, 
 					  const FHitResult &SweepResult );
 
+	// Called when this actor needs to end overlap with collision.
+	UFUNCTION( )
+	void EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	void SetResourceTimer();
+	
 	int32 TimeValue = 1; // The time it takes for the AI to take the resource.
 	
 	// Returns the amount of resource.

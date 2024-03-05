@@ -22,7 +22,6 @@ AGenericBaseAI::AGenericBaseAI()
 	// Set Tag to building
 	Tags.Add("Unit");
 	
-	
 }
 
 void AGenericBaseAI::MyQueryFinished(TSharedPtr<FEnvQueryResult> Result)
