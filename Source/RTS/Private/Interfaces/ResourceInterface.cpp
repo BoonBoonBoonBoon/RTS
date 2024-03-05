@@ -8,7 +8,7 @@
 
 // Add default functionality here for any IResourceInterface functions that are not pure virtual.
 
-void IResourceInterface::ObjectToDo(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi)
+void IResourceInterface::ResourceAmount(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi)
 {
 	// Cast to All Possible Variants
 	EResourceType ResourceType1 = (SelfActor && SelfActor->IsA<AResourceMain>()) ? Cast<AResourceMain>(SelfActor)->GetResourceType() : EResourceType::Invalid;
@@ -23,11 +23,14 @@ void IResourceInterface::ObjectToDo(AActor* SelfActor, AActor* OtherActor, FVect
 	}
 }
 
+int32 IResourceInterface::GetAmount()
+{
+	return 0;
+}
 
-
-
-
-
+void IResourceInterface::TakeResources(int32 amount)
+{
+}
 
 
 /*FString IResourceInterface::GetEnumName()

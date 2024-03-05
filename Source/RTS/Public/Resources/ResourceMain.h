@@ -22,9 +22,8 @@ public:
 	
 	IResourceInterface* RInterface;
 	virtual EResourceType GetResourceType() const ;
-	
-	// Handles the collision.
-	//void ObjectHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+
+	FTimerHandle TimerHandle;
 	
 	// Called when this actor begins to overlap another actor
 	UFUNCTION( )
@@ -35,7 +34,14 @@ public:
 					  bool bFromSweep, 
 					  const FHitResult &SweepResult );
 
-
+	int32 TimeValue = 1; // The time it takes for the AI to take the resource.
+	
+	// Returns the amount of resource.
+	virtual int32 GetAmount();
+	
+	// AI takes The Resources.
+	//virtual void TakeResources(int32 amount);
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -45,3 +51,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 };
+	
+// Handles the collision.
+//void ObjectHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+	

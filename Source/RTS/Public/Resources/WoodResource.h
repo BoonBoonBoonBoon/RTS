@@ -21,4 +21,14 @@ public:
 	
 	// Implement the GetType() function declared in the IResourceInterface
 	virtual EResourceType GetResourceType() const ;
+
+	// Returns the amount of resource.
+	virtual int32 GetAmount();
+
+	// AI takes The Resources.
+	virtual void TakeResources(int32 amount);
+	
+
+	int32 MaxResourceAmount;	// The Maximum Amount of Resource a Resource Can Have.
+	int32 CurrentResourceAmount;	// The Amount a Resource Currently Has.
 };

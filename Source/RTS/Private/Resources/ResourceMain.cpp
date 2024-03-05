@@ -31,12 +31,33 @@ EResourceType AResourceMain::GetResourceType() const
 }
 
 
-
 void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
+                                 const FHitResult& SweepResult)
 {
-	//ObjectHit(this, OtherActor, FVector(0), SweepResult);
-	RInterface->ObjectToDo(this, OtherActor, FVector(0), SweepResult);
+	//GetWorld()->GetTimerManager().SetTimer(TimerHandle, this, &AResourceMain::ResourceTimer, 1, true);
+	
+	GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+	{
+		--TimeValue;
+
+
+		// Check if the integer value has reached 0
+		if (TimeValue <= 0)
+		{
+			++TimeValue;
+			RInterface->ResourceAmount(this, OtherActor, FVector(0), SweepResult);
+		}
+	}, TimeValue, true);
+
+	// clear timer on end overlap
+	//GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
+}
+
+
+int32 AResourceMain::GetAmount()
+{
+	return 0;
 }
 
 
@@ -51,6 +72,6 @@ void AResourceMain::BeginPlay()
 void AResourceMain::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+//ResourceTimer();
 }
 

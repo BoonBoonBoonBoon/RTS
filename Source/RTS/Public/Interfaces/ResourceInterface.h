@@ -41,16 +41,28 @@ class RTS_API IResourceInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+
+
+	//int ResourceAmount;
+	bool bTakingResource;
 	
-	void ObjectToDo(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi);
-	
+	// Checks The Type of Resource and Returns the Amount.
+	void ResourceAmount(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi);
+
+	// Returns the type of resource.
 	virtual EResourceType GetResourceType() const = 0;
 
+	// Returns the amount of resource.
+	virtual int32 GetAmount();
+
+
+	// AI Takes the Resources.
+	virtual void TakeResources(int32 amount);
 	
 };
 
 
 ///*virtual FString GetEnumName();
-//virtual void TakeResources(int32 amount);
+
 //EResourceType GetType(AActor* Actor);
-//virtual int32 GetAmount();
+
