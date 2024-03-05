@@ -7,6 +7,11 @@ AWoodResource::AWoodResource()
 {
 }
 
+void AWoodResource::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 EResourceType AWoodResource::GetResourceType() const
 {
 	return EResourceType::Wood;

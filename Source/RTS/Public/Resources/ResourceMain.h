@@ -24,7 +24,7 @@ public:
 	virtual EResourceType GetResourceType() const ;
 	
 	// Handles the collision.
-	void ObjectHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
+	//void ObjectHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
 	
 	// Called when this actor begins to overlap another actor
 	UFUNCTION( )
@@ -35,15 +35,6 @@ public:
 					  bool bFromSweep, 
 					  const FHitResult &SweepResult );
 
-	
-	/*
-	// Called when this actor ends overlap with another actor
-	UFUNCTION()
-	void OnOverlapEnd(class AActor* OverlappedActor, class AActor* OtherActor);
-
-
-	void NumberOfObjects(int NumberOfObjects, TArray<AActor*> Objects);
-	*/
 
 protected:
 	// Called when the game starts or when spawned

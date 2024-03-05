@@ -14,9 +14,11 @@ class RTS_API AWoodResource : public AResourceMain
 {
 	GENERATED_BODY()
 
+public:
 	AWoodResource();
 
+	virtual void BeginPlay() override;
+	
 	// Implement the GetType() function declared in the IResourceInterface
 	virtual EResourceType GetResourceType() const ;
-	///override
 };

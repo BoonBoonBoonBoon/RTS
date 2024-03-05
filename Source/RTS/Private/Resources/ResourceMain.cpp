@@ -30,22 +30,13 @@ EResourceType AResourceMain::GetResourceType() const
 	return EResourceType::Invalid;
 }
 
-void AResourceMain::ObjectHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit)
-{
-	//Going to have to get the other actor through the interface
 
-	RInterface->AssignResourceType(OtherActor);
-	//if (OtherActor->IsA(RInterface) && SelfActor->IsA<AResourceMain>())
-	//{
-		//RInterface->GetType(SelfActor); // we get type since in the constructors of the classes, We should know what type of resource it is.
-		UE_LOG(LogTemp, Warning, TEXT("AI overlapped with a resource: %s"), *OtherActor->GetName());
-	//}
-}
 
 void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	ObjectHit(this, OtherActor, FVector(0), SweepResult);
+	//ObjectHit(this, OtherActor, FVector(0), SweepResult);
+	RInterface->ObjectToDo(this, OtherActor, FVector(0), SweepResult);
 }
 
 

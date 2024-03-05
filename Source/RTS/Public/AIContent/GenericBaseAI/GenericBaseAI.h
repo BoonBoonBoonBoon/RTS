@@ -22,7 +22,8 @@ class RTS_API AGenericBaseAI : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AGenericBaseAI();
-	
+
+
 	// EQS Query asset 
 	UPROPERTY()
 	UEnvQuery* MyQuery;

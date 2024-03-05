@@ -3,9 +3,34 @@
 
 #include "Interfaces/ResourceInterface.h"
 
-/*
+#include "Resources/WoodResource.h"
+
+
 // Add default functionality here for any IResourceInterface functions that are not pure virtual.
-FString IResourceInterface::GetEnumName()
+
+void IResourceInterface::ObjectToDo(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi)
+{
+	// Cast to All Possible Variants
+	EResourceType ResourceType1 = (SelfActor && SelfActor->IsA<AResourceMain>()) ? Cast<AResourceMain>(SelfActor)->GetResourceType() : EResourceType::Invalid;
+	EResourceType ResourceType2 = (SelfActor && SelfActor->IsA<AWoodResource>()) ? Cast<AWoodResource>(SelfActor)->GetResourceType() : EResourceType::Invalid;
+	if(ResourceType1 == EResourceType::Invalid)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid"));
+	}
+	else if(ResourceType2 == EResourceType::Wood)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Wood"));
+	}
+}
+
+
+
+
+
+
+
+
+/*FString IResourceInterface::GetEnumName()
 {
 	return {};
 }
@@ -13,7 +38,7 @@ FString IResourceInterface::GetEnumName()
 void IResourceInterface::TakeResources(int32 amount)
 {
 }
-*/
+#1#*/
 // Assign something to the GetType() function when its called, like APawn* Wood = Resource->GetType();
 
 /*EResourceType IResourceInterface::GetType(AActor* Actor)
@@ -48,16 +73,3 @@ void IResourceInterface::TakeResources(int32 amount)
 	//}
 }
 */
-
-/*
-int32 IResourceInterface::GetAmount()
-{
-	return 0;
-}
-*/
-void IResourceInterface::AssignResourceType(AActor* Actor)
-{
-	
-	ActorCollect = Actor;
-	UE_LOG(LogTemp, Warning, TEXT("Assign ResourceType : %s"), *ActorCollect->GetName());
-}
