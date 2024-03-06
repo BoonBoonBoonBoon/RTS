@@ -321,7 +321,7 @@ void AUserController::StartBoxSelection()
 				{
 					// turns vis off
 					GenAI->SelectedDecalComp->SetVisibility(false);
-					UE_LOG(LogTemp, Warning, TEXT("L: 323 - StartBox - No hit - For Loop Arrray Count: %d"), SelectedUnits.Num());
+					//UE_LOG(LogTemp, Warning, TEXT("L: 323 - StartBox - No hit - For Loop Arrray Count: %d"), SelectedUnits.Num());
 				}
 			}
 			
@@ -329,8 +329,8 @@ void AUserController::StartBoxSelection()
 			
 			SelectedUnits.Empty();
 			SelectedBuilding.Empty();
-			UE_LOG(LogTemp, Warning, TEXT("L: 331 - StartBox - NoHit - End Function Unit Array Count: %d"), SelectedUnits.Num());
-			UE_LOG(LogTemp, Warning, TEXT("L: 332 - StartBox - NoHit - End Function Building Array Count: %d"), SelectedBuilding.Num());
+			//UE_LOG(LogTemp, Warning, TEXT("L: 331 - StartBox - NoHit - End Function Unit Array Count: %d"), SelectedUnits.Num());
+			//UE_LOG(LogTemp, Warning, TEXT("L: 332 - StartBox - NoHit - End Function Building Array Count: %d"), SelectedBuilding.Num());
 		}
 	}
 }

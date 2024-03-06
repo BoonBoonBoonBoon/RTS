@@ -37,8 +37,7 @@ public:
 	// Called when this actor needs to end overlap with collision.
 	UFUNCTION( )
 	void EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	void SetResourceTimer();
+	
 	
 	int32 TimeValue = 1; // The time it takes for the AI to take the resource.
 	

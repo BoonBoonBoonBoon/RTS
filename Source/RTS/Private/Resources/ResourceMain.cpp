@@ -54,25 +54,12 @@ void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 void AResourceMain::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	UE_LOG(LogTemp, Warning, TEXT("End overlap"));
+	
 	if(OtherActor && !OverlappedComponent->IsOverlappingActor(OtherActor))
 	{
-	
+		UE_LOG(LogTemp, Warning, TEXT("End overlap"));
 		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	}
-}
-
-void AResourceMain::SetResourceTimer()
-{
-	/*GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
-	{
-		--TimeValue;
-		if (TimeValue <= 0)
-		{
-			RInterface->ResourceAmount(this, OtherActor, FVector(0), SweepResult);
-			TimeValue = 1; // Reset TimeValue for next iteration
-		}
-	}, 1.0f, true);*/
 }
 
 
