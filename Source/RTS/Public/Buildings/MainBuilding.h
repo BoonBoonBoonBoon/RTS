@@ -4,7 +4,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Pawn.h"
+#include "GameFramework/Actor.h"
 //#include "Interfaces/BuildingInterface.h"
 #include "Interfaces/SelectionInterface.h"
 #include "MainBuilding.generated.h"
@@ -13,7 +13,7 @@ class UDecalComponent;
 class UBoxComponent;
 
 UCLASS()
-class RTS_API AMainBuilding : public APawn
+class RTS_API AMainBuilding : public AActor
 {
 	GENERATED_BODY()
 
@@ -49,8 +49,5 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
+	
 };

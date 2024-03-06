@@ -49,22 +49,22 @@ public:
 	//TEnumAsByte<EBuildingTypes> BuildingType;
 	
 	
-	TEnumAsByte<EUnitTypes> UnitT;
+//	TEnumAsByte<EUnitTypes> UnitT;
 	
 	// Returns the type of building.
-	static EBuildingTypes GetBuildingType(const APawn* Building);
+	static EBuildingTypes GetBuildingType(const AActor* Building);
 
 	// Assigns the type of building.
-	static EBuildingTypes AssignBuildingType(const APawn* Building);
+	static EBuildingTypes AssignBuildingType(const AActor* Building);
 
 	// Casts the building to a pawn.
-	static void CastTo(APawn* Pawn);
+	static void CastTo(AActor* Pawn);
 
 	// Selects the building for tasks.
-	static void FillArray(TArray<APawn*> Building);
+	static void FillArray(TArray<AActor*> Building);
 
 	// Empties the array for building.
-	static void EmptyArray(TArray<APawn*> Building);
+	static void EmptyArray(TArray<AActor*> Building);
 
 	// Returns the type of unit.
 	static EUnitTypes GetUnitType(const AActor* Unit);
@@ -85,14 +85,15 @@ public:
 	// SingleClick Selection Unit - Deselects Units and Selects New Units
 	static void UnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
 	// SingleClick Selection Building - Deselects Buildings and Selects New Buildings
-	static void BuildingSelection(TArray<APawn*> &Building, APawn* HitPawn);
-	
-	void SwapActor(TArray<AActor*> &Selected,TArray<APawn*> &PSelected, AActor* HitActor);
+	static void BuildingArrayIsEmpty(TArray<AActor*> &Building, AActor* HitPawn);
+
+	static void ChangeElementInBuildingArray(TArray<AActor*> &Building, AActor* HitPawn);
+	//void SwapActor(TArray<AActor*> &Selected,TArray<AActor*> &PSelected, AActor* HitActor);
 	
 	// MultiClick Selection - Stores old units and Selects New Units
 	static void MultiUnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
 
-	void NotHit(TArray<APawn*> Building);
+	static void NotHit(TArray<AActor*> Building);
 
 	bool IsUnitSelected( const AActor* BuildingToCheck, const TArray<AActor*>& BuildingArray);
 

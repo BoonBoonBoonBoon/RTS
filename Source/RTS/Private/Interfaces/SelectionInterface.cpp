@@ -7,6 +7,7 @@
 #include "Buildings/MarketplaceBuilding.h"
 #include "Components/DecalComponent.h"
 
+
 class AGenericBaseAI;
 
 const char* to_string(EBuildingTypes e)
@@ -21,7 +22,7 @@ const char* to_string(EBuildingTypes e)
 	}
 }
 
-EBuildingTypes ISelectionInterface::GetBuildingType(const APawn* Building)
+EBuildingTypes ISelectionInterface::GetBuildingType(const AActor* Building)
 {
 	if (Building)
 	{
@@ -37,7 +38,7 @@ EBuildingTypes ISelectionInterface::GetBuildingType(const APawn* Building)
 	return {};
 }
 
-EBuildingTypes ISelectionInterface::AssignBuildingType(const APawn* Building)
+EBuildingTypes ISelectionInterface::AssignBuildingType(const AActor* Building)
 {
 	if (Building)
 	{
@@ -61,7 +62,7 @@ EBuildingTypes ISelectionInterface::AssignBuildingType(const APawn* Building)
 	return {};
 }
 
-void ISelectionInterface::CastTo(APawn* Pawn)
+void ISelectionInterface::CastTo(AActor* Pawn)
 {
 	if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Pawn))
 	{
@@ -70,10 +71,10 @@ void ISelectionInterface::CastTo(APawn* Pawn)
 	}
 }
 
-void ISelectionInterface::FillArray(TArray<APawn*> Building)
+void ISelectionInterface::FillArray(TArray<AActor*> Building)
 {
 	// Adds the selected building to the array
-	for (APawn* Pawn : Building)
+	for (AActor* Pawn : Building)
 	{
 		if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Pawn))
 		{
@@ -83,10 +84,10 @@ void ISelectionInterface::FillArray(TArray<APawn*> Building)
 	}
 }
 
-void ISelectionInterface::EmptyArray(TArray<APawn*> Building)
+void ISelectionInterface::EmptyArray(TArray<AActor*> Building)
 {
 	// Deletes the selected building from the array
-	for (APawn* Pawn : Building)
+	for (AActor* Pawn : Building)
 	{
 		if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Pawn))
 		{
@@ -183,30 +184,50 @@ void ISelectionInterface::UnitSelection(TArray<AActor*>& Selected, AActor* HitAc
 	}
 }
 
-void ISelectionInterface::BuildingSelection(TArray<APawn*>& Building, APawn* HitPawn)
+void ISelectionInterface::BuildingArrayIsEmpty(TArray<AActor*>& Building, AActor* HitPawn)
 {
-	UE_LOG(LogTemp, Warning, TEXT("I)L: 155 - Buildings Pre: %d"), Building.Num());
-	// If Array or PS Array is empty
 	if (Building.IsEmpty())
 	{
-		// Array is empty, add actor.
-		Building.AddUnique(Cast<APawn>(HitPawn));
-		for (APawn* SrcP : Building)
+		Building.AddUnique(HitPawn);
+		for (AActor* SrcP : Building)
 		{
-			if (AMainBuilding* MBuilding = Cast<AMainBuilding>(SrcP))
+			if (const AMainBuilding* MBuilding = Cast<AMainBuilding>(SrcP))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("I)L: 166 - Building Set Visibility to True: %d"), Building.Num());
 				MBuilding->SelectedDecalComp->SetVisibility(true);
 			}
 		}
 	}
 }
 
-void ISelectionInterface::SwapActor(TArray<AActor*>& Selected, TArray<APawn*>& PSelected, AActor* HitActor)
+void ISelectionInterface::ChangeElementInBuildingArray(TArray<AActor*>& Building, AActor* HitPawn)
+{
+	if(Building.Num() > 0)
+	{
+		for(AActor* Actor : Building) 
+		{
+			if(const AMainBuilding* MBuilding = Cast<AMainBuilding>(Actor))
+			{
+				MBuilding->SelectedDecalComp->SetVisibility(false);
+				Building.Empty(); 
+				
+				Building.AddUnique(HitPawn); 
+				for(AActor* SrcP : Building) 
+				{
+					if(const AMainBuilding* NewBuilding = Cast<AMainBuilding>(SrcP)) 
+					{
+						NewBuilding->SelectedDecalComp->SetVisibility(true); 
+					}
+				}
+			}
+		}
+	}
+}
+
+/*void ISelectionInterface::SwapActor(TArray<AActor*>& Selected, TArray<AActor*>& PSelected, AActor* HitActor)
 {
 	if (Selected.Num() >= 1 || PSelected.Num() >= 1)
 	{
-		for (APawn* Pawns : PSelected)
+		for (AActor* Pawns : PSelected)
 		{
 			if (AMainBuilding* MBuilding = Cast<AMainBuilding>(Pawns))
 			{
@@ -252,31 +273,36 @@ void ISelectionInterface::SwapActor(TArray<AActor*>& Selected, TArray<APawn*>& P
 			}
 		}
 	}
-}
+}*/
 
 
 void ISelectionInterface::MultiUnitSelection(TArray<AActor*>& Selected, AActor* HitActor)
 {
-	// Loops through all possible actors 
-	Selected.AddUnique(HitActor);
-	for (AActor* Src : Selected)
+	if(Cast<AGenericBaseAI>(HitActor))
 	{
-		if (const AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
+		// Loops through all possible actors 
+		Selected.AddUnique(HitActor);
+		for (AActor* Src : Selected)
 		{
-			BaseAI->SelectedDecalComp->SetVisibility(true);
-			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), Selected.Num());
+			if (const AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
+			{
+				BaseAI->SelectedDecalComp->SetVisibility(true);
+				UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), Selected.Num());
+			}
 		}
 	}
 }
-
-void ISelectionInterface::NotHit(TArray<APawn*> Building)
+void ISelectionInterface::NotHit(TArray<AActor*> Building)
 {
-	// ReSharper disable once CppExpressionWithoutSideEffects
-	for(APawn* PawnSrc : Building)
+	// Loops through all the elements and turns vis off
+	for(AActor* PawnSrc : Building)
 	{
 		if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(PawnSrc))
 		{
+			UE_LOG(LogTemp, Warning, TEXT("NotHit-Func-BeforeEmpty: %d"), Building.Num());
 			MainBuilding->SelectedDecalComp->SetVisibility(false);
+			Building.Empty();
+			UE_LOG(LogTemp, Warning, TEXT("NotHit-Func-Empty: %d"), Building.Num());
 		}
 	}
 }

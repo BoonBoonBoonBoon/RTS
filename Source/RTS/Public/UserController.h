@@ -53,9 +53,8 @@ public:
 
 	
 	void CastToActor(); // Raycasts to Actors to check Hit Result
-	void CastActorHit(AActor* HitPawn);
-	void HandlePawnSelection(AActor* HitPawn);
-	void PawnSelectionHelper(AActor* HitPawn);
+	void HandleSelection(AActor* ActorHit);
+	void PawnSelectionHelper(AActor* ActorHit);
 	
 	TArray<AActor*> ConvertPawnArrayToActorArray(const TArray<APawn*>& PawnArray); // Converts Pawn Array to Actor Array
 	
@@ -112,7 +111,7 @@ public:
 
 	// Stores the building type.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<APawn*> SelectedBuilding;
+	TArray<AActor*> SelectedBuilding;
 	
 protected:
 	
@@ -128,7 +127,7 @@ protected:
 	bool bCheckCursor;
 	bool bCursorMove;
 	
-	virtual void PlayerTick(float DeltaTime) override;
+	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
@@ -137,7 +136,7 @@ public:
 	// Checks if we are selecting multiple ai
 	bool MultiselectCond;
 	
-	bool bNotHit = false;
+	bool bNotHit;
 	
 	// Logic for the Units decal apearing and disapearing
 	void UnitDecals(AGenericBaseAI* HitPawn);

@@ -183,13 +183,12 @@ void AUserController::CursorToWidget()
 }
 
 
-void AUserController::PlayerTick(float DeltaTime)
+void AUserController::Tick(float DeltaTime)
 {
-	Super::PlayerTick(DeltaTime);
+	Super::Tick(DeltaTime);
 	//UE_LOG(LogTemp, Warning, TEXT("Unit Selection (ForLoopAtEnd?): %d"), SelectedUnits.Num());
 	//UE_LOG(LogTemp, Warning, TEXT("Building Selection (ForLoopAtEnd?): %d"), SelectedBuilding.Num());
-
-	
+	//UE_LOG(LogTemp, Warning, TEXT("L %d"), SelectedBuilding.Num());
 	
 	EdgeScrolling();
 	UpdateFlow();
@@ -310,28 +309,6 @@ void AUserController::StartBoxSelection()
 		bIsSelecting = true;
 
 		CastToActor();
-		
-		if (bNotHit)
-		{
-			//  loops through all the actors in the class 
-			for (AActor* Actor : SelectedUnits)
-			{
-				// makes sure they are GenAi class
-				if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
-				{
-					// turns vis off
-					GenAI->SelectedDecalComp->SetVisibility(false);
-					//UE_LOG(LogTemp, Warning, TEXT("L: 323 - StartBox - No hit - For Loop Arrray Count: %d"), SelectedUnits.Num());
-				}
-			}
-			
-			SelectionInterface->NotHit(SelectedBuilding);
-			
-			SelectedUnits.Empty();
-			SelectedBuilding.Empty();
-			//UE_LOG(LogTemp, Warning, TEXT("L: 331 - StartBox - NoHit - End Function Unit Array Count: %d"), SelectedUnits.Num());
-			//UE_LOG(LogTemp, Warning, TEXT("L: 332 - StartBox - NoHit - End Function Building Array Count: %d"), SelectedBuilding.Num());
-		}
 	}
 }
 
@@ -343,18 +320,41 @@ void AUserController::EndBoxSelection()
 	MultiselectCond = false;
 	bIsDecalSelect = false;
 
-	UE_LOG(LogTemp, Warning, TEXT("L: 347 - EndBox - Unit Array Count: %d"), SelectedUnits.Num());
-	UE_LOG(LogTemp, Warning, TEXT("L: 348 -  EndBox - Building Array Count: %d"), SelectedBuilding.Num());
+	
+	UE_LOG(LogTemp, Warning, TEXT("L: 324 -  EndBox - Building Array Count BEFORE NOT HIT: %d"), SelectedBuilding.Num());
+	
+	if (bNotHit)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("L: Nothit %d"), SelectedBuilding.Num());
+		SelectionInterface->NotHit(SelectedBuilding);
+
+		//  loops through all the actors in the class 
+		for (AActor* Actor : SelectedUnits)
+		{
+			// makes sure they are GenAi class
+			if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
+			{
+				// turns vis off
+				GenAI->SelectedDecalComp->SetVisibility(false);
+			}
+		}
+		SelectedUnits.Empty();
+		//UE_LOG(LogTemp, Warning, TEXT("L: 331 - StartBox - NoHit - End Function Unit Array Count: %d"), SelectedUnits.Num());
+		UE_LOG(LogTemp, Warning, TEXT("L: 208 - Tick - NumOfBuildingAfterEmpty: %d"), SelectedBuilding.Num());
+	}
+	
+	//UE_LOG(LogTemp, Warning, TEXT("L: 347 - EndBox - Unit Array Count: %d"), SelectedUnits.Num());
+	UE_LOG(LogTemp, Warning, TEXT("L: 348 -  EndBox - Building Array Count AFTER NOT HIT : %d"), SelectedBuilding.Num());
 
 	
 	// At the end of each selection we check what units are selected so then
 	// We can communicate the units in the array to the BTTask Nodes
-	if (BlackboardComponent)
+	/*if (BlackboardComponent)
 	{
 		/*const FBlackboard::FKey ArrayKeyID = BlackboardComponent->GetKeyID(ArrayKeyID)
 		// Set the array value in the Blackboard
-		BlackboardComponent->SetValueAsObject(ArrayKeyID, SelectedUnits);*/
-	}
+		BlackboardComponent->SetValueAsObject(ArrayKeyID, SelectedUnits);#1#
+	}*/
 }
 
 
@@ -414,17 +414,11 @@ void AUserController::CastToActor()
 			// draw a debug box at the hit location
 			DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Red, false, 2.0f, 0,
 			             5.0f);
+			
 			MouseStart = bHit.Location;
-
-			if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
+			if (AActor* HitActor = HitResult.GetActor())
 			{
-				HandlePawnSelection(HitPawn);
-				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
-				bNotHit = false;
-			}
-			else if (AActor* HitActor = HitResult.GetActor())
-			{
-				HandlePawnSelection(HitActor);
+				HandleSelection(HitActor);
 				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
 				bNotHit = false;
 			}
@@ -436,100 +430,37 @@ void AUserController::CastToActor()
 	}
 }
 
-void AUserController::CastActorHit(AActor* HitPawn)
+void AUserController::HandleSelection(AActor* ActorHit)
 {
-	
-	
-	/*
-	else if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
-	{
-		if (HitPawn->Tags.Contains("Building"))
-		{
-			DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
-			bNotHit = false;
-		}
-		bNotHit = true;
-		*/
-
-	/*
-	if (BuildingInterface->IsBuildingSelected(SelectedBuilding, HitPawn))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Returned True"));
-		return;
-	}
-	else if (SelectedBuilding.Num() > 0) // Empties the Array before selecting a new building
-	{
-		BuildingInterface->EmptyArray(SelectedBuilding);
-	}
-	
-	if (HitPawn->Owner->Tags.Contains(TEXT("Unit")))
-	{
-		// Perform actions for the selected pawn
-		HandlePawnSelection(HitPawn);
-	}
-	else if (HitPawn->Tags.Contains("Building"))
-	{
-		SelectedBuilding.AddUnique(HitPawn); // Adds the building to the array
-
-		BuildingInterface->AssignBuildingType(HitPawn); // Assign the building type
-
-		BuildingInterface->FillArray(SelectedBuilding); // Selection process for the building
-	}
-	*/
-	// Will run no matter what 
-	//}
-}
-
-
-void AUserController::HandlePawnSelection(AActor* HitPawn)
-{
-	if (HitPawn)
+	if (ActorHit)
 	{
 		// If it isn't multi-select, empty the array first
 		if (MultiselectCond)
 		{
-			if (HitPawn->Tags.Contains("Building"))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("L: 503 - HandlePawn - Before PawnHelper: %d"), SelectedBuilding.Num());
-				PawnSelectionHelper(HitPawn);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("L: 508 - HandlePawn - before MultiUnitSelection: %d"), SelectedBuilding.Num());
-				SelectionInterface->MultiUnitSelection(SelectedUnits, HitPawn);
-			}
+			UE_LOG(LogTemp, Warning, TEXT("L: 508 - HandlePawn - before MultiUnitSelection: %d"),
+			       SelectedBuilding.Num());
+			SelectionInterface->MultiUnitSelection(SelectedUnits, ActorHit);
 		}
-		else
+		else if (ActorHit->Tags.Contains("Building"))
 		{
-			if (HitPawn->Tags.Contains("Building"))
+			UE_LOG(LogTemp, Warning, TEXT("Building"));
+
+			if (SelectedBuilding.IsEmpty())
 			{
-				PawnSelectionHelper(HitPawn);
+				SelectionInterface->BuildingArrayIsEmpty(SelectedBuilding, ActorHit);
 			}
-			else
+			else if (SelectedBuilding.Num() > 0)
 			{
-				TArray<APawn*> PawnArray;
-				PawnArray.Add(Cast<APawn>(HitPawn));
-				SelectionInterface->UnitSelection(SelectedUnits, HitPawn);
-				PawnArray.Empty();
+				SelectionInterface->ChangeElementInBuildingArray(SelectedBuilding, ActorHit);
 			}
+		} else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("DOES NOT HAVE TAG!!!!!!!!!!!!!!!!!!!!!!!!!!!!"));
+			bNotHit = true;
 		}
 	}
 }
 
-void AUserController::PawnSelectionHelper(AActor* HitPawn)
-{
-	// Fill the Temp array with an actor so it doesnt interfere with Logic.
-	TArray<AActor*> ActorArray;
-	ActorArray.Add(HitPawn);
-	if(SelectedBuilding.IsEmpty())
-	{
-		SelectionInterface->BuildingSelection(SelectedBuilding, Cast<APawn>(HitPawn));
-	} else
-	{
-		SelectionInterface->SwapActor(ActorArray, SelectedBuilding,HitPawn);
-	}
-	ActorArray.Empty();
-}
 
 TArray<AActor*> AUserController::ConvertPawnArrayToActorArray(const TArray<APawn*>& PawnArray)
 {
