@@ -292,12 +292,15 @@ void ISelectionInterface::MultiUnitSelection(TArray<AActor*>& Selected, AActor* 
 		}
 	}
 }
-void ISelectionInterface::NotHit(TArray<AActor*> Building)
+void ISelectionInterface::NotHit(TArray<AActor*> &Building)
 {
+	UE_LOG(LogTemp, Warning, TEXT("NotHit-Func-Before ForLoop: %d"), Building.Num());
 	// Loops through all the elements and turns vis off
 	for(AActor* PawnSrc : Building)
 	{
-		if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(PawnSrc))
+		UE_LOG(LogTemp, Warning, TEXT("NotHit-Func-ForLoop %d"), Building.Num());
+		
+		if (AMainBuilding* MainBuilding = Cast<AMainBuilding>(PawnSrc))
 		{
 			UE_LOG(LogTemp, Warning, TEXT("NotHit-Func-BeforeEmpty: %d"), Building.Num());
 			MainBuilding->SelectedDecalComp->SetVisibility(false);

@@ -18,9 +18,6 @@ class EbuildingTypes;
 //#include "InteractiveToolManager.h"
 AUserController::AUserController()
 {
-
-
-	
 	// Shows the mouse cursor && Handle it should use. 
 	bShowMouseCursor = true;
 	DefaultMouseCursor = EMouseCursor::Hand;
@@ -202,7 +199,8 @@ void AUserController::BeginPlay()
 	Super::BeginPlay();
 
 	UserCharacter = Cast<AUserCharacter>(GetPawn());
-	
+	SelectedBuilding.Empty();
+	bNotHit = false;
 }
 
 void AUserController::SetupInputComponent()
@@ -320,35 +318,40 @@ void AUserController::EndBoxSelection()
 	MultiselectCond = false;
 	bIsDecalSelect = false;
 
+
+	/*
+	 * When we do not enter element to array line returns empty.
+	 * When we do have a element in the array line returns 1.
+	 */
 	
-	UE_LOG(LogTemp, Warning, TEXT("L: 324 -  EndBox - Building Array Count BEFORE NOT HIT: %d"), SelectedBuilding.Num());
+	UE_LOG(LogTemp, Warning, TEXT("L: 324 - (UC) EndBox - Building Array Count BEFORE NOT HIT: %d"), SelectedBuilding.Num());
 	
+	UE_LOG(LogTemp, Warning, TEXT(" True or False : %i"), bNotHit);
 	if (bNotHit)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("L: Nothit %d"), SelectedBuilding.Num());
+		
 		SelectionInterface->NotHit(SelectedBuilding);
-
-		//  loops through all the actors in the class 
+		
 		for (AActor* Actor : SelectedUnits)
 		{
-			// makes sure they are GenAi class
+			
 			if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
 			{
-				// turns vis off
+				
 				GenAI->SelectedDecalComp->SetVisibility(false);
 			}
 		}
 		SelectedUnits.Empty();
-		//UE_LOG(LogTemp, Warning, TEXT("L: 331 - StartBox - NoHit - End Function Unit Array Count: %d"), SelectedUnits.Num());
-		UE_LOG(LogTemp, Warning, TEXT("L: 208 - Tick - NumOfBuildingAfterEmpty: %d"), SelectedBuilding.Num());
+		
+		UE_LOG(LogTemp, Warning, TEXT("L: 343 (UC) - Tick - NumOfBuildingAfterEmpty: %d"), SelectedBuilding.Num());
 	}
 	
-	//UE_LOG(LogTemp, Warning, TEXT("L: 347 - EndBox - Unit Array Count: %d"), SelectedUnits.Num());
-	UE_LOG(LogTemp, Warning, TEXT("L: 348 -  EndBox - Building Array Count AFTER NOT HIT : %d"), SelectedBuilding.Num());
-
+	UE_LOG(LogTemp, Warning, TEXT("L: 347 - (UC) EndBox - Building Array Count AFTER NOT HIT : %d"), SelectedBuilding.Num());
 	
-	// At the end of each selection we check what units are selected so then
-	// We can communicate the units in the array to the BTTask Nodes
+	
+	//UE_LOG(LogTemp, Warning, TEXT("L: 347 - EndBox - Unit Array Count: %d"), SelectedUnits.Num());
+	//UE_LOG(LogTemp, Warning, TEXT("L: 331 - StartBox - NoHit - End Function Unit Array Count: %d"), SelectedUnits.Num());
 	/*if (BlackboardComponent)
 	{
 		/*const FBlackboard::FKey ArrayKeyID = BlackboardComponent->GetKeyID(ArrayKeyID)
@@ -418,12 +421,14 @@ void AUserController::CastToActor()
 			MouseStart = bHit.Location;
 			if (AActor* HitActor = HitResult.GetActor())
 			{
+				bNotHit = false;
 				HandleSelection(HitActor);
 				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
-				bNotHit = false;
+				
 			}
 			else
 			{
+				UE_LOG(LogTemp, Warning, TEXT("No Actor Hit"))
 				bNotHit = true;
 			}
 		}
@@ -458,6 +463,11 @@ void AUserController::HandleSelection(AActor* ActorHit)
 			UE_LOG(LogTemp, Warning, TEXT("DOES NOT HAVE TAG!!!!!!!!!!!!!!!!!!!!!!!!!!!!"));
 			bNotHit = true;
 		}
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%i"), bNotHit);
+		bNotHit = true;
 	}
 }
 

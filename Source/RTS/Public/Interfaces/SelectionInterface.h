@@ -93,7 +93,7 @@ public:
 	// MultiClick Selection - Stores old units and Selects New Units
 	static void MultiUnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
 
-	static void NotHit(TArray<AActor*> Building);
+	static void NotHit(TArray<AActor*> &Building);
 
 	bool IsUnitSelected( const AActor* BuildingToCheck, const TArray<AActor*>& BuildingArray);
 
