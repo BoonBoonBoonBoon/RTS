@@ -152,35 +152,21 @@ void ISelectionInterface::UnitSelection()
 
 void ISelectionInterface::UnitSelection(TArray<AActor*>& Selected, AActor* HitActor)
 {
-	UE_LOG(LogTemp, Warning, TEXT("I)L: 154 - Units Pre: %d"), Selected.Num());
-
-
-	// If S Array or PS Array is empty
+	// If Array is empty
 	if (Selected.IsEmpty())
 	{
 		// S Array is empty, add actor.
 		Selected.AddUnique(HitActor);
 		for (AActor* Src : Selected)
 		{
-			if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
+			if (const AGenericBaseAI* AI = Cast<AGenericBaseAI>(Src))
 			{
-				UE_LOG(LogTemp, Warning, TEXT("I)L: 177 - AI Set Visibility to True: %d"), Selected.Num());
-				BaseAI->SelectedDecalComp->SetVisibility(true);
+				AI->SelectedDecalComp->SetVisibility(true);
 			}
 		}
-		/*} else if(PSelected.IsEmpty())
-		{
-			PSelected.AddUnique(Cast<APawn>(HitActor));
-			for (AActor* Src : PSelected)
-			{
-				if (AMainBuilding* MBuilding = Cast<AMainBuilding>(Src))
-				{
-					MBuilding->SelectedDecalComp->SetVisibility(true);
-					UE_LOG(LogTemp, Warning, TEXT("Buildings Selection: %d"), PSelected.Num());
-				}
-			}
-		}*/
-		// Units already selected, clear previous selection and add the new HitActor
+	} else
+	{
+		ChangeElementInArray(Selected, HitActor);
 	}
 }
 
@@ -199,23 +185,36 @@ void ISelectionInterface::BuildingArrayIsEmpty(TArray<AActor*>& Building, AActor
 	}
 }
 
-void ISelectionInterface::ChangeElementInBuildingArray(TArray<AActor*>& Building, AActor* HitPawn)
+void ISelectionInterface::ChangeElementInArray(TArray<AActor*>& Array, AActor* HitPawn)
 {
-	if(Building.Num() > 0)
+	if(Array.Num() > 0)
 	{
-		for(AActor* Actor : Building) 
+		for(AActor* Actor : Array) 
 		{
 			if(const AMainBuilding* MBuilding = Cast<AMainBuilding>(Actor))
 			{
 				MBuilding->SelectedDecalComp->SetVisibility(false);
-				Building.Empty(); 
+				Array.Empty(); 
 				
-				Building.AddUnique(HitPawn); 
-				for(AActor* SrcP : Building) 
+				Array.AddUnique(HitPawn); 
+				for(AActor* SrcP : Array) 
 				{
 					if(const AMainBuilding* NewBuilding = Cast<AMainBuilding>(SrcP)) 
 					{
 						NewBuilding->SelectedDecalComp->SetVisibility(true); 
+					}
+				}
+			} else if(const AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Actor))
+			{
+				BaseAI->SelectedDecalComp->SetVisibility(false);
+				Array.Empty(); 
+				
+				Array.AddUnique(HitPawn); 
+				for(AActor* Src : Array) 
+				{
+					if(const AGenericBaseAI* NewBaseAI = Cast<AGenericBaseAI>(Src)) 
+					{
+						NewBaseAI->SelectedDecalComp->SetVisibility(true); 
 					}
 				}
 			}
@@ -290,22 +289,21 @@ void ISelectionInterface::MultiUnitSelection(TArray<AActor*>& Selected, AActor* 
 				UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), Selected.Num());
 			}
 		}
-	}
+	} 
 }
-void ISelectionInterface::NotHit(TArray<AActor*> &Building)
+void ISelectionInterface::NotHit(TArray<AActor*> &Array)
 {
-	UE_LOG(LogTemp, Warning, TEXT("NotHit-Func-Before ForLoop: %d"), Building.Num());
 	// Loops through all the elements and turns vis off
-	for(AActor* PawnSrc : Building)
+	for(AActor* PawnSrc : Array)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("NotHit-Func-ForLoop %d"), Building.Num());
-		
-		if (AMainBuilding* MainBuilding = Cast<AMainBuilding>(PawnSrc))
+		if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(PawnSrc))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("NotHit-Func-BeforeEmpty: %d"), Building.Num());
 			MainBuilding->SelectedDecalComp->SetVisibility(false);
-			Building.Empty();
-			UE_LOG(LogTemp, Warning, TEXT("NotHit-Func-Empty: %d"), Building.Num());
+			Array.Empty();
+		} else if(const AGenericBaseAI* AI = Cast<AGenericBaseAI>(PawnSrc))
+		{
+			AI->SelectedDecalComp->SetVisibility(false);
+			Array.Empty();
 		}
 	}
 }

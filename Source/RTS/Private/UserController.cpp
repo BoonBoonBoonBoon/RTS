@@ -174,21 +174,17 @@ void AUserController::MoveCamera(const FVector& Direction)
 	}
 }
 
-void AUserController::CursorToWidget()
-{
-	
-}
-
 
 void AUserController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//UE_LOG(LogTemp, Warning, TEXT("Unit Selection (ForLoopAtEnd?): %d"), SelectedUnits.Num());
-	//UE_LOG(LogTemp, Warning, TEXT("Building Selection (ForLoopAtEnd?): %d"), SelectedBuilding.Num());
-	//UE_LOG(LogTemp, Warning, TEXT("L %d"), SelectedBuilding.Num());
 	
 	EdgeScrolling();
 	UpdateFlow();
+
+	// Log the number of units in the SelectedUnit array
+	UE_LOG(LogTemp, Warning, TEXT("Number of units in SelectedUnit array: %d"), SelectedUnits.Num());
+	UE_LOG(LogTemp, Warning, TEXT("Number of units in SelectedB array: %d"), SelectedBuilding.Num());
 
 	// Defined User Macro, Gets Trace to pawn under cursor. 
 	GetHitResultUnderCursor(mTraceChannel, true, bHit);
@@ -268,7 +264,6 @@ void AUserController::EventKey()
 
 					FVector Location = HitResult.Location;
 
-					UE_LOG(LogTemp, Warning, TEXT("Address %p"), &Location);
 					// if the array has a unit in it 
 					if (SelectedUnits.Num() > 0)
 					{
@@ -307,6 +302,13 @@ void AUserController::StartBoxSelection()
 		bIsSelecting = true;
 
 		CastToActor();
+		
+		// Empties the array of selectable classes.
+		if (bNotHit)
+		{
+			SelectionInterface->NotHit(SelectedBuilding);
+			SelectionInterface->NotHit(SelectedUnits);
+		}
 	}
 }
 
@@ -318,46 +320,7 @@ void AUserController::EndBoxSelection()
 	MultiselectCond = false;
 	bIsDecalSelect = false;
 
-
-	/*
-	 * When we do not enter element to array line returns empty.
-	 * When we do have a element in the array line returns 1.
-	 */
 	
-	UE_LOG(LogTemp, Warning, TEXT("L: 324 - (UC) EndBox - Building Array Count BEFORE NOT HIT: %d"), SelectedBuilding.Num());
-	
-	UE_LOG(LogTemp, Warning, TEXT(" True or False : %i"), bNotHit);
-	if (bNotHit)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("L: Nothit %d"), SelectedBuilding.Num());
-		
-		SelectionInterface->NotHit(SelectedBuilding);
-		
-		for (AActor* Actor : SelectedUnits)
-		{
-			
-			if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
-			{
-				
-				GenAI->SelectedDecalComp->SetVisibility(false);
-			}
-		}
-		SelectedUnits.Empty();
-		
-		UE_LOG(LogTemp, Warning, TEXT("L: 343 (UC) - Tick - NumOfBuildingAfterEmpty: %d"), SelectedBuilding.Num());
-	}
-	
-	UE_LOG(LogTemp, Warning, TEXT("L: 347 - (UC) EndBox - Building Array Count AFTER NOT HIT : %d"), SelectedBuilding.Num());
-	
-	
-	//UE_LOG(LogTemp, Warning, TEXT("L: 347 - EndBox - Unit Array Count: %d"), SelectedUnits.Num());
-	//UE_LOG(LogTemp, Warning, TEXT("L: 331 - StartBox - NoHit - End Function Unit Array Count: %d"), SelectedUnits.Num());
-	/*if (BlackboardComponent)
-	{
-		/*const FBlackboard::FKey ArrayKeyID = BlackboardComponent->GetKeyID(ArrayKeyID)
-		// Set the array value in the Blackboard
-		BlackboardComponent->SetValueAsObject(ArrayKeyID, SelectedUnits);#1#
-	}*/
 }
 
 
@@ -424,7 +387,6 @@ void AUserController::CastToActor()
 				bNotHit = false;
 				HandleSelection(HitActor);
 				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
-				
 			}
 			else
 			{
@@ -439,35 +401,45 @@ void AUserController::HandleSelection(AActor* ActorHit)
 {
 	if (ActorHit)
 	{
-		// If it isn't multi-select, empty the array first
-		if (MultiselectCond)
+		if (ActorHit->Tags.Contains("Unit")) // Look for Actor Type.
 		{
-			UE_LOG(LogTemp, Warning, TEXT("L: 508 - HandlePawn - before MultiUnitSelection: %d"),
-			       SelectedBuilding.Num());
-			SelectionInterface->MultiUnitSelection(SelectedUnits, ActorHit);
-		}
-		else if (ActorHit->Tags.Contains("Building"))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Building"));
+			if (!SelectedBuilding.IsEmpty()) // Clears Selection to process new Array Selection.
+			{
+				SelectionInterface->NotHit(SelectedBuilding);
+			}
 
-			if (SelectedBuilding.IsEmpty())
+			if (MultiselectCond)
 			{
-				SelectionInterface->BuildingArrayIsEmpty(SelectedBuilding, ActorHit);
+				SelectionInterface->MultiUnitSelection(SelectedUnits, ActorHit);
 			}
-			else if (SelectedBuilding.Num() > 0)
+			else
 			{
-				SelectionInterface->ChangeElementInBuildingArray(SelectedBuilding, ActorHit);
+				SelectionInterface->UnitSelection(SelectedUnits, ActorHit);
 			}
-		} else
+		}
+		else if (ActorHit->Tags.Contains("Building")) // Look for Actor Type.
 		{
-			UE_LOG(LogTemp, Warning, TEXT("DOES NOT HAVE TAG!!!!!!!!!!!!!!!!!!!!!!!!!!!!"));
+			if (!MultiselectCond) // Cannot MultiSelect Buildings.
+			{
+				if (!SelectedUnits.IsEmpty()) // Clears Selection to process new Array Selection.
+				{
+					SelectionInterface->NotHit(SelectedUnits);
+				}
+
+				if (SelectedBuilding.IsEmpty())
+				{
+					SelectionInterface->BuildingArrayIsEmpty(SelectedBuilding, ActorHit);
+				}
+				else if (SelectedBuilding.Num() > 0)
+				{
+					SelectionInterface->ChangeElementInArray(SelectedBuilding, ActorHit);
+				}
+			}
+		}
+		else
+		{
 			bNotHit = true;
 		}
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("%i"), bNotHit);
-		bNotHit = true;
 	}
 }
 

@@ -87,13 +87,13 @@ public:
 	// SingleClick Selection Building - Deselects Buildings and Selects New Buildings
 	static void BuildingArrayIsEmpty(TArray<AActor*> &Building, AActor* HitPawn);
 
-	static void ChangeElementInBuildingArray(TArray<AActor*> &Building, AActor* HitPawn);
+	static void ChangeElementInArray(TArray<AActor*> &Array, AActor* HitPawn);
 	//void SwapActor(TArray<AActor*> &Selected,TArray<AActor*> &PSelected, AActor* HitActor);
 	
 	// MultiClick Selection - Stores old units and Selects New Units
 	static void MultiUnitSelection(TArray<AActor*> &Selected, AActor* HitActor);
 
-	static void NotHit(TArray<AActor*> &Building);
+	static void NotHit(TArray<AActor*> &Array);
 
 	bool IsUnitSelected( const AActor* BuildingToCheck, const TArray<AActor*>& BuildingArray);
 

@@ -42,7 +42,7 @@ public:
 	
 	void MoveCamera(const FVector& Direction);
 	
-	void CursorToWidget();
+	
 	void EventKey(); // Movement and Attack Direction
 
 	
@@ -53,7 +53,7 @@ public:
 
 	
 	void CastToActor(); // Raycasts to Actors to check Hit Result
-	void HandleSelection(AActor* ActorHit);
+	void HandleSelection(AActor* ActorHit);// Determines On how the Actor will be processed.
 	void PawnSelectionHelper(AActor* ActorHit);
 	
 	TArray<AActor*> ConvertPawnArrayToActorArray(const TArray<APawn*>& PawnArray); // Converts Pawn Array to Actor Array
@@ -135,9 +135,10 @@ public:
 
 	// Checks if we are selecting multiple ai
 	bool MultiselectCond;
-	
+
+	// Checks if specific class has been raycasted too.
 	bool bNotHit;
-	
+
 	// Logic for the Units decal apearing and disapearing
 	void UnitDecals(AGenericBaseAI* HitPawn);
 	
