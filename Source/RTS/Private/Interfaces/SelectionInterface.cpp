@@ -286,7 +286,6 @@ void ISelectionInterface::MultiUnitSelection(TArray<AActor*>& Selected, AActor* 
 			if (const AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
 			{
 				BaseAI->SelectedDecalComp->SetVisibility(true);
-				UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), Selected.Num());
 			}
 		}
 	} 

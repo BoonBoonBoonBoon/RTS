@@ -181,11 +181,7 @@ void AUserController::Tick(float DeltaTime)
 	
 	EdgeScrolling();
 	UpdateFlow();
-
-	// Log the number of units in the SelectedUnit array
-	UE_LOG(LogTemp, Warning, TEXT("Number of units in SelectedUnit array: %d"), SelectedUnits.Num());
-	UE_LOG(LogTemp, Warning, TEXT("Number of units in SelectedB array: %d"), SelectedBuilding.Num());
-
+	
 	// Defined User Macro, Gets Trace to pawn under cursor. 
 	GetHitResultUnderCursor(mTraceChannel, true, bHit);
 }
@@ -330,7 +326,6 @@ void AUserController::MultiSelect()
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
 		MultiselectCond = true;
-		UE_LOG(LogTemp, Warning, TEXT("Multi - True"));
 		CastToActor();
 	}
 }
