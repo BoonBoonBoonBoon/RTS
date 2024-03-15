@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Actor.h"
+#include <map>
 #include "Interfaces/ResourceInterface.h"
 #include "ResourceMain.generated.h"
 
@@ -51,6 +52,10 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	// A map of actors and their timers. (Key = Actor, Value = TimerHandle)
+	std::map<AActor*, FTimerHandle> ActorTimers;
+
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

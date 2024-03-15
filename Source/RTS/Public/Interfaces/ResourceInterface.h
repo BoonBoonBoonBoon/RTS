@@ -52,12 +52,12 @@ public:
 	// Returns the type of resource.
 	virtual EResourceType GetResourceType() const = 0;
 
-	// Returns the amount of resource.
-	virtual int32 GetAmount();
+	// Returns the amount of resource. (Logs for Debug)
+	virtual int32 GetAmount(int Amount);
 
 
 	// AI Takes the Resources.
-	virtual void TakeResources(int32 amount);
+	virtual void TakeResources(int32 Amount);
 	
 };
 

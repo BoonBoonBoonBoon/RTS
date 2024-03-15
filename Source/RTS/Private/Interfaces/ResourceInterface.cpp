@@ -2,7 +2,6 @@
 
 
 #include "Interfaces/ResourceInterface.h"
-
 #include "Resources/WoodResource.h"
 
 
@@ -20,15 +19,18 @@ void IResourceInterface::ResourceAmount(AActor* SelfActor, AActor* OtherActor, F
 	else if(ResourceType2 == EResourceType::Wood)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Wood"));
+		
 	}
 }
 
-int32 IResourceInterface::GetAmount()
+
+int32 IResourceInterface::GetAmount(int Amount)
 {
-	return 0;
+	UE_LOG(LogTemp, Warning, TEXT("Amount: %d"), Amount);
+	return {};
 }
 
-void IResourceInterface::TakeResources(int32 amount)
+void IResourceInterface::TakeResources(int32 Amount)
 {
 }
 

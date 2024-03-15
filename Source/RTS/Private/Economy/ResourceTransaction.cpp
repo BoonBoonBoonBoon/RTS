@@ -1,9 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "Economy/EconomyManager.h"
+#include "Economy/ResourceTransaction.h"
 
-
-UEconomyManager::UEconomyManager()
-{
-}

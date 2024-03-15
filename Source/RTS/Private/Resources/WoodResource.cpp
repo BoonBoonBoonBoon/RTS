@@ -27,4 +27,5 @@ int32 AWoodResource::GetAmount()
 void AWoodResource::TakeResources(int32 amount)
 {
 	Super::TakeResources(amount);
+	
 }

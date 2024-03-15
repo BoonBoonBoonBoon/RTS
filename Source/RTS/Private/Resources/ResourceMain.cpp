@@ -30,38 +30,45 @@ EResourceType AResourceMain::GetResourceType() const
 	return EResourceType::Invalid;
 }
 
+//if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandle))
+//{}
+
+//GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+//{
 
 void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                  const FHitResult& SweepResult)
 {
-	if(OtherActor && OverlappedComponent->IsOverlappingActor(OtherActor))
+	if (OtherActor && OverlappedComponent->IsOverlappingActor(OtherActor))
 	{
-		if(!GetWorld()->GetTimerManager().IsTimerActive(TimerHandle))
+		FTimerHandle& ActorTimer = ActorTimers[OtherActor]; // Get the timer for the actor.
+		GetWorld()->GetTimerManager().SetTimer(ActorTimer, [this, OtherActor, SweepResult]()
 		{
-			GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
+			--TimeValue;
+			if (TimeValue <= 0)
 			{
-				--TimeValue;
-				if (TimeValue <= 0)
-				{
-					++TimeValue;
-					RInterface->ResourceAmount(this, OtherActor, FVector(0), SweepResult);
-				}
-			}, TimeValue, true);
-		}
+				++TimeValue;
+				RInterface->ResourceAmount(this, OtherActor, FVector(0), SweepResult);
+			}
+		}, TimeValue, true);
 	}
 }
 
 void AResourceMain::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	
-	if(OtherActor && !OverlappedComponent->IsOverlappingActor(OtherActor))
+	//if(OtherActor && !OverlappedComponent->IsOverlappingActor(OtherActor))
+	if(OtherActor && ActorTimers.find(OtherActor) != ActorTimers.end())
 	{
+		FTimerHandle ActorTimer = ActorTimers[OtherActor];
+		GetWorld()->GetTimerManager().ClearTimer(ActorTimer);
+		ActorTimers.erase(OtherActor);
 		UE_LOG(LogTemp, Warning, TEXT("End overlap"));
-		GetWorld()->GetTimerManager().ClearTimer(TimerHandle);
 	}
 }
 
+//GetWorld()->GetTimerManager().ClearTimer(ActorTimers[OtherActor]);
 
 int32 AResourceMain::GetAmount()
 {
