@@ -55,7 +55,6 @@ protected:
 	// A map of actors and their timers. (Key = Actor, Value = TimerHandle)
 	std::map<AActor*, FTimerHandle> ActorTimers;
 
-	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

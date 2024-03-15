@@ -7,11 +7,13 @@
 
 // Add default functionality here for any IResourceInterface functions that are not pure virtual.
 
-void IResourceInterface::ResourceAmount(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi)
+
+
+void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi)
 {
 	// Cast to All Possible Variants
-	EResourceType ResourceType1 = (SelfActor && SelfActor->IsA<AResourceMain>()) ? Cast<AResourceMain>(SelfActor)->GetResourceType() : EResourceType::Invalid;
-	EResourceType ResourceType2 = (SelfActor && SelfActor->IsA<AWoodResource>()) ? Cast<AWoodResource>(SelfActor)->GetResourceType() : EResourceType::Invalid;
+	const EResourceType ResourceType1 = (SelfActor && SelfActor->IsA<AResourceMain>()) ? Cast<AResourceMain>(SelfActor)->GetResourceType() : EResourceType::Invalid;
+	const EResourceType ResourceType2 = (SelfActor && SelfActor->IsA<AWoodResource>()) ? Cast<AWoodResource>(SelfActor)->GetResourceType() : EResourceType::Invalid;
 	if(ResourceType1 == EResourceType::Invalid)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Invalid"));
@@ -19,7 +21,14 @@ void IResourceInterface::ResourceAmount(AActor* SelfActor, AActor* OtherActor, F
 	else if(ResourceType2 == EResourceType::Wood)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Wood"));
+
+
+		// Use transaction class. where in function we tell wood resource to reduce its int, and resourceinterface to increase its int.
+		//Mediator Pattern: Introduce a mediator class that handles communication between classes. Instead of classes communicating directly with each other, they communicate through the mediator, which reduces direct dependencies.
 		
+		
+		//int32 Wood = WoodResource->TakeResources(Resource); // Takes The Resource from the Node.
+		//UE_LOG(LogTemp, Warning, TEXT("Wood value taking resources: %d"), Wood);
 	}
 }
 
@@ -30,9 +39,6 @@ int32 IResourceInterface::GetAmount(int Amount)
 	return {};
 }
 
-void IResourceInterface::TakeResources(int32 Amount)
-{
-}
 
 
 /*FString IResourceInterface::GetEnumName()

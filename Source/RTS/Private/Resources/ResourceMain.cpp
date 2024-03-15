@@ -49,7 +49,7 @@ void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 			if (TimeValue <= 0)
 			{
 				++TimeValue;
-				RInterface->ResourceAmount(this, OtherActor, FVector(0), SweepResult);
+				RInterface->TakeResourceObject(this, OtherActor, FVector(0), SweepResult);
 			}
 		}, TimeValue, true);
 	}

@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "ResourceInterface.generated.h"
 
+
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UResourceInterface : public UInterface
@@ -13,6 +15,7 @@ class UResourceInterface : public UInterface
 	GENERATED_BODY()
 };
 
+// Resource Type Enum.
 UENUM(BlueprintType)
 enum class  EResourceType : uint8 {
 	Wood,
@@ -22,6 +25,7 @@ enum class  EResourceType : uint8 {
 	Invalid,
 };
 
+// Struct for Resource Stats.
 USTRUCT(BlueprintType)
 struct FResourceStats
 {
@@ -34,7 +38,6 @@ public:
 	EResourceType resourceType;
 };
 
-
 class RTS_API IResourceInterface
 {
 	GENERATED_BODY()
@@ -42,23 +45,22 @@ class RTS_API IResourceInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-
+	
+	int32 Resource = 1;
+	
 	//int ResourceAmount;
 	bool bTakingResource;
 	
 	// Checks The Type of Resource and Returns the Amount.
-	void ResourceAmount(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi);
+	void TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi);
 
 	// Returns the type of resource.
 	virtual EResourceType GetResourceType() const = 0;
 
 	// Returns the amount of resource. (Logs for Debug)
 	virtual int32 GetAmount(int Amount);
-
-
-	// AI Takes the Resources.
-	virtual void TakeResources(int32 Amount);
 	
+
 };
 
 

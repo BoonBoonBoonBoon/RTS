@@ -24,8 +24,18 @@ int32 AWoodResource::GetAmount()
 	return CurrentResourceAmount;
 }
 
-void AWoodResource::TakeResources(int32 amount)
+int32 AWoodResource::TakeResources(int32 amount)
 {
-	Super::TakeResources(amount);
+	// Later on we can check if certain upgrades have been set, For now we only take a single element at once.
+	
+	amount = 1;
+	
+	CurrentResourceAmount -= amount; // Depletes The Resource.
+	
+	UE_LOG(LogTemp, Warning, TEXT("Wood Left In Node : %d"), CurrentResourceAmount);
+	
+	return amount;
+	
+
 	
 }
