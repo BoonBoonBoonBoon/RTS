@@ -44,7 +44,6 @@ class RTS_API IResourceInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
-
 	
 	int32 Resource = 1;
 	

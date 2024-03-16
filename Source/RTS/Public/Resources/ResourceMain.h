@@ -39,14 +39,12 @@ public:
 	UFUNCTION( )
 	void EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	
-	
-	int32 TimeValue = 1; // The time it takes for the AI to take the resource.
+	// The time it takes for the AI to take the resource.
+	int32 TimeValue = 1;
 	
 	// Returns the amount of resource.
-	virtual int32 GetAmount();
-	
-	// AI takes The Resources.
-	//virtual void TakeResources(int32 amount);
+	//virtual int32 GetAmount();
+
 	
 protected:
 	// Called when the game starts or when spawned

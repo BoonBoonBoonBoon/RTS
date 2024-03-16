@@ -26,9 +26,10 @@ public:
 	virtual int32 GetAmount();
 
 	// AI takes The Resources.
-	virtual int32 TakeResources(int32 amount);
-	
+	void TakeResources(int32 amount);
 
+protected:
 	int32 MaxResourceAmount;	// The Maximum Amount of Resource a Resource Can Have.
 	int32 CurrentResourceAmount;	// The Amount a Resource Currently Has.
+	
 };

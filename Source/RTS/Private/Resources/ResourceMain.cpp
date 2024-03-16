@@ -5,6 +5,7 @@
 #include "Components/BoxComponent.h"
 
 
+
 // Sets default values
 AResourceMain::AResourceMain()
 {
@@ -30,16 +31,11 @@ EResourceType AResourceMain::GetResourceType() const
 	return EResourceType::Invalid;
 }
 
-//if (!GetWorld()->GetTimerManager().IsTimerActive(TimerHandle))
-//{}
-
-//GetWorld()->GetTimerManager().SetTimer(TimerHandle, [&]()
-//{
-
 void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                  const FHitResult& SweepResult)
 {
+	// If the actor is valid and is overlapping the component, set a timer for the actor.
 	if (OtherActor && OverlappedComponent->IsOverlappingActor(OtherActor))
 	{
 		FTimerHandle& ActorTimer = ActorTimers[OtherActor]; // Get the timer for the actor.
@@ -57,8 +53,7 @@ void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 void AResourceMain::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	
-	//if(OtherActor && !OverlappedComponent->IsOverlappingActor(OtherActor))
+	// If the actor is in the map, clear the timer and remove the actor from the map.
 	if(OtherActor && ActorTimers.find(OtherActor) != ActorTimers.end())
 	{
 		FTimerHandle ActorTimer = ActorTimers[OtherActor];
@@ -67,14 +62,6 @@ void AResourceMain::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 		UE_LOG(LogTemp, Warning, TEXT("End overlap"));
 	}
 }
-
-//GetWorld()->GetTimerManager().ClearTimer(ActorTimers[OtherActor]);
-
-int32 AResourceMain::GetAmount()
-{
-	return 0;
-}
-
 
 // Called when the game starts or when spawned
 void AResourceMain::BeginPlay()

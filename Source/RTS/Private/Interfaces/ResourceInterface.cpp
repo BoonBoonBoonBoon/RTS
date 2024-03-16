@@ -2,28 +2,32 @@
 
 
 #include "Interfaces/ResourceInterface.h"
+#include "Economy/ResourceTransaction.h"
 #include "Resources/WoodResource.h"
 
 
 // Add default functionality here for any IResourceInterface functions that are not pure virtual.
-
-
 
 void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi)
 {
 	// Cast to All Possible Variants
 	const EResourceType ResourceType1 = (SelfActor && SelfActor->IsA<AResourceMain>()) ? Cast<AResourceMain>(SelfActor)->GetResourceType() : EResourceType::Invalid;
 	const EResourceType ResourceType2 = (SelfActor && SelfActor->IsA<AWoodResource>()) ? Cast<AWoodResource>(SelfActor)->GetResourceType() : EResourceType::Invalid;
+	
+	// Creates a new object of the Resource Transaction Class.
+	UResourceTransaction* ResourceTransaction = NewObject<UResourceTransaction>();
+	
 	if(ResourceType1 == EResourceType::Invalid)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Invalid"));
+		ResourceTransaction->TransactionProcess(Cast<AResourceMain>(SelfActor));
 	}
 	else if(ResourceType2 == EResourceType::Wood)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Wood"));
-
-
-		// Use transaction class. where in function we tell wood resource to reduce its int, and resourceinterface to increase its int.
+		ResourceTransaction->TransactionProcess(Cast<AWoodResource>(SelfActor));
+		
+		// Use transaction class. where in function we tell wood resource to reduce its int, and resource interface to increase its int.
 		//Mediator Pattern: Introduce a mediator class that handles communication between classes. Instead of classes communicating directly with each other, they communicate through the mediator, which reduces direct dependencies.
 		
 		
