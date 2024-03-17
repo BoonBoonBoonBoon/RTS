@@ -22,6 +22,7 @@ public:
 	int ValueForTransaction = 1;
 	
 	// Function That initializes the Transaction Process.
-	 void TransactionProcess(AResourceMain* ResourceRef);
-	
+	void TransactionProcess(AResourceMain* ResourceRef);
+
+	void ProcessingTransaction(int32 ResourceAmount, EResourceType ResourceType); 
 };

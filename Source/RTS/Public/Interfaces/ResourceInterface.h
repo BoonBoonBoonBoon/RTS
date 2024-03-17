@@ -58,8 +58,6 @@ public:
 
 	// Returns the amount of resource. (Logs for Debug)
 	virtual int32 GetAmount(int Amount);
-	
-
 };
 
 

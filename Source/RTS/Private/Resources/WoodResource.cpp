@@ -5,7 +5,7 @@
 
 AWoodResource::AWoodResource()
 {
-	MaxResourceAmount = 1000;
+	MaxResourceAmount = 10;
 	CurrentResourceAmount = MaxResourceAmount;
 }
 
@@ -32,5 +32,9 @@ void AWoodResource::TakeResources(int32 amount)
 		CurrentResourceAmount -= amount; // Depletes The Resource.
 
 		UE_LOG(LogTemp, Warning, TEXT("Wood Left In Node : %d"), CurrentResourceAmount);
-	}
+	} else if (CurrentResourceAmount <= 0)
+	{
+		Destroy(); // Destroys The Node.
+		UE_LOG(LogTemp, Warning, TEXT("No Wood Left In Node"));
+	}	
 }

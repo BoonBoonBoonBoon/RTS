@@ -31,6 +31,16 @@ EResourceType AResourceMain::GetResourceType() const
 	return EResourceType::Invalid;
 }
 
+/* TODO:
+ * 1. Create a Child Of genericAI, whose purpose it is to gather resources.
+ * 2. Create Optional Upgrades for the AI to gather resources faster. (Check if the AI has the upgrade, if so, gather resources faster.) (Use Struct)
+ * 3. Check for Upgrades.
+ * 4. Upgrades then determine the amount we can take from the resource. (Increase Speed even?) (maybe Nerf Speed)
+ * (Give the AI a value Variable in which it increases pickup speed by a percentile amount)
+ * ie. Reducing the timer gradually -> then to buy the upgrades the ai need to have a certain amount of resources.
+ * Check out FResourceStats For the amount we should take.
+ */
+
 void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,
                                  const FHitResult& SweepResult)
@@ -59,7 +69,6 @@ void AResourceMain::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 		FTimerHandle ActorTimer = ActorTimers[OtherActor];
 		GetWorld()->GetTimerManager().ClearTimer(ActorTimer);
 		ActorTimers.erase(OtherActor);
-		UE_LOG(LogTemp, Warning, TEXT("End overlap"));
 	}
 }
 

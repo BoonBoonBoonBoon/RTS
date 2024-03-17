@@ -41,11 +41,7 @@ public:
 	
 	// The time it takes for the AI to take the resource.
 	int32 TimeValue = 1;
-	
-	// Returns the amount of resource.
-	//virtual int32 GetAmount();
 
-	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
