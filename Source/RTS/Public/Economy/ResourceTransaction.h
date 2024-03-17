@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EconomyManager.h"
 #include "Resources/ResourceMain.h"
 #include "UObject/NoExportTypes.h"
 #include "ResourceTransaction.generated.h"

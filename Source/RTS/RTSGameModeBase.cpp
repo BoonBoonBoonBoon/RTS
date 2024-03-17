@@ -4,6 +4,7 @@
 #include "RTSGameModeBase.h"
 
 #include "UserController.h"
+#include "Economy/EconomyManager.h"
 
 ARTSGameModeBase::ARTSGameModeBase()
 {
@@ -16,4 +17,11 @@ ARTSGameModeBase::ARTSGameModeBase()
 	{
 		DefaultPawnClass = PlayerPawnBPClass.Class;
 	}
+}
+
+void ARTSGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UEconomyManager::GetInstance()->ResetEconomy();
 }

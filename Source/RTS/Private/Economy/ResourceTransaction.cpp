@@ -17,13 +17,10 @@ void UResourceTransaction::TransactionProcess(AResourceMain* ResourceRef)
 	{
 		if(AWoodResource* WoodResource = Cast<AWoodResource>(ResourceRef))
 		{
-			// TODO: Try Add a way to return the int we want to get, Ie a Certain amount previously set.
-			// TODO: Take the resource then send it the the HUB.
+			const int32 TakenWoodAmount = WoodResource->TakeResources(ValueForTransaction);
 			
-			// Take the Resource from the Node.
-			WoodResource->TakeResources(ValueForTransaction);
 			// Push the Resource to the EM, Value amount & Resource Type.
-			ProcessingTransaction(ValueForTransaction, EResourceType::Wood);
+			ProcessingTransaction(TakenWoodAmount, EResourceType::Wood);
 		}
 	}
 	else if(Cast<AResourceMain>(ResourceRef))
@@ -34,9 +31,12 @@ void UResourceTransaction::TransactionProcess(AResourceMain* ResourceRef)
 
 void UResourceTransaction::ProcessingTransaction(int32 ResourceAmount, EResourceType ResourceType)
 {
-	if(UEconomyManager* EconomyManager = NewObject<UEconomyManager>())
-	{
-		// Process The Last of the Dispatched Resources.
-		EconomyManager->IncomingResource(ResourceAmount, ResourceType);
-	}
+	// Get the Economy Manager Instance.
+	UEconomyManager* EconomyManager = UEconomyManager::GetInstance();
+
+	// Process The Last of the Dispatched Resources.
+	EconomyManager->IncomingResource(ResourceAmount, ResourceType);
 }
+	
+
+

@@ -17,13 +17,13 @@ class RTS_API UEconomyManager : public UObject
 	
 public:
 	UEconomyManager();
-	
+	void ResetEconomy();
+
 	EResourceType ResourceType;
 	FResourceStats ResourceStats;
 
-	int RWoodAmount;
-	int RStoneAmount;
-	
+	int RWoodAmount = 0;
+	int RStoneAmount = 0;
 	
 	// Main Function for the Economy.
 	void GlobalEconomy();
@@ -33,4 +33,15 @@ public:
 
 	void OutgoingResource(int32 ResourceAmount);	// Handles Outgoing Resources to Withdraw.
 	
+	// Singleton Instance.
+	static UEconomyManager* GetInstance();
+
+	void UpdateEconomyWidget();
+	
+private :
+	// Singleton Instance.
+	static UEconomyManager* Instance;
+
+	UPROPERTY()
+	class UUserWidget* EconomyWidget; // The Economy Widget.
 };

@@ -16,4 +16,6 @@ class RTS_API ARTSGameModeBase : public AGameModeBase
 
 	ARTSGameModeBase();
 	
+	void BeginPlay() override;
+	
 };

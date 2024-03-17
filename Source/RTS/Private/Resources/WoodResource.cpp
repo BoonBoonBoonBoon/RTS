@@ -24,17 +24,20 @@ int32 AWoodResource::GetAmount()
 	return CurrentResourceAmount;
 }
 
-void AWoodResource::TakeResources(int32 amount)
+int32 AWoodResource::TakeResources(int32 amount)
 {
 	// Later on we can check if certain upgrades have been set, For now we only take a single element at once.
 	if(CurrentResourceAmount > 0)
 	{
-		CurrentResourceAmount -= amount; // Depletes The Resource.
-
+		const int32 TakenAmount = FMath::Min(amount, CurrentResourceAmount); // Takes the Smallest Value between the two.
+		CurrentResourceAmount -= TakenAmount; // Depletes The Resource.
 		UE_LOG(LogTemp, Warning, TEXT("Wood Left In Node : %d"), CurrentResourceAmount);
-	} else if (CurrentResourceAmount <= 0)
+		return TakenAmount;
+	}
+	else
 	{
 		Destroy(); // Destroys The Node.
 		UE_LOG(LogTemp, Warning, TEXT("No Wood Left In Node"));
-	}	
+		return 0;
+	}
 }
