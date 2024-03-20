@@ -14,6 +14,8 @@ class RTS_API ARTSGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
+public:
+	
 	ARTSGameModeBase();
 	
 	void BeginPlay() override;

@@ -4,6 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "Interfaces/ResourceInterface.h"
+#include "Widets/PlayerWidget.h"
+//#include "Widets/PlayerWidget.h"
 #include "EconomyManager.generated.h"
 /**
  * 
@@ -38,10 +40,13 @@ public:
 
 	void UpdateEconomyWidget();
 	
+	//static UPlayerWidget* EconomyWidgetRef; // The Economy Widget.
+
+	//UPROPERTY()
+	UPlayerWidget* EconomyWidget;
+	
 private :
 	// Singleton Instance.
 	static UEconomyManager* Instance;
 
-	UPROPERTY()
-	class UUserWidget* EconomyWidget; // The Economy Widget.
 };

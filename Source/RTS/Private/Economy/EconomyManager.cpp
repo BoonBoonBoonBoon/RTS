@@ -2,7 +2,9 @@
 
 
 #include "Economy/EconomyManager.h"
+//#include "Widets/PlayerWidget.h"
 
+//UPlayerWidget* UEconomyManager::EconomyWidgetRef = nullptr;
 
 UEconomyManager::UEconomyManager(): ResourceType(), ResourceStats()
 {
@@ -27,6 +29,7 @@ void UEconomyManager::IncomingResource(int32 IncomingResourceAmount, EResourceTy
 		{
 			RWoodAmount += IncomingResourceAmount;
 			UE_LOG(LogTemp, Warning, TEXT("Wood Amount Stored At HUB: %d"), RWoodAmount);
+			UpdateEconomyWidget();
 		}
 		else if(IncomingResourceType == EResourceType::Stone)
 		{
@@ -55,10 +58,20 @@ UEconomyManager* UEconomyManager::GetInstance()
 
 void UEconomyManager::UpdateEconomyWidget()
 {
+
 	if(EconomyWidget)
 	{
-		auto EconomyWidgetInstance = Cast<EconomyWidget>(EconomyWidget);
+		EconomyWidget->SetDisplayWoodAmount(RWoodAmount);
 	}
+	
+	/*if(EconomyWidget)
+	{
+		auto EcomWidgetInstance = Cast<UPlayerWidget>(EconomyWidget);
+		if(EcomWidgetInstance)
+		{
+			EcomWidgetInstance->SetDisplayWoodAmount(RWoodAmount);
+		}
+	}*/
 }
 
 

@@ -13,5 +13,9 @@ UCLASS()
 class RTS_API UPlayerWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+public: 
+	   UFUNCTION(BlueprintImplementableEvent, Category = "WidgetCurrentResource")	// Blueprint Event to Update the Wood Amount.
+	void SetDisplayWoodAmount(int32 WoodAmount);
+
 };
