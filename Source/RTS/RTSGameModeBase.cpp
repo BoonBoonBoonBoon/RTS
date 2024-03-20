@@ -6,6 +6,7 @@
 #include "Economy/EconomyManager.h"
 #include "Widets/PlayerWidget.h"
 
+
 ARTSGameModeBase::ARTSGameModeBase()
 {
 	// use the custom Controller class
@@ -27,9 +28,13 @@ void ARTSGameModeBase::BeginPlay()
 	UEconomyManager::GetInstance()->ResetEconomy();
 
 	
+	
+	/*
 	// Create and display the Player Widget.
-	if (UPlayerWidget* PlayerHUD = CreateWidget<UPlayerWidget>(GetWorld(), UPlayerWidget::StaticClass()); PlayerHUD != nullptr)
+	UPlayerWidget* PlayerHUD = CreateWidget<UPlayerWidget>(GetWorld(), UPlayerWidget::StaticClass());
+	if (PlayerHUD)
 	{
+		//CreateWidget(PlayerHUD->GetClass());
 		PlayerHUD->AddToViewport();
 		UE_LOG(LogTemp, Warning, TEXT("Widget added to viewport."));
 	}
@@ -38,6 +43,8 @@ void ARTSGameModeBase::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Failed to create widget."));
 	
 	}
+	*/
+	
 	
 //	UEconomyManager::EconomyWidgetRef = Cast<UPlayerWidget>(CreateWidget(GetWorld(), UPlayerWidget::StaticClass()));
 }

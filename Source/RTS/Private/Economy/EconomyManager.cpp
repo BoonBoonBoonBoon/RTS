@@ -2,7 +2,7 @@
 
 
 #include "Economy/EconomyManager.h"
-//#include "Widets/PlayerWidget.h"
+
 
 //UPlayerWidget* UEconomyManager::EconomyWidgetRef = nullptr;
 
@@ -59,10 +59,10 @@ UEconomyManager* UEconomyManager::GetInstance()
 void UEconomyManager::UpdateEconomyWidget()
 {
 
-	if(EconomyWidget)
+	/*if(EconomyWidget)
 	{
-		EconomyWidget->SetDisplayWoodAmount(RWoodAmount);
-	}
+		//EconomyWidget->SetDisplayWoodAmount(RWoodAmount);
+	}*/
 	
 	/*if(EconomyWidget)
 	{
