@@ -14,7 +14,12 @@ void UPlayerWidget::SetDisplayWoodAmount(int32 WoodAmount)
 {
 	if(WoodAmountTextBlock)
 	{
-	const FText TextValue = FText::Format(FText::FromString(TEXT("Wood : {0}")), FText::AsNumber(WoodAmount));
-		WoodAmountTextBlock->SetText(TextValue);
+		// Format the text to include "Wood :" and the current wood amount.
+		const FText TextValue = FText::Format(
+			FText::FromString(TEXT("Wood : {0}")), FText::AsNumber(WoodAmount)
+			);
+
+		WoodAmountTextBlock->SetText(TextValue); // Set the Text Value.
+		
 	}
 }

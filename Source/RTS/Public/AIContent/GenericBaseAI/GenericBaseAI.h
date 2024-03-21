@@ -11,6 +11,7 @@
 
 class AUserController; 
 
+
 UCLASS()
 class RTS_API AGenericBaseAI : public ACharacter
 {

@@ -32,8 +32,8 @@ void AGenericBaseAI::MovePTR()
 {
 	if(ValidHit)
 	{
-		if(AController* CTRL = GetController()){
-			if(AGenericController* C = Cast<AGenericController>(CTRL))
+		if(AController* Ctrl = GetController()){
+			if(AGenericController* C = Cast<AGenericController>(Ctrl))
 			{
 				C->CheckValid = true;
 				C->MoveLoc = LocationToMove;

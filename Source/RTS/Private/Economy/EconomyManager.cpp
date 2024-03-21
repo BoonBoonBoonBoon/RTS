@@ -75,11 +75,11 @@ void UEconomyManager::UpdateEconomyWidget()
 		}
 	}*/
 
-	ARTSGameModeBase* GameMode = Cast<ARTSGameModeBase>(GetWorld());
+	/*ARTSGameModeBase* GameMode = Cast<ARTSGameModeBase>(GetWorld());
 	if(GameMode)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GameMode."));
-	}
+	}*/
 }
 
 

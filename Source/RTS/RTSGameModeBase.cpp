@@ -28,7 +28,14 @@ void ARTSGameModeBase::BeginPlay()
 	UEconomyManager::GetInstance()->ResetEconomy();
 
 	
-	
+	/*
+	UPlayerWidget* PlayerWidgetInstance = CreateWidget<UPlayerWidget>(this, UPlayerWidget::StaticClass());
+	if (PlayerWidgetInstance != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Widget added to viewport."));
+		PlayerWidgetInstance->AddToViewport();
+	}
+	*/
 	
 	/*// Create and display the Player Widget.
 	if (UPlayerWidget* PlayerHUD = CreateWidget<UPlayerWidget>(GetWorld(), UPlayerWidget::StaticClass()))
