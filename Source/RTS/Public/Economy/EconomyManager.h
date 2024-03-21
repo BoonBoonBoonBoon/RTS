@@ -10,6 +10,8 @@
  */
 
 
+class UPlayerWidget;
+
 UCLASS()
 class RTS_API UEconomyManager : public UObject
 {

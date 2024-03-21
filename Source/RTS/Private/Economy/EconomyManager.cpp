@@ -2,9 +2,11 @@
 
 
 #include "Economy/EconomyManager.h"
+#include "RTS/RTSGameModeBase.h"
 
 
 //UPlayerWidget* UEconomyManager::EconomyWidgetRef = nullptr;
+
 
 UEconomyManager::UEconomyManager(): ResourceType(), ResourceStats()
 {
@@ -72,6 +74,12 @@ void UEconomyManager::UpdateEconomyWidget()
 			EcomWidgetInstance->SetDisplayWoodAmount(RWoodAmount);
 		}
 	}*/
+
+	ARTSGameModeBase* GameMode = Cast<ARTSGameModeBase>(GetWorld());
+	if(GameMode)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GameMode."));
+	}
 }
 
 

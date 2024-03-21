@@ -4,7 +4,7 @@
 #include "RTSGameModeBase.h"
 #include "UserController.h"
 #include "Economy/EconomyManager.h"
-#include "Widets/PlayerWidget.h"
+
 
 
 ARTSGameModeBase::ARTSGameModeBase()
@@ -29,10 +29,9 @@ void ARTSGameModeBase::BeginPlay()
 
 	
 	
-	/*
-	// Create and display the Player Widget.
-	UPlayerWidget* PlayerHUD = CreateWidget<UPlayerWidget>(GetWorld(), UPlayerWidget::StaticClass());
-	if (PlayerHUD)
+	
+	/*// Create and display the Player Widget.
+	if (UPlayerWidget* PlayerHUD = CreateWidget<UPlayerWidget>(GetWorld(), UPlayerWidget::StaticClass()))
 	{
 		//CreateWidget(PlayerHUD->GetClass());
 		PlayerHUD->AddToViewport();
@@ -42,8 +41,8 @@ void ARTSGameModeBase::BeginPlay()
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to create widget."));
 	
-	}
-	*/
+	}*/
+	
 	
 	
 //	UEconomyManager::EconomyWidgetRef = Cast<UPlayerWidget>(CreateWidget(GetWorld(), UPlayerWidget::StaticClass()));

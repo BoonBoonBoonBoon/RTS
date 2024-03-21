@@ -10,6 +10,19 @@
 /**
  * 
  */
+
+/*
+UENUM()
+enum class EHudViewMode : uint8
+{
+	Clean UMeta(ToolTip= "Clean"),
+	Minimal UMeta(ToolTip = "Minimal"),
+	Moderate UMeta(ToolTip = "Moderate"),
+	Full UMeta(ToolTip = "Full")
+};
+*/
+
+
 UCLASS()
 class RTS_API UPlayerWidget : public UUserWidget
 {
@@ -17,20 +30,21 @@ class RTS_API UPlayerWidget : public UUserWidget
 
 public:
 
-	// Function to Update the Wood Amount.
-	//UFUNCTION(BlueprintImplementableEvent, Category = "WidgetCurrentResource")
-	//void UpdateWoodAmountText(int32 WoodAmount);	
-
 	virtual bool Initialize() override;
 
 	// The TextBlock Widget for the Wood Amount.
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
-	UTextBlock* WoodAmountTextBlock;
-
-	
+	TObjectPtr<UTextBlock> WoodAmountTextBlock;
 	   
-	   UFUNCTION(BlueprintImplementableEvent, Category = "WidgetCurrentResource")	// Blueprint Event to Update the Wood Amount.
-		void SetDisplayWoodAmount(int32 WoodAmount);
+	UFUNCTION(BlueprintCallable, Category = "WidgetCurrentResource")	// Blueprint Event to Update the Wood Amount.
+	void SetDisplayWoodAmount(int32 WoodAmount);
+
+private:
 	
+	/*
+	// Determines the View Mode of the HUD.
+	UPROPERTY(EditAnywhere)
+	EHudViewMode CurrentViewMode = EHudViewMode::Moderate;
+	*/
 
 };
