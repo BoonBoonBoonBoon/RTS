@@ -12,6 +12,7 @@
 
 class AMarketplaceBuilding;
 class ABarracksBuilding;
+
 // Sets default values
 AMainBuilding::AMainBuilding()
 {
@@ -23,12 +24,10 @@ AMainBuilding::AMainBuilding()
 	//BoxComponent->SetupAttachment(RootComponent);
 	
 	SelectedDecalComp = CreateDefaultSubobject<UDecalComponent>("Decal");
-	SelectedDecalComp->SetupAttachment(BoxComponent);
+	//SelectedDecalComp->SetupAttachment(RootComponent);
 	
 	// Set Tag to building
 	Tags.Add("Building");
-
-	
 }
  
 // Called when the game starts or when spawned
