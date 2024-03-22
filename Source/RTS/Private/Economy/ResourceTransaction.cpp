@@ -2,7 +2,6 @@
 
 
 #include "Economy/ResourceTransaction.h"
-
 #include "Economy/EconomyManager.h"
 #include "Resources/WoodResource.h"
 

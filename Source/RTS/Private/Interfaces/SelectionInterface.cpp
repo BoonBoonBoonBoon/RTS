@@ -99,11 +99,14 @@ void ISelectionInterface::EmptyArray(TArray<AActor*> Building)
 	Building.Empty();
 }
 
+/*
 EUnitTypes ISelectionInterface::GetUnitType(const AActor* Unit)
 {
 	return {};
 }
+*/
 
+/*
 UClass* ISelectionInterface::AssignUnitType(const AActor* Unit)
 {
 	if (Unit)
@@ -137,8 +140,9 @@ UClass* ISelectionInterface::AssignUnitType(const AActor* Unit)
 	}
 
 	//IF the actors class doesn't match a known unit type, return unknown.
-	return EUnitTypes::Unknown;*/
+	return EUnitTypes::Unknown;#1#
 }
+*/
 
 
 bool ISelectionInterface::IsBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck)
@@ -307,7 +311,7 @@ void ISelectionInterface::NotHit(TArray<AActor*> &Array)
 	}
 }
 
-bool ISelectionInterface::IsUnitSelected(const AActor* BuildingToCheck, const TArray<AActor*>& BuildingArray)
+/*bool ISelectionInterface::IsUnitSelected(const AActor* BuildingToCheck, const TArray<AActor*>& BuildingArray)
 {
 	for (const AActor* Actor : BuildingArray)
 	{
@@ -317,8 +321,9 @@ bool ISelectionInterface::IsUnitSelected(const AActor* BuildingToCheck, const TA
 		}
 	}
 	return false;
-}
+}*/
 
+/*
 bool ISelectionInterface::isBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck)
 {
 	for (const APawn* Pawn : BuildingArray)
@@ -330,6 +335,7 @@ bool ISelectionInterface::isBuildingSelected(const TArray<APawn*>& BuildingArray
 	}
 	return false;
 }
+*/
 
 
 /*if (Selected.Num() == 0)

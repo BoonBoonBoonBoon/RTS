@@ -2,15 +2,17 @@
 
 
 #include "Economy/EconomyManager.h"
+
+#include "Kismet/GameplayStatics.h"
 #include "RTS/RTSGameModeBase.h"
 
 
 //UPlayerWidget* UEconomyManager::EconomyWidgetRef = nullptr;
 
-
-UEconomyManager::UEconomyManager(): ResourceType(), ResourceStats()
+//: ResourceType(), ResourceStats(), EconomyWidget(nullptr)
+UEconomyManager::UEconomyManager()
 {
-	
+	//WoodAmountChanged.AddDynamic(EconomyWidget, &UPlayerWidget::SetDisplayWoodAmount);
 }
 
 void UEconomyManager::ResetEconomy()
@@ -60,6 +62,28 @@ UEconomyManager* UEconomyManager::GetInstance()
 
 void UEconomyManager::UpdateEconomyWidget()
 {
+	
+	 //GameModeRef = (ARTSGameModeBase*)GetWorld()->GetAuthGameMode();
+
+	GameModeRef = Cast<ARTSGameModeBase>(UGameplayStatics::GetGameMode(GetOuter()->GetWorld()));
+	
+	if(GameModeRef != nullptr)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("GameMode IS VALID!!."));
+		EconomyWidget = GameModeRef->Getter();
+		
+		if(EconomyWidget)
+		{
+			EconomyWidget->SetDisplayWoodAmount(RWoodAmount);
+			UE_LOG(LogTemp, Warning, TEXT("EconomyWidget is Valid."));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("EconomyWidget is Invalid."));
+		}
+	}
+
+	
 
 	/*if(EconomyWidget)
 	{

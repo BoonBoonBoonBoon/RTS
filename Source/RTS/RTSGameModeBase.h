@@ -4,7 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "Widets/PlayerWidget.h"
 #include "RTSGameModeBase.generated.h"
+
 
 /**
  * 
@@ -14,10 +16,17 @@ class RTS_API ARTSGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
-public:
+
 	
+public:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	class UPlayerWidget* PlayerWidget;
+
 	ARTSGameModeBase();
 	
 	void BeginPlay() override;
+
+	UPlayerWidget* Getter();
 	
 };

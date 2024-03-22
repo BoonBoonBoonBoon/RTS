@@ -29,14 +29,6 @@ enum class  EBuildingTypes : uint8
 const char* to_string(EBuildingTypes e);
 
 
-UENUM(BlueprintType)
-enum class EUnitTypes : uint8
-{
-	Worker,
-	Military,
-	Unknown,
-};
-
 
 class RTS_API ISelectionInterface
 {
@@ -47,9 +39,6 @@ public:
 
 	// Good for Switch Statements Look into it?
 	//TEnumAsByte<EBuildingTypes> BuildingType;
-	
-	
-//	TEnumAsByte<EUnitTypes> UnitT;
 	
 	// Returns the type of building.
 	static EBuildingTypes GetBuildingType(const AActor* Building);
@@ -67,12 +56,10 @@ public:
 	static void EmptyArray(TArray<AActor*> Building);
 
 	// Returns the type of unit.
-	static EUnitTypes GetUnitType(const AActor* Unit);
-
-	//virtual bool IsUnitOftype(EUnitTypes UnitType) const;
+	//static EUnitTypes GetUnitType(const AActor* Unit);
 	
 	// Assigns the type of Unit.
-	static UClass* AssignUnitType(const AActor* Unit);
+	//static UClass* AssignUnitType(const AActor* Unit);
 	
 	// Check if a specific element is in the array.
 	static bool IsBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck);
@@ -95,9 +82,9 @@ public:
 
 	static void NotHit(TArray<AActor*> &Array);
 
-	bool IsUnitSelected( const AActor* BuildingToCheck, const TArray<AActor*>& BuildingArray);
+	//bool IsUnitSelected( const AActor* BuildingToCheck, const TArray<AActor*>& BuildingArray);
 
-	bool isBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck);
+	//bool isBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck);
 
 
 

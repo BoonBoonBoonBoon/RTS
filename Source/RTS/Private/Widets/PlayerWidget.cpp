@@ -12,14 +12,18 @@ bool UPlayerWidget::Initialize()
 
 void UPlayerWidget::SetDisplayWoodAmount(int32 WoodAmount)
 {
-	if(WoodAmountTextBlock)
-	{
-		// Format the text to include "Wood :" and the current wood amount.
+
+	UE_LOG(LogTemp, Warning, TEXT("SetDisplay"));
+
+	WoodAmountUpdated.Broadcast(); // Calls the Blueprint Event to Update the Wood Amount.
+	
+	//if(WoodAmountTextBlock)
+	//{
+		/*// Format the text to include "Wood :" and the current wood amount.
 		const FText TextValue = FText::Format(
 			FText::FromString(TEXT("Wood : {0}")), FText::AsNumber(WoodAmount)
 			);
-
+		UE_LOG(LogTemp, Warning, TEXT("Debug Amoount : %d"), WoodAmount);
 		WoodAmountTextBlock->SetText(TextValue); // Set the Text Value.
-		
-	}
+	//}*/
 }

@@ -26,6 +26,7 @@ public:
 		EResourceType resourceType;
 };*/
 
+/*
 UENUM(BlueprintType)
 enum class  ECharacterType : uint8 {
 	Worker,
@@ -86,6 +87,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 		int32  owner;
 };
+*/
 
 
 /*
@@ -101,6 +103,7 @@ public:
 
 
 
+/*
 USTRUCT(BlueprintType)
 struct FCharacterStats : public FUnitStats
 {
@@ -118,6 +121,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Stats")
 		FInventory inventory;
 };
+*/
 
 UCLASS()
 class RTS_API UEnumsDatabase : public UObject

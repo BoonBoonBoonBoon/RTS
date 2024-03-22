@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "Interfaces/ResourceInterface.h"
+#include "RTS/RTSGameModeBase.h"
 #include "EconomyManager.generated.h"
 /**
  * 
  */
-
 
 class UPlayerWidget;
 
@@ -40,10 +40,13 @@ public:
 
 	void UpdateEconomyWidget();
 	
-	//static UPlayerWidget* EconomyWidgetRef; // The Economy Widget.
-
 	//UPROPERTY()
-	//UPlayerWidget* EconomyWidget;
+	UPlayerWidget* EconomyWidget;
+
+	ARTSGameModeBase* GameModeRef;
+	
+	/*UPROPERTY()
+	FWoodAMountChangedSignature WoodAmountChanged;*/
 	
 private :
 	// Singleton Instance.

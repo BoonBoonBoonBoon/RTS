@@ -22,6 +22,7 @@ enum class EHudViewMode : uint8
 };
 */
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FWOODAMOUNTUPDATEDSIGNATURE);
 
 UCLASS()
 class RTS_API UPlayerWidget : public UUserWidget
@@ -30,6 +31,9 @@ class RTS_API UPlayerWidget : public UUserWidget
 
 public:
 
+	UPROPERTY(BlueprintType, BlueprintAssignable)
+	FWOODAMOUNTUPDATEDSIGNATURE WoodAmountUpdated;
+	
 	virtual bool Initialize() override;
 
 	// The TextBlock Widget for the Wood Amount.
@@ -39,6 +43,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "WidgetCurrentResource")	// Blueprint Event to Update the Wood Amount.
 	void SetDisplayWoodAmount(int32 WoodAmount);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void UpdateWoodAmount();
+	
 private:
 	
 	/*

@@ -3,6 +3,7 @@
 
 #include "RTSGameModeBase.h"
 #include "UserController.h"
+#include "Blueprint/UserWidget.h"
 #include "Economy/EconomyManager.h"
 
 
@@ -28,29 +29,25 @@ void ARTSGameModeBase::BeginPlay()
 	UEconomyManager::GetInstance()->ResetEconomy();
 
 	
-	/*
-	UPlayerWidget* PlayerWidgetInstance = CreateWidget<UPlayerWidget>(this, UPlayerWidget::StaticClass());
-	if (PlayerWidgetInstance != nullptr)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Widget added to viewport."));
-		PlayerWidgetInstance->AddToViewport();
-	}
-	*/
-	
-	/*// Create and display the Player Widget.
-	if (UPlayerWidget* PlayerHUD = CreateWidget<UPlayerWidget>(GetWorld(), UPlayerWidget::StaticClass()))
+	PlayerWidget = CreateWidget<UPlayerWidget>(GetWorld(), UPlayerWidget::StaticClass());
+	if(PlayerWidget)
 	{
 		//CreateWidget(PlayerHUD->GetClass());
-		PlayerHUD->AddToViewport();
+		PlayerWidget->AddToViewport();
 		UE_LOG(LogTemp, Warning, TEXT("Widget added to viewport."));
 	}
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to create widget."));
 	
-	}*/
+	}
 	
 	
 	
 //	UEconomyManager::EconomyWidgetRef = Cast<UPlayerWidget>(CreateWidget(GetWorld(), UPlayerWidget::StaticClass()));
+}
+
+UPlayerWidget* ARTSGameModeBase::Getter()
+{
+	return PlayerWidget;
 }
