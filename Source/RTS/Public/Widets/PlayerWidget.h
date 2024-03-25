@@ -39,7 +39,11 @@ public:
 	// The TextBlock Widget for the Wood Amount.
 	UPROPERTY(BlueprintReadOnly, meta = (BindWidget))
 	TObjectPtr<UTextBlock> WoodAmountTextBlock;
-	   
+
+	UPROPERTY(Blueprintable, BlueprintReadWrite)
+	TObjectPtr<UPlayerWidget> ThisWidget;
+
+	
 	UFUNCTION(BlueprintCallable, Category = "WidgetCurrentResource")	// Blueprint Event to Update the Wood Amount.
 	void SetDisplayWoodAmount(int32 WoodAmount);
 

@@ -24,6 +24,10 @@ public:
 	class UPlayerWidget* PlayerWidget;
 
 	ARTSGameModeBase();
+
+	UFUNCTION(BlueprintCallable, Category = "Widgets")
+	void UpdateEWidget();
+	
 	
 	void BeginPlay() override;
 

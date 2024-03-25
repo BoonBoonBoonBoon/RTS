@@ -65,6 +65,7 @@ void UEconomyManager::UpdateEconomyWidget()
 	
 	 //GameModeRef = (ARTSGameModeBase*)GetWorld()->GetAuthGameMode();
 
+	/*
 	GameModeRef = Cast<ARTSGameModeBase>(UGameplayStatics::GetGameMode(GetOuter()->GetWorld()));
 	
 	if(GameModeRef != nullptr)
@@ -82,6 +83,7 @@ void UEconomyManager::UpdateEconomyWidget()
 			UE_LOG(LogTemp, Error, TEXT("EconomyWidget is Invalid."));
 		}
 	}
+	*/
 
 	
 

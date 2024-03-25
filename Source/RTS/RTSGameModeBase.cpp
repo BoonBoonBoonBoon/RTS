@@ -21,14 +21,8 @@ ARTSGameModeBase::ARTSGameModeBase()
 	}
 }
 
-void ARTSGameModeBase::BeginPlay()
+void ARTSGameModeBase::UpdateEWidget()
 {
-	Super::BeginPlay();
-
-	// Resets the Economy for every playable session.
-	UEconomyManager::GetInstance()->ResetEconomy();
-
-	
 	PlayerWidget = CreateWidget<UPlayerWidget>(GetWorld(), UPlayerWidget::StaticClass());
 	if(PlayerWidget)
 	{
@@ -41,6 +35,16 @@ void ARTSGameModeBase::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Failed to create widget."));
 	
 	}
+}
+
+void ARTSGameModeBase::BeginPlay()
+{
+	Super::BeginPlay();
+
+	// Resets the Economy for every playable session.
+	UEconomyManager::GetInstance()->ResetEconomy();
+
+
 	
 	
 	
