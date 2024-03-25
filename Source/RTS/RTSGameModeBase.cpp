@@ -33,7 +33,6 @@ void ARTSGameModeBase::UpdateEWidget()
 	else
 	{
 		UE_LOG(LogTemp, Error, TEXT("Failed to create widget."));
-	
 	}
 }
 
@@ -44,6 +43,7 @@ void ARTSGameModeBase::BeginPlay()
 	// Resets the Economy for every playable session.
 	UEconomyManager::GetInstance()->ResetEconomy();
 
+	UpdateEWidget();
 
 	
 	

@@ -58,7 +58,6 @@ void AGenericBaseAI::BeginPlay()
 {
 	Super::BeginPlay();
 	SelectedDecalComp->SetVisibility(false);
-	
 }
 
 
@@ -128,4 +127,3 @@ void AGenericBaseAI::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
-

@@ -3,11 +3,14 @@
 
 #include "Interfaces/SelectionInterface.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
+#include "AIContent/GenericBaseAI/UserControllerAI/Light/Infantry/lightInfantry.h"
+#include "AIContent/GenericBaseAI/UserControllerAI/WorkerDrone/WorkerDrone.h"
 #include "Buildings/BarracksBuilding.h"
 #include "Buildings/MarketplaceBuilding.h"
 #include "Components/DecalComponent.h"
 
 
+class IUnitInterface;
 class AGenericBaseAI;
 
 const char* to_string(EBuildingTypes e)
@@ -99,52 +102,6 @@ void ISelectionInterface::EmptyArray(TArray<AActor*> Building)
 	Building.Empty();
 }
 
-/*
-EUnitTypes ISelectionInterface::GetUnitType(const AActor* Unit)
-{
-	return {};
-}
-*/
-
-/*
-UClass* ISelectionInterface::AssignUnitType(const AActor* Unit)
-{
-	if (Unit)
-	{
-		// Based on some condition or logic, determine and return the UClass corresponding to the EUnitType
-		EUnitTypes UnitType = GetUnitType(Unit);
-		switch (UnitType)
-		{
-		case EUnitTypes::Worker:
-			UE_LOG(LogTemp, Warning, TEXT("AssignUnitType - Worker"));
-			return AGenericBaseAI::StaticClass();
-		case EUnitTypes::Military:
-			UE_LOG(LogTemp, Warning, TEXT("AssignUnitType - Military"));
-			//return Military::StaticClass();
-			break;
-		default:
-			break;
-		}
-	}
-	return nullptr; // Return nullptr if no unit type is assigned or recognized
-	/*if(!Unit)
-	{
-		return EUnitTypes::Unknown;
-	}
-
-	// Check the class of the unit and assign the corresponding unit type.
-	if(Unit->IsA(AGenericBaseAI::StaticClass()))
-	{
-		UE_LOG(LogTemp, Warning, TEXT("AssignUnitType - Worker"));
-		return EUnitTypes::Worker;
-	}
-
-	//IF the actors class doesn't match a known unit type, return unknown.
-	return EUnitTypes::Unknown;#1#
-}
-*/
-
-
 bool ISelectionInterface::IsBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck)
 {
 	return BuildingArray.Contains(BuildingToCheck);
@@ -166,6 +123,9 @@ void ISelectionInterface::UnitSelection(TArray<AActor*>& Selected, AActor* HitAc
 			if (const AGenericBaseAI* AI = Cast<AGenericBaseAI>(Src))
 			{
 				AI->SelectedDecalComp->SetVisibility(true);
+
+				// Determines Unit EUnitType.
+				HandleTypes(Selected, HitActor);
 			}
 		}
 	} else
@@ -218,66 +178,14 @@ void ISelectionInterface::ChangeElementInArray(TArray<AActor*>& Array, AActor* H
 				{
 					if(const AGenericBaseAI* NewBaseAI = Cast<AGenericBaseAI>(Src)) 
 					{
-						NewBaseAI->SelectedDecalComp->SetVisibility(true); 
+						NewBaseAI->SelectedDecalComp->SetVisibility(true);
+						HandleTypes(Array, HitPawn);
 					}
 				}
 			}
 		}
 	}
 }
-
-/*void ISelectionInterface::SwapActor(TArray<AActor*>& Selected, TArray<AActor*>& PSelected, AActor* HitActor)
-{
-	if (Selected.Num() >= 1 || PSelected.Num() >= 1)
-	{
-		for (AActor* Pawns : PSelected)
-		{
-			if (AMainBuilding* MBuilding = Cast<AMainBuilding>(Pawns))
-			{
-				MBuilding->SelectedDecalComp->SetVisibility(false);
-			}
-		}
-
-		for (AActor* Actors : Selected)
-		{
-			if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Actors))
-			{
-				BaseAI->SelectedDecalComp->SetVisibility(false);
-			}
-		}
-
-		UE_LOG(LogTemp, Warning, TEXT("I)L:213 - If Select Array has something in it : %d"), Selected.Num());
-		UE_LOG(LogTemp, Warning, TEXT("I)L:214 - If PSelect Array has something in it : %d"), PSelected.Num());
-
-		// then empties array
-		Selected.Empty();
-		PSelected.Empty();
-
-		// adds the new incoming element
-		Selected.AddUnique(HitActor);
-		PSelected.AddUnique(Cast<APawn>(HitActor));
-
-
-		UE_LOG(LogTemp, Warning, TEXT("I)L:220 - AddUniqe Select : %d"), Selected.Num());
-		UE_LOG(LogTemp, Warning, TEXT("I)L:222 - AddUniqe pSelect : %d"), PSelected.Num());
-
-
-		for (AActor* NewPawn : Selected)
-		{
-			if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(NewPawn))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Unit Selection (ForLoopAtEnd?): %d"), Selected.Num());
-				BaseAI->SelectedDecalComp->SetVisibility(true);
-			}
-			else if (AMainBuilding* MBuilding = Cast<AMainBuilding>(NewPawn))
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Building Selection (ForLoopAtEnd?): %d"), Selected.Num());
-				MBuilding->SelectedDecalComp->SetVisibility(true);
-			}
-		}
-	}
-}*/
-
 
 void ISelectionInterface::MultiUnitSelection(TArray<AActor*>& Selected, AActor* HitActor)
 {
@@ -290,10 +198,13 @@ void ISelectionInterface::MultiUnitSelection(TArray<AActor*>& Selected, AActor* 
 			if (const AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
 			{
 				BaseAI->SelectedDecalComp->SetVisibility(true);
+
+				HandleTypes(Selected, HitActor);
 			}
 		}
 	} 
 }
+
 void ISelectionInterface::NotHit(TArray<AActor*> &Array)
 {
 	// Loops through all the elements and turns vis off
@@ -311,71 +222,135 @@ void ISelectionInterface::NotHit(TArray<AActor*> &Array)
 	}
 }
 
-/*bool ISelectionInterface::IsUnitSelected(const AActor* BuildingToCheck, const TArray<AActor*>& BuildingArray)
+bool ISelectionInterface::IsUnitSelected(const TArray<AActor*>& UnitArray, const AActor* UnitToCheck)
 {
-	for (const AActor* Actor : BuildingArray)
+	return UnitArray.Contains(UnitToCheck);
+}
+
+void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, const AActor* UnitActor)
+{
+	// Checks validity of the unit.
+	if (IsUnitSelected(UnitArray, UnitActor))
 	{
-		if (Actor == BuildingToCheck)
+		// Determines the type of unit.
+		if (const EUnitTypes UnitType = GetUnitType(UnitActor); UnitType == EUnitTypes::Worker)
 		{
-			return true;
+			GetAttributesForunit(UnitType);
+			UE_LOG(LogTemp, Warning, TEXT("Unit Type: Worker"));
+		}
+		else if (UnitType == EUnitTypes::LightInfantry)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Unit Type: Light Infantry"));
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Unit Type: Invalid"));
 		}
 	}
-	return false;
-}*/
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Element Is Not in the Array."));
+	}
+}
+
+EUnitTypes ISelectionInterface::GetUnitType(const AActor* UnitActor)
+{
+	if (UnitActor)
+	{
+		if (Cast<AWorkerDrone>(UnitActor))
+		{
+			// Define the attributes of the unit.
+			DefineAttributes(UnitActor, EUnitTypes::Worker); // FIRST STEP, WE FIND THE UNIT TYPE
+			return EUnitTypes::Worker;
+		}
+		else if (Cast<AlightInfantry>(UnitActor))
+		{
+			DefineAttributes(UnitActor, EUnitTypes::Worker);
+			return EUnitTypes::LightInfantry;
+		}
+	}
+	return EUnitTypes::Invalid;
+}
+
+void ISelectionInterface::DefineAttributes(const AActor* UnitActor, EUnitTypes UnitTypes)
+{
+	if(UnitTypes== EUnitTypes::Worker)
+	{
+		GetAttributesForunit(UnitTypes); // ONCE FIGURED OUT UNIT TYPE WE WANT TO ASSIGN IT ATTRIBUTES.
+		UE_LOG(LogTemp, Warning, TEXT("Worker Attributes Defined."));
+	}
+	else if(UnitTypes == EUnitTypes::LightInfantry)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Light Infantry Attributes Defined."));
+	}
+}
+
+TArray<EUnitAttributes> ISelectionInterface::GetAttributesForunit(EUnitTypes UnitTypes)
+{
+	// Map of unit types to attributes.
+	UnitTypeToAttributesMap = {
+		{EUnitTypes::Worker, {EUnitAttributes::Gather, EUnitAttributes::Repair, EUnitAttributes::Build}},
+		{EUnitTypes::LightInfantry, {EUnitAttributes::Attack, EUnitAttributes::Guard, EUnitAttributes::Patrol}}
+	};
+	return {UnitTypeToAttributesMap[UnitTypes]}; // ????? RETURNS THE ATTRIBUTES OF THE UNIT.
+	// Maybe we dont need a return statement here.
+	// instead make it void?
+	
+}
 
 /*
-bool ISelectionInterface::isBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck)
+TArray<EUnitAttributes> ISelectionInterface::FindUnitAttributes(EUnitTypes UnitTypes, TArray<EUnitAttributes>& UnitAttributes)
 {
-	for (const APawn* Pawn : BuildingArray)
+	// Returns the attributes of the unit.
+	if (const TArray<EUnitAttributes>* Attributes = UnitTypeToAttributesMap.Find(UnitTypes))
 	{
-		if (Pawn == BuildingToCheck)
-		{
-			return true;
-		}
+		return *Attributes;
 	}
-	return false;
+	return {};
+}
+
+// Function to convert EUnitTypes enum to string
+FString ISelectionInterface::EnumToString(EUnitTypes EnumValue)
+{
+	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EUnitTypes"), true);
+	if (!EnumPtr) return FString("Invalid");
+
+	return EnumPtr->GetNameStringByValue((int64)EnumValue);
+}
+
+// Function to convert EUnitAttributes enum to string
+FString ISelectionInterface::EnumToString(EUnitAttributes EnumValue)
+{
+	const UEnum* EnumPtr = FindObject<UEnum>(ANY_PACKAGE, TEXT("EUnitAttributes"), true);
+	if (!EnumPtr) return FString("Invalid");
+
+	return EnumPtr->GetNameStringByValue((int64)EnumValue);
+}
+
+void ISelectionInterface::LogUnitTypeToAttributesMap(TMap<EUnitTypes, TArray<EUnitAttributes>> AttributesMap)
+{
+	// Iterate over each key-value pair in the map
+	for (const auto& Pair : AttributesMap)
+	{
+		// Convert the key (Unit Type) to string
+		FString UnitTypeString = EnumToString(Pair.Key);
+
+		// Start building the string for the value (Attributes Array)
+		FString AttributesString = TEXT("[");
+		for (const EUnitAttributes& Attribute : Pair.Value)
+		{
+			// Append each attribute to the string
+			AttributesString += EnumToString(Attribute) + TEXT(", ");
+		}
+		// Remove the trailing comma and space if there are any attributes
+		if (Pair.Value.Num() > 0)
+		{
+			AttributesString.RemoveAt(AttributesString.Len() - 2);
+		}
+		AttributesString += TEXT("]");
+
+		// Log the key-value pair
+		UE_LOG(LogTemp, Log, TEXT("%s: %s"), *UnitTypeString, *AttributesString);
+	}
 }
 */
-
-
-/*if (Selected.Num() == 0)
-{
-	//UE_LOG(LogTemp, Warning, TEXT("empty"));
-
-	Selected.AddUnique(HitActor);
-	for (AActor* Src : Selected)
-	{
-		if (const AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
-		{
-			BaseAI->SelectedDecalComp->SetVisibility(true);
-			UE_LOG(LogTemp, Warning, TEXT("Selected Units: %d"), Selected.Num());
-		}
-	}
-}
-else
-{
-	UE_LOG(LogTemp, Warning, TEXT("empty"));
-
-	// Loops through all the elements and turns vis off
-	for (AActor* HitActor : Selected)
-	{
-		if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitActor))
-		{
-			BaseAI->SelectedDecalComp->SetVisibility(false);
-		}
-	}
-	// then empties array
-	Selected.Empty();
-
-	// adds the new incoming element
-	Selected.AddUnique(HitActor);
-
-	for (AActor* NewPawn : Selected)
-	{
-		if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(NewPawn))
-		{
-			// sets the new elements vis 
-			BaseAI->SelectedDecalComp->SetVisibility(true);
-		}
-	}
-}*/
