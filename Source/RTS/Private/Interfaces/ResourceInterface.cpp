@@ -2,44 +2,70 @@
 
 
 #include "Interfaces/ResourceInterface.h"
+
+#include "AIContent/GenericBaseAI/ActorAttributesComponent.h"
 #include "Economy/ResourceTransaction.h"
+#include "Interfaces/SelectionInterface.h"
 #include "Resources/WoodResource.h"
 
 
 // Add default functionality here for any IResourceInterface functions that are not pure virtual.
 
 
+IResourceInterface::IResourceInterface()
+{
+	ISelectionInterface::OnActorCanGather.AddDynamic(this, &IResourceInterface::HandleActorCanGatherDelegate);
+}
+
+void IResourceInterface::HandleActorCanGatherDelegate(AActor* Actor)
+{
+	// Store GatherActor or mark it as able to gather resources
+	// This could involve adding it to a list or setting a flag on the actor
+	TakeResourceObject(nullptr, Actor, FVector::ZeroVector, FHitResult());
+}
+
 void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi)
 {
-	/*TArray<EUnitAttributes> ActorAttributes = OtherActor->GetAttributes();
-	if(ActorAttributes.Contains(EUnitAttributes::Gather))
+
+	// Check if OtherActor is in the list of actors that can gather resources
+	//if (OtherActor->Implements<USelectionInterface>() && ISelectionInterface::OnActorCanGather.IsBound() && ISelectionInterface::OnActorCanGather.IsBound() == true)
+
+	UActorAttributesComponent* AttributesComponent = Cast<UActorAttributesComponent>(OtherActor->GetComponentByClass(UActorAttributesComponent::StaticClass()));
+	if(OtherActor && AttributesComponent->CanGather())
 	{
-		// We Want to do something with collection on this.
-		
-	}*/
-	// Cast to All Possible Variants
-	const EResourceType ResourceType1 = (SelfActor && SelfActor->IsA<AResourceMain>()) ? Cast<AResourceMain>(SelfActor)->GetResourceType() : EResourceType::Invalid;
-	const EResourceType ResourceType2 = (SelfActor && SelfActor->IsA<AWoodResource>()) ? Cast<AWoodResource>(SelfActor)->GetResourceType() : EResourceType::Invalid;
+		// Allow resource collection
 	
-	// Creates a new object of the Resource Transaction Class.
-	UResourceTransaction* ResourceTransaction = NewObject<UResourceTransaction>();
 	
-	if(ResourceType1 == EResourceType::Invalid)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Invalid"));
-		ResourceTransaction->TransactionProcess(Cast<AResourceMain>(SelfActor));
-	}
-	else if(ResourceType2 == EResourceType::Wood)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Wood"));
-		ResourceTransaction->TransactionProcess(Cast<AWoodResource>(SelfActor));
+		/*TArray<EUnitAttributes> ActorAttributes = OtherActor->GetAttributes();
+		if(ActorAttributes.Contains(EUnitAttributes::Gather))
+		{
+			// We Want to do something with collection on this.
+			
+		}*/
+		// Cast to All Possible Variants
+		const EResourceType ResourceType1 = (SelfActor && SelfActor->IsA<AResourceMain>()) ? Cast<AResourceMain>(SelfActor)->GetResourceType() : EResourceType::Invalid;
+		const EResourceType ResourceType2 = (SelfActor && SelfActor->IsA<AWoodResource>()) ? Cast<AWoodResource>(SelfActor)->GetResourceType() : EResourceType::Invalid;
+	
+		// Creates a new object of the Resource Transaction Class.
+		UResourceTransaction* ResourceTransaction = NewObject<UResourceTransaction>();
+	
+		if(ResourceType1 == EResourceType::Invalid)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Invalid"));
+			ResourceTransaction->TransactionProcess(Cast<AResourceMain>(SelfActor));
+		}
+		else if(ResourceType2 == EResourceType::Wood)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Wood"));
+			ResourceTransaction->TransactionProcess(Cast<AWoodResource>(SelfActor));
 		
-		// Use transaction class. where in function we tell wood resource to reduce its int, and resource interface to increase its int.
-		//Mediator Pattern: Introduce a mediator class that handles communication between classes. Instead of classes communicating directly with each other, they communicate through the mediator, which reduces direct dependencies.
+			// Use transaction class. where in function we tell wood resource to reduce its int, and resource interface to increase its int.
+			//Mediator Pattern: Introduce a mediator class that handles communication between classes. Instead of classes communicating directly with each other, they communicate through the mediator, which reduces direct dependencies.
 		
 		
-		//int32 Wood = WoodResource->TakeResources(Resource); // Takes The Resource from the Node.
-		//UE_LOG(LogTemp, Warning, TEXT("Wood value taking resources: %d"), Wood);
+			//int32 Wood = WoodResource->TakeResources(Resource); // Takes The Resource from the Node.
+			//UE_LOG(LogTemp, Warning, TEXT("Wood value taking resources: %d"), Wood);
+		}
 	}
 }
 

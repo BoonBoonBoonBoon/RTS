@@ -10,7 +10,8 @@ UActorAttributesComponent::UActorAttributesComponent()
 	// off to improve performance if you don't need them.
 	PrimaryComponentTick.bCanEverTick = true;
 
-	// ...
+	// Gather is not valid by default.
+	bCanGather = false;
 }
 
 
@@ -30,5 +31,15 @@ void UActorAttributesComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
+}
+
+void UActorAttributesComponent::SetCanGather(bool bNewCanGather)
+{
+	bCanGather = bNewCanGather;
+}
+
+bool UActorAttributesComponent::CanGather() const
+{
+	return bCanGather;
 }
 

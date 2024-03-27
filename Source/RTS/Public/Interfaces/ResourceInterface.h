@@ -45,7 +45,9 @@ class RTS_API IResourceInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	void HandleActorCanGatherDelegate(AActor* Actor, bool bCanGather);
+	IResourceInterface();
+	
+	void HandleActorCanGatherDelegate(AActor* Actor);
 
 	
 	int32 Resource = 1;

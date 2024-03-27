@@ -257,8 +257,14 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 			{
 				// Broadcast Delegate When "Gather" Attribute is Identified.
 				OnActorCanGather.Broadcast(UnitActor);
-				
-				UE_LOG(LogTemp, Warning, TEXT("Unit Can Gather Resources."));
+
+				/*// Find the component of the current incoming unit object.
+				if(UActorAttributesComponent* ActorAttributes = UnitActor->FindComponentByClass<UActorAttributesComponent>())
+				{
+					// Set the unit to be able to gather resources.
+					ActorAttributes->SetCanGather(true);
+					UE_LOG(LogTemp, Warning, TEXT("Unit Can Gather Resources."));	
+				}*/
 			}
 		}
 		// TODO Need a way to specifically say that if the unit has said attributes, then it can do something specific.

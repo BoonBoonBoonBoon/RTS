@@ -19,6 +19,8 @@ public:
 
 	AWorkerDrone();
 
-	UWorkerAttributesComponent* WorkerAttributesComponent;
+	//UWorkerAttributesComponent* WorkerAttributesComponent;
+
+	UActorAttributesComponent* ActorAttributesComponent;
 	
 };
