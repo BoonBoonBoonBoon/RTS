@@ -8,8 +8,15 @@
 
 // Add default functionality here for any IResourceInterface functions that are not pure virtual.
 
+
 void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi)
 {
+	/*TArray<EUnitAttributes> ActorAttributes = OtherActor->GetAttributes();
+	if(ActorAttributes.Contains(EUnitAttributes::Gather))
+	{
+		// We Want to do something with collection on this.
+		
+	}*/
 	// Cast to All Possible Variants
 	const EResourceType ResourceType1 = (SelfActor && SelfActor->IsA<AResourceMain>()) ? Cast<AResourceMain>(SelfActor)->GetResourceType() : EResourceType::Invalid;
 	const EResourceType ResourceType2 = (SelfActor && SelfActor->IsA<AWoodResource>()) ? Cast<AWoodResource>(SelfActor)->GetResourceType() : EResourceType::Invalid;

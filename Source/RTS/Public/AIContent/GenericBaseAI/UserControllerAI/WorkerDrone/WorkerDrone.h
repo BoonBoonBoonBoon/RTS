@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "WorkerAttributesComponent.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "WorkerDrone.generated.h"
 
@@ -17,5 +18,7 @@ class RTS_API AWorkerDrone : public AGenericBaseAI
 public:
 
 	AWorkerDrone();
+
+	UWorkerAttributesComponent* WorkerAttributesComponent;
 	
 };
