@@ -14,14 +14,14 @@
 
 IResourceInterface::IResourceInterface()
 {
-	ISelectionInterface::OnActorCanGather.AddDynamic(this, &IResourceInterface::HandleActorCanGatherDelegate);
+	//ISelectionInterface::OnActorCanGather.AddDynamic(this, &IResourceInterface::HandleActorCanGatherDelegate);
 }
 
 void IResourceInterface::HandleActorCanGatherDelegate(AActor* Actor)
 {
 	// Store GatherActor or mark it as able to gather resources
 	// This could involve adding it to a list or setting a flag on the actor
-	TakeResourceObject(nullptr, Actor, FVector::ZeroVector, FHitResult());
+	//TakeResourceObject(nullptr, Actor, FVector::ZeroVector, FHitResult());
 }
 
 void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi)
@@ -31,10 +31,11 @@ void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActo
 	//if (OtherActor->Implements<USelectionInterface>() && ISelectionInterface::OnActorCanGather.IsBound() && ISelectionInterface::OnActorCanGather.IsBound() == true)
 
 	UActorAttributesComponent* AttributesComponent = Cast<UActorAttributesComponent>(OtherActor->GetComponentByClass(UActorAttributesComponent::StaticClass()));
-	if(OtherActor && AttributesComponent->CanGather())
+	if(AttributesComponent->CanGather())
 	{
 		// Allow resource collection
 	
+		UE_LOG(LogTemp, Warning, TEXT("Unit Can Gather Resources."));
 	
 		/*TArray<EUnitAttributes> ActorAttributes = OtherActor->GetAttributes();
 		if(ActorAttributes.Contains(EUnitAttributes::Gather))
@@ -66,7 +67,7 @@ void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActo
 			//int32 Wood = WoodResource->TakeResources(Resource); // Takes The Resource from the Node.
 			//UE_LOG(LogTemp, Warning, TEXT("Wood value taking resources: %d"), Wood);
 		}
-	}
+	} else { UE_LOG(LogTemp, Warning, TEXT("Actor Can't Gather Resources.")); }
 }
 
 

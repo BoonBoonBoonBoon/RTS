@@ -249,25 +249,30 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 		LogUnitTypeToAttributesMap(UnitAttributes);
 
 
-		if(UnitTypeToAttributesMap.Contains(UnitType)) // Check if the TMap Contains a valid unit type.
+		if (UnitTypeToAttributesMap.Contains(UnitType)) // Check if the TMap Contains a valid unit type.
 		{
 			// Then assign the attributes of the unit to the new Attribute TArray.
 			// If the unit has the Gather attribute, then it can gather resources.
-			if(TArray<EUnitAttributes> Att = UnitTypeToAttributesMap[UnitType]; Att.Contains(EUnitAttributes::Gather))
+			if (TArray<EUnitAttributes> Att = UnitTypeToAttributesMap[UnitType]; Att.Contains(EUnitAttributes::Gather))
 			{
 				// Broadcast Delegate When "Gather" Attribute is Identified.
-				OnActorCanGather.Broadcast(UnitActor);
+				//OnActorCanGather.Broadcast(UnitActor);
 
-				/*// Find the component of the current incoming unit object.
-				if(UActorAttributesComponent* ActorAttributes = UnitActor->FindComponentByClass<UActorAttributesComponent>())
+				// Find the component of the current incoming unit object.
+				if (UActorAttributesComponent* ActorAttributes = UnitActor->FindComponentByClass<
+					UActorAttributesComponent>())
 				{
 					// Set the unit to be able to gather resources.
+					UE_LOG(LogTemp, Warning, TEXT("is in Gather."));
 					ActorAttributes->SetCanGather(true);
-					UE_LOG(LogTemp, Warning, TEXT("Unit Can Gather Resources."));	
-				}*/
+				}
+			}
+			else if (UActorAttributesComponent* ActorAtt = UnitActor->FindComponentByClass<UActorAttributesComponent>())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Not in Gather."));
+				ActorAtt->SetCanGather(false);
 			}
 		}
-		// TODO Need a way to specifically say that if the unit has said attributes, then it can do something specific.
 	}
 	else
 	{
