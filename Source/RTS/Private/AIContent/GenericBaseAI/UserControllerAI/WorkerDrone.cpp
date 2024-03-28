@@ -7,7 +7,7 @@ AWorkerDrone::AWorkerDrone()
 {
 	//WorkerAttributesComponent = CreateDefaultSubobject<UWorkerAttributesComponent>(TEXT("AttributesComponent"));
 
-	ActorAttributesComponent = CreateDefaultSubobject<UActorAttributesComponent>(TEXT("AttributesComponent"));
+	WorkerAttributesComponent = CreateDefaultSubobject<UWorkerAttributesComponent>(TEXT("AttributesComponent"));
 	
 	// Identify the Worker Drone.
 	Tags.Add("WorkerDrone");

@@ -7,3 +7,13 @@ UWorkerAttributesComponent::UWorkerAttributesComponent()
 {
 
 }
+
+void UWorkerAttributesComponent::SetCanGather(bool bNewCanGather)
+{
+	bCanGather = bNewCanGather;
+}
+
+bool UWorkerAttributesComponent::CanGather() const
+{
+	return bCanGather;
+}

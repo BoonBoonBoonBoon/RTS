@@ -259,8 +259,8 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 				//OnActorCanGather.Broadcast(UnitActor);
 
 				// Find the component of the current incoming unit object.
-				if (UActorAttributesComponent* ActorAttributes = UnitActor->FindComponentByClass<
-					UActorAttributesComponent>())
+				if (UWorkerAttributesComponent* ActorAttributes = UnitActor->FindComponentByClass<
+					UWorkerAttributesComponent>())
 				{
 					// Set the unit to be able to gather resources.
 					UE_LOG(LogTemp, Warning, TEXT("is in Gather."));

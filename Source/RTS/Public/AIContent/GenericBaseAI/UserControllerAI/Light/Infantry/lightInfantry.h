@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AIContent/GenericBaseAI/ActorAttributesComponent.h"
+#include "LightInfantryAttributesComponent.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "lightInfantry.generated.h"
 
@@ -18,7 +18,8 @@ class RTS_API AlightInfantry : public AGenericBaseAI
 	GENERATED_BODY()
 
 public:
-	UActorAttributesComponent* ActorAttributesComponent;
+	
+	ULightInfantryAttributesComponent* ActorAttributesComponent;
 	
 	AlightInfantry();
 	

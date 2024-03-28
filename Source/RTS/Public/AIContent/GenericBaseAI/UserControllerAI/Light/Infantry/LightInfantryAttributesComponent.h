@@ -4,24 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "AIContent/GenericBaseAI/ActorAttributesComponent.h"
-#include "WorkerAttributesComponent.generated.h"
+#include "LightInfantryAttributesComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RTS_API UWorkerAttributesComponent : public UActorAttributesComponent
+class RTS_API ULightInfantryAttributesComponent : public UActorAttributesComponent
 {
 	GENERATED_BODY()
 
 public:
 
-	UWorkerAttributesComponent();
+	ULightInfantryAttributesComponent();
 	
 	bool bCanGather = false;
 	
 	virtual void SetCanGather(bool bNewCanGather) override;
 
 	virtual bool CanGather() const override;
-	
 };

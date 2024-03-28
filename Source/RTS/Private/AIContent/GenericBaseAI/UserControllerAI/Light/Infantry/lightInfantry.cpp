@@ -7,7 +7,7 @@
 AlightInfantry::AlightInfantry()
 {
 	
-	ActorAttributesComponent = CreateDefaultSubobject<UActorAttributesComponent>(TEXT("AttributesComponent"));
+	ActorAttributesComponent = CreateDefaultSubobject<ULightInfantryAttributesComponent>(TEXT("AttributesComponent"));
 	
 	// Identify the Worker Drone.
 	Tags.Add("LightInfantry");
