@@ -4,20 +4,19 @@
 
 #include "CoreMinimal.h"
 #include "Resources/ResourceMain.h"
-#include "WoodResource.generated.h"
+#include "FoodResource.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RTS_API AWoodResource : public AResourceMain
+class RTS_API AFoodResource : public AResourceMain
 {
 	GENERATED_BODY()
 
 public:
-	AWoodResource();
 
-	virtual void BeginPlay() override;
+	AFoodResource();
 	
 	// Implement the GetType() function declared in the IResourceInterface
 	virtual EResourceType GetResourceType() const ;
@@ -30,6 +29,7 @@ public:
 
 protected:
 	int32 MaxResourceAmount;	// The Maximum Amount of Resource a Resource Can Have.
-	int32 CurrentWoodAmount;	// The Amount a Resource Currently Has.
+	int32 CurrentFoodAmount;	// The Amount a Resource Currently Has.
+	
 	
 };

@@ -26,7 +26,8 @@ public:
 
 	int RWoodAmount = 0;
 	int RStoneAmount = 0;
-	
+	int RFoodAmount = 0;
+	int RGoldAmount = 0;
 	// Main Function for the Economy.
 	void GlobalEconomy();
 	

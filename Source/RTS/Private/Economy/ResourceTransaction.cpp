@@ -3,6 +3,9 @@
 
 #include "Economy/ResourceTransaction.h"
 #include "Economy/EconomyManager.h"
+#include "Resources/FoodResource.h"
+#include "Resources/GoldResource.h"
+#include "Resources/StoneResource.h"
 #include "Resources/WoodResource.h"
 
 
@@ -12,19 +15,38 @@
 void UResourceTransaction::TransactionProcess(AResourceMain* ResourceRef)
 {
 	// Identify the Resource Type and then Process the Transaction.
-	if(Cast<AWoodResource>(ResourceRef))
+
+	if (AWoodResource* WoodResource = Cast<AWoodResource>(ResourceRef))
 	{
-		if(AWoodResource* WoodResource = Cast<AWoodResource>(ResourceRef))
-		{
-			const int32 TakenWoodAmount = WoodResource->TakeResources(ValueForTransaction);
-			
-			// Push the Resource to the EM, Value amount & Resource Type.
-			ProcessingTransaction(TakenWoodAmount, EResourceType::Wood);
-		}
+		const int32 TakenWoodAmount = WoodResource->TakeResources(ValueForTransaction);
+
+		// Push the Resource to the EM, Value amount & Resource Type.
+		ProcessingTransaction(TakenWoodAmount, EResourceType::Wood);
 	}
-	else if(Cast<AResourceMain>(ResourceRef))
+	else if (AStoneResource* StoneResource = Cast<AStoneResource>(ResourceRef))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Transaction Process Fired Up (MAIN)"));
+		const int32 TakenStoneAmount = StoneResource->TakeResources(ValueForTransaction);
+
+		// Push the Resource to the EM, Value amount & Resource Type.
+		ProcessingTransaction(TakenStoneAmount, EResourceType::Stone);
+	}
+	else if (AFoodResource* FoodResource = Cast<AFoodResource>(ResourceRef))
+	{
+		const int32 TakenFoodAmount = FoodResource->TakeResources(ValueForTransaction);
+
+		// Push the Resource to the EM, Value amount & Resource Type.
+		ProcessingTransaction(TakenFoodAmount, EResourceType::Food);
+	}
+	else if (AGoldResource* GoldResource = Cast<AGoldResource>(ResourceRef))
+	{
+		const int32 TakenGoldAmount = GoldResource->TakeResources(ValueForTransaction);
+
+		// Push the Resource to the EM, Value amount & Resource Type.
+		ProcessingTransaction(TakenGoldAmount, EResourceType::Gold);
+	}
+	else 
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Transaction Process Failed."));
 	}
 }
 

@@ -18,7 +18,10 @@ UEconomyManager::UEconomyManager()
 void UEconomyManager::ResetEconomy()
 {
 	RWoodAmount = 0;
-	UE_LOG(LogTemp, Warning, TEXT("EconomyManager GameMode Reset : %d"), RWoodAmount);
+	RStoneAmount = 0;
+	RFoodAmount = 0;
+	RGoldAmount = 0;
+	//UE_LOG(LogTemp, Warning, TEXT("EconomyManager GameMode Reset : %d"), RWoodAmount);
 }
 
 void UEconomyManager::GlobalEconomy()
@@ -39,6 +42,16 @@ void UEconomyManager::IncomingResource(int32 IncomingResourceAmount, EResourceTy
 		{
 			RStoneAmount += IncomingResourceAmount;
 			UE_LOG(LogTemp, Warning, TEXT("Stone Amount : %d"), RStoneAmount);
+		}
+		else if(IncomingResourceType == EResourceType::Food)
+		{
+			RFoodAmount += IncomingResourceAmount;
+			UE_LOG(LogTemp, Warning, TEXT("Food Amount : %d"), RFoodAmount);
+		}
+			else if(IncomingResourceType == EResourceType::Stone)
+		{
+			RGoldAmount += IncomingResourceAmount;
+			UE_LOG(LogTemp, Warning, TEXT("Gold Amount : %d"), RGoldAmount);
 		}
 	}
 }

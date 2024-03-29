@@ -6,7 +6,7 @@
 AWoodResource::AWoodResource()
 {
 	MaxResourceAmount = 10;
-	CurrentResourceAmount = MaxResourceAmount;
+	CurrentWoodAmount = MaxResourceAmount;
 }
 
 void AWoodResource::BeginPlay()
@@ -21,17 +21,17 @@ EResourceType AWoodResource::GetResourceType() const
 
 int32 AWoodResource::GetAmount()
 {
-	return CurrentResourceAmount;
+	return CurrentWoodAmount;
 }
 
 int32 AWoodResource::TakeResources(int32 amount)
 {
 	// Later on we can check if certain upgrades have been set, For now we only take a single element at once.
-	if(CurrentResourceAmount > 0)
+	if(CurrentWoodAmount > 0)
 	{
-		const int32 TakenAmount = FMath::Min(amount, CurrentResourceAmount); // Takes the Smallest Value between the two.
-		CurrentResourceAmount -= TakenAmount; // Depletes The Resource.
-		UE_LOG(LogTemp, Warning, TEXT("Wood Left In Node : %d"), CurrentResourceAmount);
+		const int32 TakenAmount = FMath::Min(amount, CurrentWoodAmount); // Takes the Smallest Value between the two.
+		CurrentWoodAmount -= TakenAmount; // Depletes The Resource.
+		UE_LOG(LogTemp, Warning, TEXT("Wood Left In Node : %d"), CurrentWoodAmount);
 		return TakenAmount;
 	}
 	else
