@@ -54,7 +54,7 @@ public:
 	
 	void CastToActor(); // Raycasts to Actors to check Hit Result
 	void HandleSelection(AActor* ActorHit);// Determines On how the Actor will be processed.
-	void PawnSelectionHelper(AActor* ActorHit);
+	
 	
 	TArray<AActor*> ConvertPawnArrayToActorArray(const TArray<APawn*>& PawnArray); // Converts Pawn Array to Actor Array
 	

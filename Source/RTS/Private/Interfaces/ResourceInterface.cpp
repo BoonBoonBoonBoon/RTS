@@ -26,23 +26,10 @@ void IResourceInterface::HandleActorCanGatherDelegate(AActor* Actor)
 
 void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi)
 {
-
-	// Check if OtherActor is in the list of actors that can gather resources
-	//if (OtherActor->Implements<USelectionInterface>() && ISelectionInterface::OnActorCanGather.IsBound() && ISelectionInterface::OnActorCanGather.IsBound() == true)
-
+	// Check if the Actor is able to gather resources.
 	UActorAttributesComponent* AttributesComponent = Cast<UActorAttributesComponent>(OtherActor->GetComponentByClass(UActorAttributesComponent::StaticClass()));
 	if(AttributesComponent->CanGather())
 	{
-		// Allow resource collection
-	
-		UE_LOG(LogTemp, Warning, TEXT("Unit Can Gather Resources."));
-	
-		/*TArray<EUnitAttributes> ActorAttributes = OtherActor->GetAttributes();
-		if(ActorAttributes.Contains(EUnitAttributes::Gather))
-		{
-			// We Want to do something with collection on this.
-			
-		}*/
 		// Cast to All Possible Variants
 		const EResourceType ResourceType1 = (SelfActor && SelfActor->IsA<AResourceMain>()) ? Cast<AResourceMain>(SelfActor)->GetResourceType() : EResourceType::Invalid;
 		const EResourceType ResourceType2 = (SelfActor && SelfActor->IsA<AWoodResource>()) ? Cast<AWoodResource>(SelfActor)->GetResourceType() : EResourceType::Invalid;

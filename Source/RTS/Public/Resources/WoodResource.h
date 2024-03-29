@@ -23,10 +23,10 @@ public:
 	virtual EResourceType GetResourceType() const ;
 
 	// Returns the amount of resource.
-	virtual int32 GetAmount();
+	virtual int32 GetAmount() override;
 
 	// AI takes The Resources.
-	int32 TakeResources(int32 amount);
+	virtual int32 TakeResources(int32 amount) override;
 
 protected:
 	int32 MaxResourceAmount;	// The Maximum Amount of Resource a Resource Can Have.

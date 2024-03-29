@@ -38,6 +38,11 @@ public:
 	// Called when this actor needs to end overlap with collision.
 	UFUNCTION( )
 	void EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+
+	virtual int32 GetAmount();
+	
+	virtual int32 TakeResources(int32 amount);
 	
 	// The time it takes for the AI to take the resource.
 	int32 TimeValue = 1;
@@ -54,7 +59,3 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 };
-	
-// Handles the collision.
-//void ObjectHit(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hit);
-	

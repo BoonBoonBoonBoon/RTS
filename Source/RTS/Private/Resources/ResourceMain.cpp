@@ -72,6 +72,16 @@ void AResourceMain::EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor*
 	}
 }
 
+int32 AResourceMain::GetAmount()
+{
+	return{};
+}
+
+int32 AResourceMain::TakeResources(int32 amount)
+{
+	return {};
+}
+
 // Called when the game starts or when spawned
 void AResourceMain::BeginPlay()
 {

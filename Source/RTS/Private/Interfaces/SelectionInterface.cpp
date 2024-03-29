@@ -251,25 +251,19 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 
 		if (UnitTypeToAttributesMap.Contains(UnitType)) // Check if the TMap Contains a valid unit type.
 		{
-			// Then assign the attributes of the unit to the new Attribute TArray.
-			// If the unit has the Gather attribute, then it can gather resources.
+			// Then assign the attributes of the unit to the new Attribute TArray. If the unit has the Gather attribute, then it can gather resources.
 			if (TArray<EUnitAttributes> Att = UnitTypeToAttributesMap[UnitType]; Att.Contains(EUnitAttributes::Gather))
 			{
-				// Broadcast Delegate When "Gather" Attribute is Identified.
-				//OnActorCanGather.Broadcast(UnitActor);
-
 				// Find the component of the current incoming unit object.
 				if (UWorkerAttributesComponent* ActorAttributes = UnitActor->FindComponentByClass<
 					UWorkerAttributesComponent>())
 				{
 					// Set the unit to be able to gather resources.
-					UE_LOG(LogTemp, Warning, TEXT("is in Gather."));
 					ActorAttributes->SetCanGather(true);
 				}
 			}
 			else if (UActorAttributesComponent* ActorAtt = UnitActor->FindComponentByClass<UActorAttributesComponent>())
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Not in Gather."));
 				ActorAtt->SetCanGather(false);
 			}
 		}

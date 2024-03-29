@@ -464,6 +464,7 @@ void AUserController::HandleMarqueePawnSelection(AActor* HitPawn)
 			if (AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitPawn))
 			{
 				BaseAI->SelectedDecalComp->SetVisibility(true);
+				SelectionInterface->MultiUnitSelection(SelectedUnits, BaseAI);
 			}
 		}
 	}
