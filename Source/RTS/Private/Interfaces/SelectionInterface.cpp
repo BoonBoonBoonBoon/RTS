@@ -229,20 +229,30 @@ void ISelectionInterface::NotHit(TArray<AActor*>& Array)
 	}
 }
 
-AActor* ISelectionInterface::CheckUnitTypeForGathering(TArray<AActor*>& SelectedUnits)
+TArray<AActor*> ISelectionInterface::CheckUnitTypeForGathering(TArray<AActor*>& SelectedUnits)
 {
-	for (AActor* Actor : SelectedUnits)
+	TArray<AActor*> WorkerDrones;
+	
+	// Check if the selected unit is a worker drone.
+	for (AActor* Src : SelectedUnits)
 	{
-		if (AWorkerDrone* Worker = Cast<AWorkerDrone>(Actor))
+		if (AWorkerDrone* Worker = Cast<AWorkerDrone>(Src))
 		{
-			return Worker;
+			WorkerDrones.AddUnique(Worker);
+			return WorkerDrones;
 		}
 		else
 		{
-			return nullptr;
+			return {nullptr};
 		}
 	}
-	return nullptr;
+	return {nullptr};
+}
+
+bool ISelectionInterface::CheckValidHit(AActor* HitActor)
+{
+	// Change
+	return {};
 }
 
 bool ISelectionInterface::IsUnitSelected(const TArray<AActor*>& UnitArray, const AActor* UnitToCheck)

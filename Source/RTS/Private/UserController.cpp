@@ -243,46 +243,31 @@ void AUserController::EventKey()
 			{
 				// Check if the hit actor is a pawn
 				// ReSharper disable once CppDeclaratorNeverUsed
+				
+				//if (AActor* HitActorObj = (HitResult.GetActor()))
+				
 				if (AActor* HitActorObj = (HitResult.GetActor()))
 				{
-					// Draw a debug box at the hit location
-					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false,
-					             1, 0, 5.0f);
-
-					HandleResourceGathering(HitActorObj);
-				}
-				else
-				{
-					// Draw a debug box at the hit location
-					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false,
-					             1, 0, 5.0f);
-					UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
-
-					FVector Location = HitResult.Location;
-
-					// if the array has a unit in it 
-					if (SelectedUnits.Num() > 0)
+					if(IResourceInterface* ResourceInterface = Cast<IResourceInterface>(HitActorObj))
 					{
-						for (AActor* Actor : SelectedUnits)
-						{
-							if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
-							{
-								// Check if the actor has a va  lid controller
-								if (AController* GenController = GenAI->GetController())
-								{
-									// Check the class of the controller
-									if (GenController->IsA<AController>())
-									{
-										AAIController* Con = Cast<AAIController>(GenAI->GetController());
-										if (Con)
-										{
-											GenAI->LocationToMove = Location;
-											GenAI->ValidHit = true;
-										}
-									}
-								}
-							}
-						}
+						// Draw a debug box at the hit location
+						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false,
+									 1, 0, 5.0f);
+						UE_LOG(LogTemp, Warning, TEXT("Hit Res"));
+						HandleResourceGathering(HitActorObj);
+						
+					}
+					else
+					{
+						// Draw a debug box at the hit location
+						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green,
+						             false,
+						             1, 0, 5.0f);
+						UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
+
+						FVector Location = HitResult.Location;
+						
+						HandleMovement(Location);
 					}
 				}
 			}
@@ -297,24 +282,89 @@ void AUserController::HandleResourceGathering(AActor* Resource)
 		// Return the TYPE of resource.
 		AActor* ResourceActor = ResourceInterface->HandleIdentification(Resource); // Contains the resource we clicked on.
 
-		AActor* Worker = SelectionInterface->CheckUnitTypeForGathering(SelectedUnits);
+		/*	
+		 * so we identify the resource and contain in a Actor Object.
+		 * we then want to for loop through the actors in the SelectedUnits Array.
+		 * and check what ones have the cangather attribute (through the ActorAttributesComponent)
+		 * we then want to get a fvector pos and assign it the CalcGatherPos from the Resource and worker.
+		 * then move the drone to the locatin.
+		 * 
+		 */
+		if (SelectedUnits.Num() > 0)
+		{
+		// Loop through Worker Drones currently selected & Assign them their own Array.
+		TArray<AActor*> WorkerDrones = SelectionInterface->CheckUnitTypeForGathering(SelectedUnits);
+		
+			for (const AActor* Worker : WorkerDrones)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("ForAACtorLoop"));
+				if (UActorAttributesComponent* AttributesComponent = Worker->FindComponentByClass<
+					UActorAttributesComponent>())
+				{
+					UE_LOG(LogTemp, Warning, TEXT("HAsComp"));
+					if (AttributesComponent->CanGather())
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Can Gather Resources"));
+						//AttributesComponent->GatherResource(ResourceActor);
+
+						// NEEDS CHANGE
+						if(const AGenericBaseAI* GenAI = nullptr)
+						{
+							//GenAI->ValidHit = SelectionInterface->CheckValidHit();
+						}
+					}
+				}
+			}
+		}
+
+		/*AActor* Worker = SelectionInterface->CheckUnitTypeForGathering(SelectedUnits);
 
 		if(UActorAttributesComponent* AttributesComponent = Worker->FindComponentByClass<UActorAttributesComponent>())
 		{
 			if(AttributesComponent->CanGather())
 			{
 				UE_LOG(LogTemp, Warning, TEXT("Can Gather Resources"));
-			}
-			
-			// Check if the worker can gather the resource
-			/*if (AttributesComponent->CanGatherResource(ResourceActor))
-			{
-				// Gather the resource
-				AttributesComponent->GatherResource(ResourceActor);
 			}*/
+
+		// Check if the worker can gather the resource
+		/*if (AttributesComponent->CanGatherResource(ResourceActor))
+		{
+			// Gather the resource
+			AttributesComponent->GatherResource(ResourceActor);
+		}*/
+	}
+}
+
+void AUserController::HandleMovement(FVector Location)
+{
+///FVector Location = HitResult.Location;
+
+	// if the array has a unit in it 
+	if (SelectedUnits.Num() > 0)
+	{
+		for (AActor* Actor : SelectedUnits)
+		{
+			if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
+			{
+				// Check if the actor has a valid controller
+				if (AController* GenController = GenAI->GetController())
+				{
+					// Check the class of the controller
+					if (GenController->IsA<AController>())
+					{
+						AAIController* Con = Cast<AAIController>(GenAI->GetController());
+						if (Con)
+						{
+							GenAI->LocationToMove = Location;
+							GenAI->ValidHit = true;
+						}
+					}
+				}
+			}
 		}
 	}
 }
+
 
 void AUserController::StartBoxSelection()
 {
