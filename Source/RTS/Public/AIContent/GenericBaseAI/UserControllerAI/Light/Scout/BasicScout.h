@@ -3,15 +3,21 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BasicScoutAttributesComponent.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
-#include "Scout.generated.h"
+#include "BasicScout.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RTS_API AScout : public AGenericBaseAI
+class RTS_API ABasicScout : public AGenericBaseAI
 {
 	GENERATED_BODY()
+public:
+
+	UBasicScoutAttributesComponent* ScoutAttributesComponent;
+	
+	ABasicScout();
 	
 };

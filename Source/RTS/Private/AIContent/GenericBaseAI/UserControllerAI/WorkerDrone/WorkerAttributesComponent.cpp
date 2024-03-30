@@ -17,3 +17,13 @@ bool UWorkerAttributesComponent::CanGather() const
 {
 	return bCanGather;
 }
+
+void UWorkerAttributesComponent::SetCanRepair(bool bNewCanRepair)
+{
+	bCanRepair = bNewCanRepair;
+}
+
+bool UWorkerAttributesComponent::CanRepair() const
+{
+	return bCanRepair;
+}

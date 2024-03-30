@@ -4,24 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "AIContent/GenericBaseAI/ActorAttributesComponent.h"
-#include "LightInfantryAttributesComponent.generated.h"
+#include "HeavyInfantryAttributesComponent.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class RTS_API ULightInfantryAttributesComponent : public UActorAttributesComponent
+class RTS_API UHeavyInfantryAttributesComponent : public UActorAttributesComponent
 {
 	GENERATED_BODY()
 
 public:
 
-	ULightInfantryAttributesComponent();
-	
 	bool bCanAttack;
 	bool bCanGuard;
-	bool bCanPatrol;
+	bool bcanPatrol;
 	
+	
+protected:
+
 	virtual void SetCanAttack(bool bNewCanAttack) override;
 	virtual void SetCanGuard(bool bNewCanGuard) override;
 	virtual void SetCanPatrol(bool bNewCanPatrol) override;
@@ -29,4 +30,5 @@ public:
 	virtual bool CanAttack() const override;
 	virtual bool CanGuard() const override;
 	virtual bool CanPatrol() const override;
+	
 };

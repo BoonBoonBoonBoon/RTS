@@ -7,12 +7,32 @@ ULightInfantryAttributesComponent::ULightInfantryAttributesComponent()
 {
 }
 
-void ULightInfantryAttributesComponent::SetCanGather(bool bNewCanGather)
+void ULightInfantryAttributesComponent::SetCanAttack(bool bNewCanAttack)
 {
-	bCanGather = bNewCanGather;
+	bCanAttack = bNewCanAttack;
 }
 
-bool ULightInfantryAttributesComponent::CanGather() const
+void ULightInfantryAttributesComponent::SetCanGuard(bool bNewCanGuard)
 {
-	return bCanGather;
+	bCanGuard = bNewCanGuard;
+}
+
+void ULightInfantryAttributesComponent::SetCanPatrol(bool bNewCanPatrol)
+{
+	bCanPatrol = bNewCanPatrol;
+}
+
+bool ULightInfantryAttributesComponent::CanAttack() const
+{
+	return bCanAttack;
+}
+
+bool ULightInfantryAttributesComponent::CanGuard() const
+{
+	return bCanGuard;
+}
+
+bool ULightInfantryAttributesComponent::CanPatrol() const
+{
+	return bCanPatrol;
 }

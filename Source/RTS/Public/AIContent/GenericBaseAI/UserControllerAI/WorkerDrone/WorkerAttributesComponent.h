@@ -19,9 +19,12 @@ public:
 	UWorkerAttributesComponent();
 	
 	bool bCanGather = false;
+	bool bCanRepair = false;
 	
 	virtual void SetCanGather(bool bNewCanGather) override;
-
 	virtual bool CanGather() const override;
+
+	virtual void SetCanRepair(bool bNewCanRepair) override;
+	virtual bool CanRepair() const override;
 	
 };

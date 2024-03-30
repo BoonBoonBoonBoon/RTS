@@ -7,12 +7,12 @@
 #include "ActorAttributesComponent.generated.h"
 
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS(ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
 class RTS_API UActorAttributesComponent : public UActorComponent
 {
 	GENERATED_BODY()
 
-public:	
+public:
 	// Sets default values for this component's properties
 	UActorAttributesComponent();
 
@@ -20,16 +20,47 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
-	//UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Actor Attributes")
+	// Worker Drone
 	bool bCanGather;
+	bool bCanRepair;
 
-	
-public:	
+	// Military Units.
+	bool bCanAttack;
+	bool bCanGuard;
+	bool bCanPatrol;
+	bool bCanRange;
+
+	// Special Units.
+	bool bCanSearch;
+	bool bCanTransport;
+
+public:
 	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType,
+	                           FActorComponentTickFunction* ThisTickFunction) override;
 
+	// Worker Drone.
 	virtual void SetCanGather(bool bNewCanGather);
-
 	virtual bool CanGather() const;
-		
+
+	virtual void SetCanRepair(bool bNewCanRepair);
+	virtual bool CanRepair() const;
+
+	virtual void SetCanAttack(bool bNewCanAttack);
+	virtual bool CanAttack() const;
+
+	virtual void SetCanGuard(bool bNewCanGuard);
+	virtual bool CanGuard() const;
+
+	virtual void SetCanPatrol(bool bNewCanPatrol);
+	virtual bool CanPatrol() const;
+
+	virtual void SetCanRange(bool bNewCanRange);
+	virtual bool CanRange() const;
+
+	virtual void SetCanSearch(bool bNewCanSearch);
+	virtual bool CanSearch() const;
+
+	virtual void SetCanTransport(bool bNewCanTransport);
+	virtual bool CanTransport() const;
 };
