@@ -48,7 +48,7 @@ public:
 	IResourceInterface();
 	
 	void HandleActorCanGatherDelegate(AActor* Actor);
-
+	static AActor* HandleIdentification(AActor* Resource);
 	
 	int32 Resource = 1;
 	

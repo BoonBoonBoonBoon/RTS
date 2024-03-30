@@ -35,13 +35,11 @@ void UActorAttributesComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 void UActorAttributesComponent::SetCanGather(bool bNewCanGather)
 {
-	//bCanGather = bNewCanGather;
-	//UE_LOG(LogTemp, Warning, TEXT("Bool is: %s"), bCanGather ? TEXT("true") : TEXT("false"));
 }
 
 bool UActorAttributesComponent::CanGather() const
 {
-	return {};
+	return bCanGather;
 }
 
 void UActorAttributesComponent::SetCanRepair(bool bNewCanRepair)

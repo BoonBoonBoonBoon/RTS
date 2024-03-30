@@ -229,6 +229,22 @@ void ISelectionInterface::NotHit(TArray<AActor*>& Array)
 	}
 }
 
+AActor* ISelectionInterface::CheckUnitTypeForGathering(TArray<AActor*>& SelectedUnits)
+{
+	for (AActor* Actor : SelectedUnits)
+	{
+		if (AWorkerDrone* Worker = Cast<AWorkerDrone>(Actor))
+		{
+			return Worker;
+		}
+		else
+		{
+			return nullptr;
+		}
+	}
+	return nullptr;
+}
+
 bool ISelectionInterface::IsUnitSelected(const TArray<AActor*>& UnitArray, const AActor* UnitToCheck)
 {
 	return UnitArray.Contains(UnitToCheck);

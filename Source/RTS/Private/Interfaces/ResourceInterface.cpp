@@ -27,6 +27,35 @@ void IResourceInterface::HandleActorCanGatherDelegate(AActor* Actor)
 	//TakeResourceObject(nullptr, Actor, FVector::ZeroVector, FHitResult());
 }
 
+AActor* IResourceInterface::HandleIdentification(AActor* Resource)
+{
+	if(Resource->IsA<AWoodResource>())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Wood"));
+		return Resource;
+	}
+	else if(Resource->IsA<AStoneResource>())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Stone"));
+		return Resource;
+	}
+	else if(Resource->IsA<AGoldResource>())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Gold"));
+		return Resource;
+	}
+	else if(Resource->IsA<AFoodResource>())
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Food"));
+		return Resource;
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Resource Type!"));
+		return nullptr;
+	}
+}
+
 void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
                                             const FHitResult& Hi)
 {

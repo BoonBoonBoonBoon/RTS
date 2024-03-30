@@ -9,6 +9,7 @@
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
 #include "GameFramework/Pawn.h"
+#include "Interfaces/ResourceInterface.h"
 #include "Kismet/GameplayStatics.h"
 
 class EbuildingTypes;
@@ -242,14 +243,13 @@ void AUserController::EventKey()
 			{
 				// Check if the hit actor is a pawn
 				// ReSharper disable once CppDeclaratorNeverUsed
-				if (APawn* HitPawn = Cast<APawn>(HitResult.GetActor()))
+				if (AActor* HitActorObj = (HitResult.GetActor()))
 				{
 					// Draw a debug box at the hit location
 					DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false,
 					             1, 0, 5.0f);
 
-					// Then call function with location to move units too
-					UE_LOG(LogTemp, Warning, TEXT("Hit Pawn"));
+					HandleResourceGathering(HitActorObj);
 				}
 				else
 				{
@@ -286,6 +286,32 @@ void AUserController::EventKey()
 					}
 				}
 			}
+		}
+	}
+}
+
+void AUserController::HandleResourceGathering(AActor* Resource)
+{
+	if (IResourceInterface* ResourceInterface = Cast<IResourceInterface>(Resource))
+	{
+		// Return the TYPE of resource.
+		AActor* ResourceActor = ResourceInterface->HandleIdentification(Resource); // Contains the resource we clicked on.
+
+		AActor* Worker = SelectionInterface->CheckUnitTypeForGathering(SelectedUnits);
+
+		if(UActorAttributesComponent* AttributesComponent = Worker->FindComponentByClass<UActorAttributesComponent>())
+		{
+			if(AttributesComponent->CanGather())
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Can Gather Resources"));
+			}
+			
+			// Check if the worker can gather the resource
+			/*if (AttributesComponent->CanGatherResource(ResourceActor))
+			{
+				// Gather the resource
+				AttributesComponent->GatherResource(ResourceActor);
+			}*/
 		}
 	}
 }
@@ -556,29 +582,3 @@ void AUserController::UpdateFlow()
 	}
 }
 
-/*// retrieve all actors currently overlapping with the selection area and store them in the ATBF array.
-TArray<AActor*> ActorsToBeFound;
-SelectionArea->GetOverlappingActors(ActorsToBeFound);
-
-// iterate over all previously selected units stored in the SU array.
-for (AActor* SelectedActor : SelectedUnits)
-{
-	// For each selected actor we check if it's still present in the ActorsToBeFound array.
-	// (ie. still overlapping with the selection area).
-	if (!ActorsToBeFound.Contains(SelectedActor))
-	{
-		// If the actor is not found in the ATBF array,it's no longer overlapping,
-		// so we deselect it by hiding its selection decal and removing it from the SU array.
-		if (const AGenericBaseAI* AI = Cast<AGenericBaseAI>(SelectedActor))
-		{
-			AI->SelectedDecalComp->SetVisibility(false);
-		}
-		SelectedUnits.Remove(SelectedActor);
-	}
-}
-
-// Iterate through newly overlapped actors and select them
-for (AActor* Actor : ActorsToBeFound)
-{
-	HandleMarqueePawnSelection(Actor);
-}*/

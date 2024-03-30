@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "ActorAttributesComponent.h"
 #include "AIController.h"
 #include "GenericController.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
@@ -19,6 +20,9 @@ class RTS_API AGenericBaseAI : public ACharacter
 
 	// Used as a generator for the pawn to emit a stimuli. Need this as the AI will use this as a tool to percept.
 	class UAIPerceptionStimuliSourceComponent* StimuliSourcePredator;
+
+	UPROPERTY()
+	UActorAttributesComponent* ActorAttributesComponent;
 	
 public:
 	// Sets default values for this character's properties

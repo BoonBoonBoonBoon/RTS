@@ -125,7 +125,8 @@ public:
 
 	static void NotHit(TArray<AActor*>& Array);
 
-
+	static AActor* CheckUnitTypeForGathering(TArray<AActor*>& SelectedUnits);
+	
 	// Check if a specific element is in the array.
 	static bool IsUnitSelected(const TArray<AActor*>& UnitArray, const AActor* UnitToCheck);
 
