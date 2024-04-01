@@ -39,12 +39,14 @@ void AGenericBaseAI::MovePTR()
 			{
 				C->CheckValid = true;
 				C->MoveLoc = LocationToMove;
+
+				UE_LOG(LogTemp, Warning, TEXT("MovePTR() Called"));
 				// Log the name of the controller
-				UE_LOG(LogTemp, Warning, TEXT("Current Controller Name: %s"), *C->GetName());
+				//UE_LOG(LogTemp, Warning, TEXT("Current Controller Name: %s"), *C->GetName());
 				ValidHit = false;
 			}else {
 				
-				UE_LOG(LogTemp, Warning, TEXT("AGenericController* C = Cast<AGenericController>(CTRL) Failed"));
+				//UE_LOG(LogTemp, Warning, TEXT("AGenericController* C = Cast<AGenericController>(CTRL) Failed"));
 			}
 		}
 	}

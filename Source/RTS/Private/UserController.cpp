@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
+#include "AIContent/GenericBaseAI/UserControllerAI/WorkerDrone/WorkerAttributesComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
@@ -282,7 +283,7 @@ void AUserController::HandleResourceGathering(AActor* Resource)
 		// Return the TYPE of resource.
 		AActor* ResourceActor = ResourceInterface->HandleIdentification(Resource); // Contains the resource we clicked on.
 
-		/*	
+		/*	TODO :
 		 * so we identify the resource and contain in a Actor Object.
 		 * we then want to for loop through the actors in the SelectedUnits Array.
 		 * and check what ones have the cangather attribute (through the ActorAttributesComponent)
@@ -290,48 +291,37 @@ void AUserController::HandleResourceGathering(AActor* Resource)
 		 * then move the drone to the locatin.
 		 * 
 		 */
+
+		
 		if (SelectedUnits.Num() > 0)
 		{
 		// Loop through Worker Drones currently selected & Assign them their own Array.
 		TArray<AActor*> WorkerDrones = SelectionInterface->CheckUnitTypeForGathering(SelectedUnits);
-		
-			for (const AActor* Worker : WorkerDrones)
+			
+			UE_LOG(LogTemp, Warning, TEXT("SelectedUnits count: %d"), SelectedUnits.Num());
+			
+			for (AActor* Worker : WorkerDrones)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("ForAACtorLoop"));
-				if (UActorAttributesComponent* AttributesComponent = Worker->FindComponentByClass<
-					UActorAttributesComponent>())
+				if (UWorkerAttributesComponent* AttributesComponent = Worker->FindComponentByClass<
+					UWorkerAttributesComponent>())
 				{
-					UE_LOG(LogTemp, Warning, TEXT("HAsComp"));
+					UE_LOG(LogTemp, Warning, TEXT("AttributesComponent Found : %s"), *AttributesComponent->GetName());
 					if (AttributesComponent->CanGather())
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Can Gather Resources"));
-						//AttributesComponent->GatherResource(ResourceActor);
+						// Calculate the Position around the actor to gather resources.
+						FVector GatherPos = ResourceInterface->CalcGatherPos(ResourceActor, Worker, WorkerDrones);
+						
+						UE_LOG(LogTemp, Warning, TEXT("GatherPos : %s"), *GatherPos.ToString());
 
-						// NEEDS CHANGE
-						if(const AGenericBaseAI* GenAI = nullptr)
+						if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Worker))
 						{
-							//GenAI->ValidHit = SelectionInterface->CheckValidHit();
+							GenAI->LocationToMove = GatherPos;
+							GenAI->ValidHit = true;
 						}
 					}
 				}
 			}
 		}
-
-		/*AActor* Worker = SelectionInterface->CheckUnitTypeForGathering(SelectedUnits);
-
-		if(UActorAttributesComponent* AttributesComponent = Worker->FindComponentByClass<UActorAttributesComponent>())
-		{
-			if(AttributesComponent->CanGather())
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Can Gather Resources"));
-			}*/
-
-		// Check if the worker can gather the resource
-		/*if (AttributesComponent->CanGatherResource(ResourceActor))
-		{
-			// Gather the resource
-			AttributesComponent->GatherResource(ResourceActor);
-		}*/
 	}
 }
 

@@ -54,6 +54,8 @@ public:
 	
 	//int ResourceAmount;
 	bool bTakingResource;
+
+	FVector CalcGatherPos(AActor* Resources, AActor* GatherActor, const TArray<AActor*>& Drones);
 	
 	// Checks The Type of Resource and Returns the Amount.
 	void TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi);

@@ -35,6 +35,7 @@ void UActorAttributesComponent::TickComponent(float DeltaTime, ELevelTick TickTy
 
 void UActorAttributesComponent::SetCanGather(bool bNewCanGather)
 {
+	bCanGather = bNewCanGather;
 }
 
 bool UActorAttributesComponent::CanGather() const

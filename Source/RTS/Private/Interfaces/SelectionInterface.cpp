@@ -214,6 +214,18 @@ void ISelectionInterface::MultiUnitSelection(TArray<AActor*>& Selected, AActor* 
 void ISelectionInterface::NotHit(TArray<AActor*>& Array)
 {
 	// Loops through all the elements and turns vis off
+
+
+
+
+
+
+
+
+
+
+
+
 	for (AActor* PawnSrc : Array)
 	{
 		if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(PawnSrc))
@@ -284,8 +296,9 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 				if (UWorkerAttributesComponent* ActorAttributes = UnitActor->FindComponentByClass<
 					UWorkerAttributesComponent>())
 				{
-					// Set the unit to be able to gather resources.
 					ActorAttributes->SetCanGather(true);
+					UE_LOG(LogTemp, Warning, TEXT("Can Gather Resources"));
+				
 				}
 			}
 			else if (UActorAttributesComponent* ActorAtt = UnitActor->FindComponentByClass<UActorAttributesComponent>())

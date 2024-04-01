@@ -4,6 +4,7 @@
 #include "Interfaces/ResourceInterface.h"
 
 #include "AIContent/GenericBaseAI/ActorAttributesComponent.h"
+#include "AIContent/GenericBaseAI/UserControllerAI/WorkerDrone/WorkerAttributesComponent.h"
 #include "Economy/ResourceTransaction.h"
 #include "Interfaces/SelectionInterface.h"
 #include "Resources/FoodResource.h"
@@ -56,12 +57,74 @@ AActor* IResourceInterface::HandleIdentification(AActor* Resource)
 	}
 }
 
+FVector IResourceInterface::CalcGatherPos(AActor* Resources, AActor* GatherActor, const TArray<AActor*>& Drones)
+{
+	if (!Resource || Drones.IsEmpty())
+	{
+		return FVector::ZeroVector; // Return a default position if no resource or drones
+	}
+
+	// Assuming a fixed radius for simplicity, replace with your actual collision sphere radius
+	float CollisionSphereRadius = 200.0f;
+	
+	for (AActor* Actor : Drones){
+		
+		// Find the index of the current drone in the array of all drones assigned to this resource
+		int32 DroneIndex = Drones.IndexOfByKey(GatherActor);
+
+		// Calculate the total number of drones gathering from this resource
+		int32 TotalDrones = Drones.Num();
+
+		// Calculate the angle step to distribute drones evenly around the resource
+		float AngleStep = 360.0f / TotalDrones; 
+
+		// Introduce randomness in the angle calculation for each drone
+		float RandomOffset = FMath::RandRange(-AngleStep / 4, AngleStep / 4);
+		float Angle = AngleStep * DroneIndex + RandomOffset;
+
+		// Convert angle to radians for trigonometry functions
+		float AngleRadians = FMath::DegreesToRadians(Angle);
+
+		// Calculate the offset position based on the angle and the collision sphere radius
+		FVector Offset = FVector(FMath::Cos(AngleRadians) * CollisionSphereRadius, FMath::Sin(AngleRadians) * CollisionSphereRadius, 0.0f);
+
+		// Calculate the final gather position by adding the offset to the resource's location
+		FVector GatherPosition = Resources->GetActorLocation() + Offset;
+		
+		return GatherPosition;
+	}
+	return {};
+}
+
+/*
+	// Find the index of the current drone in the array of all drones assigned to this resource
+	int32 DroneIndex = Drones.IndexOfByKey(Actor);
+
+	// Calculate the total number of drones gathering from this resource
+	int32 TotalDrones = Drones.Num();
+
+	// Calculate the angle step to distribute drones evenly around the resource
+	float AngleStep = 360.0f / TotalDrones; 
+
+	// Calculate the angle for the current drone
+	float Angle = AngleStep * DroneIndex;
+
+	// Convert angle to radians for trigonometry functions
+	float AngleRadians = FMath::DegreesToRadians(Angle);
+
+	// Calculate the offset position based on the angle and the collision sphere radius
+	FVector Offset = FVector(FMath::Cos(AngleRadians) * CollisionSphereRadius, FMath::Sin(AngleRadians) * CollisionSphereRadius, 0.0f);
+
+	// Calculate the final gather position by adding the offset to the resource's location
+	FVector GatherPosition = Resources->GetActorLocation() + Offset;
+	*/
+
 void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
                                             const FHitResult& Hi)
 {
 	// Check if the Actor is able to gather resources.
-	UActorAttributesComponent* AttributesComponent = Cast<UActorAttributesComponent>(
-		OtherActor->GetComponentByClass(UActorAttributesComponent::StaticClass()));
+	UWorkerAttributesComponent* AttributesComponent = Cast<UWorkerAttributesComponent>(
+		OtherActor->GetComponentByClass(UWorkerAttributesComponent::StaticClass()));
 	if (AttributesComponent->CanGather())
 	{
 		// Cast to All Possible Variants
