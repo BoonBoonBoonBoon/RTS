@@ -276,52 +276,66 @@ void AUserController::EventKey()
 	}
 }
 
+/*	TODO :
+	 * so we identify the resource and contain in a Actor Object.
+	 * we then want to for loop through the actors in the SelectedUnits Array.
+	 * and check what ones have the cangather attribute (through the ActorAttributesComponent)
+	 * we then want to get a fvector pos and assign it the CalcGatherPos from the Resource and worker.
+	 * then move the drone to the locatin.
+	 * 
+	 */
+
+//UE_LOG(LogTemp, Warning, TEXT("GatherPos : %s"), *GatherPos[0].ToString();
+
+/*if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Worker))
+{
+	GenAI->LocationToMove = GatherPos;
+	GenAI->ValidHit = true;
+}*/
 void AUserController::HandleResourceGathering(AActor* Resource)
 {
 	if (IResourceInterface* ResourceInterface = Cast<IResourceInterface>(Resource))
 	{
 		// Return the TYPE of resource.
-		AActor* ResourceActor = ResourceInterface->HandleIdentification(Resource); // Contains the resource we clicked on.
+		AActor* ResourceActor = ResourceInterface->HandleIdentification(Resource);
+		// Contains the resource we clicked on.
 
-		/*	TODO :
-		 * so we identify the resource and contain in a Actor Object.
-		 * we then want to for loop through the actors in the SelectedUnits Array.
-		 * and check what ones have the cangather attribute (through the ActorAttributesComponent)
-		 * we then want to get a fvector pos and assign it the CalcGatherPos from the Resource and worker.
-		 * then move the drone to the locatin.
-		 * 
-		 */
-
-		
 		if (SelectedUnits.Num() > 0)
 		{
-		// Loop through Worker Drones currently selected & Assign them their own Array.
-		TArray<AActor*> WorkerDrones = SelectionInterface->CheckUnitTypeForGathering(SelectedUnits);
-			
-			UE_LOG(LogTemp, Warning, TEXT("SelectedUnits count: %d"), SelectedUnits.Num());
-			
-			for (AActor* Worker : WorkerDrones)
+			// Loop through Worker Drones currently selected & Assign them their own Array.
+			TArray<AActor*> WorkerDrones = SelectionInterface->CheckUnitTypeForGathering(SelectedUnits);
+			if (!WorkerDrones.IsEmpty())
 			{
-				if (UWorkerAttributesComponent* AttributesComponent = Worker->FindComponentByClass<
-					UWorkerAttributesComponent>())
+				for (AActor* Worker : WorkerDrones)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("AttributesComponent Found : %s"), *AttributesComponent->GetName());
-					if (AttributesComponent->CanGather())
+					if (UWorkerAttributesComponent* AttributesComponent = Worker->FindComponentByClass<
+						UWorkerAttributesComponent>())
 					{
-						// Calculate the Position around the actor to gather resources.
-						FVector GatherPos = ResourceInterface->CalcGatherPos(ResourceActor, Worker, WorkerDrones);
-						
-						UE_LOG(LogTemp, Warning, TEXT("GatherPos : %s"), *GatherPos.ToString());
+						UE_LOG(LogTemp, Warning, TEXT("AttributesComponent Found : %s"),
+						       *AttributesComponent->GetName());
 
-						if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Worker))
+						if (AttributesComponent->CanGather())
 						{
-							GenAI->LocationToMove = GatherPos;
-							GenAI->ValidHit = true;
+							TArray<FVector> GatherPos = ResourceInterface->CalcGatherPos(ResourceActor, WorkerDrones);
+							MoveDronesToGatherPos(GatherPos, WorkerDrones);
 						}
 					}
 				}
 			}
 		}
+	}
+}
+
+void AUserController::MoveDronesToGatherPos(TArray<FVector> GatherPositions, TArray<AActor*>& Drones)
+{
+	for (int32 i = 0; i < Drones.Num(); ++i)
+	{
+		AActor* Drone = Drones[i];
+		FVector GatherPosition = GatherPositions[i];
+
+		// Assuming you have a method to move your drone to a specific location
+		// For example, setting the actor's location directly or using a movement component
+		Drone->SetActorLocation(GatherPosition);
 	}
 }
 

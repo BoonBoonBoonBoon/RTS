@@ -16,18 +16,6 @@
 // Add default functionality here for any IResourceInterface functions that are not pure virtual.
 
 
-IResourceInterface::IResourceInterface()
-{
-	//ISelectionInterface::OnActorCanGather.AddDynamic(this, &IResourceInterface::HandleActorCanGatherDelegate);
-}
-
-void IResourceInterface::HandleActorCanGatherDelegate(AActor* Actor)
-{
-	// Store GatherActor or mark it as able to gather resources
-	// This could involve adding it to a list or setting a flag on the actor
-	//TakeResourceObject(nullptr, Actor, FVector::ZeroVector, FHitResult());
-}
-
 AActor* IResourceInterface::HandleIdentification(AActor* Resource)
 {
 	if(Resource->IsA<AWoodResource>())
@@ -57,67 +45,34 @@ AActor* IResourceInterface::HandleIdentification(AActor* Resource)
 	}
 }
 
-FVector IResourceInterface::CalcGatherPos(AActor* Resources, AActor* GatherActor, const TArray<AActor*>& Drones)
+TArray<FVector> IResourceInterface::CalcGatherPos(AActor* Resources, const TArray<AActor*>& Drones)
 {
+	// Array Initialization for Gather Positions.
+	TArray<FVector> GatherPositions;
+	
 	if (!Resource || Drones.IsEmpty())
 	{
-		return FVector::ZeroVector; // Return a default position if no resource or drones
+		return GatherPositions; // Return an empty array if the resource or the drones array is empty.
 	}
-
-	// Assuming a fixed radius for simplicity, replace with your actual collision sphere radius
-	float CollisionSphereRadius = 200.0f;
 	
-	for (AActor* Actor : Drones){
-		
-		// Find the index of the current drone in the array of all drones assigned to this resource
-		int32 DroneIndex = Drones.IndexOfByKey(GatherActor);
+	float CollisionSphereRadius = 200.0f; // Radius of the collision sphere around the resource.
 
-		// Calculate the total number of drones gathering from this resource
-		int32 TotalDrones = Drones.Num();
+	int32 TotalDrones = Drones.Num(); // Total number of drones available for gathering.
+	float AngleStep = 360.0f / TotalDrones; // Angle step between each drone.
 
-		// Calculate the angle step to distribute drones evenly around the resource
-		float AngleStep = 360.0f / TotalDrones; 
+	for (int32 DroneIndex = 0; DroneIndex < TotalDrones; ++DroneIndex) // Loop through each drone.
+	{
+		float RandomOffset = FMath::RandRange(-AngleStep / 4, AngleStep / 4); // Random offset to avoid drones gathering at the same position.
+		float Angle = AngleStep * DroneIndex + RandomOffset; // Calculate the angle for the current drone.
+		float AngleRadians = FMath::DegreesToRadians(Angle); // Convert the angle to radians.
 
-		// Introduce randomness in the angle calculation for each drone
-		float RandomOffset = FMath::RandRange(-AngleStep / 4, AngleStep / 4);
-		float Angle = AngleStep * DroneIndex + RandomOffset;
+		FVector Offset = FVector(FMath::Cos(AngleRadians) * CollisionSphereRadius, FMath::Sin(AngleRadians) * CollisionSphereRadius, 0.0f); // Calculate the offset for the current drone.
+		FVector GatherPosition = Resources->GetActorLocation() + Offset; // Calculate the gather position for the current drone.
 
-		// Convert angle to radians for trigonometry functions
-		float AngleRadians = FMath::DegreesToRadians(Angle);
-
-		// Calculate the offset position based on the angle and the collision sphere radius
-		FVector Offset = FVector(FMath::Cos(AngleRadians) * CollisionSphereRadius, FMath::Sin(AngleRadians) * CollisionSphereRadius, 0.0f);
-
-		// Calculate the final gather position by adding the offset to the resource's location
-		FVector GatherPosition = Resources->GetActorLocation() + Offset;
-		
-		return GatherPosition;
+		GatherPositions.Add(GatherPosition); // Add the gather position to the array.
 	}
 	return {};
 }
-
-/*
-	// Find the index of the current drone in the array of all drones assigned to this resource
-	int32 DroneIndex = Drones.IndexOfByKey(Actor);
-
-	// Calculate the total number of drones gathering from this resource
-	int32 TotalDrones = Drones.Num();
-
-	// Calculate the angle step to distribute drones evenly around the resource
-	float AngleStep = 360.0f / TotalDrones; 
-
-	// Calculate the angle for the current drone
-	float Angle = AngleStep * DroneIndex;
-
-	// Convert angle to radians for trigonometry functions
-	float AngleRadians = FMath::DegreesToRadians(Angle);
-
-	// Calculate the offset position based on the angle and the collision sphere radius
-	FVector Offset = FVector(FMath::Cos(AngleRadians) * CollisionSphereRadius, FMath::Sin(AngleRadians) * CollisionSphereRadius, 0.0f);
-
-	// Calculate the final gather position by adding the offset to the resource's location
-	FVector GatherPosition = Resources->GetActorLocation() + Offset;
-	*/
 
 void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
                                             const FHitResult& Hi)

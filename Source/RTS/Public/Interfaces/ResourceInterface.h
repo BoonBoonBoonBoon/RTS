@@ -45,9 +45,6 @@ class RTS_API IResourceInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	IResourceInterface();
-	
-	void HandleActorCanGatherDelegate(AActor* Actor);
 	static AActor* HandleIdentification(AActor* Resource);
 	
 	int32 Resource = 1;
@@ -55,7 +52,7 @@ public:
 	//int ResourceAmount;
 	bool bTakingResource;
 
-	FVector CalcGatherPos(AActor* Resources, AActor* GatherActor, const TArray<AActor*>& Drones);
+	TArray<FVector> CalcGatherPos(AActor* Resources, const TArray<AActor*>& Drones);
 	
 	// Checks The Type of Resource and Returns the Amount.
 	void TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse, const FHitResult& Hi);

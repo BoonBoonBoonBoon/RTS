@@ -215,17 +215,6 @@ void ISelectionInterface::NotHit(TArray<AActor*>& Array)
 {
 	// Loops through all the elements and turns vis off
 
-
-
-
-
-
-
-
-
-
-
-
 	for (AActor* PawnSrc : Array)
 	{
 		if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(PawnSrc))
@@ -253,12 +242,8 @@ TArray<AActor*> ISelectionInterface::CheckUnitTypeForGathering(TArray<AActor*>& 
 			WorkerDrones.AddUnique(Worker);
 			return WorkerDrones;
 		}
-		else
-		{
-			return {nullptr};
-		}
 	}
-	return {nullptr};
+	return {};
 }
 
 bool ISelectionInterface::CheckValidHit(AActor* HitActor)
