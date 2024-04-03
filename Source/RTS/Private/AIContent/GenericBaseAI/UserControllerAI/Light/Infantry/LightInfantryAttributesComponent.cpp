@@ -36,3 +36,16 @@ bool ULightInfantryAttributesComponent::CanPatrol() const
 {
 	return bCanPatrol;
 }
+
+// Extra
+
+void ULightInfantryAttributesComponent::SetCanGather(bool bNewCanGather)
+{
+	bCanGather = false;
+}
+
+bool ULightInfantryAttributesComponent::CanGather() const
+{
+	return bCanGather;
+}
+

@@ -29,4 +29,11 @@ public:
 	virtual bool CanAttack() const override;
 	virtual bool CanGuard() const override;
 	virtual bool CanPatrol() const override;
+
+	// Extra
+
+	bool bCanGather = false;
+	
+	virtual void SetCanGather(bool bNewCanGather) override;
+	virtual bool CanGather() const override;
 };

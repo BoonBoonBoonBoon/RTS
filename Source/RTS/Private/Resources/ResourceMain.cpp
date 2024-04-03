@@ -2,6 +2,8 @@
 
 
 #include "Resources/ResourceMain.h"
+
+#include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "Components/BoxComponent.h"
 
 
@@ -48,6 +50,11 @@ void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	// If the actor is valid and is overlapping the component, set a timer for the actor.
 	if (OtherActor && OverlappedComponent->IsOverlappingActor(OtherActor))
 	{
+		if (!OtherActor->IsA(AGenericBaseAI::StaticClass()))
+		{
+			return; // Early return if OtherActor is not a valid type
+		}
+		
 		FTimerHandle& ActorTimer = ActorTimers[OtherActor]; // Get the timer for the actor.
 		GetWorld()->GetTimerManager().SetTimer(ActorTimer, [this, OtherActor, SweepResult]()
 		{

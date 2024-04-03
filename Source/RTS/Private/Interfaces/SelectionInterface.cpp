@@ -245,6 +245,93 @@ TArray<AActor*> ISelectionInterface::CheckUnitTypeForGathering(TArray<AActor*>& 
 	return WorkerDrones;
 }
 
+TArray<FVector> ISelectionInterface::CalculateGridFormationPositions(FVector TargetLocation, int32 UnitsCount,
+	float Spacing)
+{
+	TArray<FVector> Positions; // Array to store the calculated positions
+	
+	/* Calculate the square root of the number, then truncate to an integer.
+	 * Giving the number of rows. I.e. if 5.7, it will be 5. */
+	//int32 Rows = FMath::Sqrt(float(UnitsCount));
+	
+	//FVector StartPosition = TargetLocation - FVector(Rows / 2.0f * Spacing, Rows / 2.0f * Spacing, 0.0f); // Calculate the start position
+	
+	int32 Rows = FMath::CeilToInt(FMath::Sqrt(float(UnitsCount))); // Calculate the number of rows
+	int32 Columns = FMath::CeilToInt(float(UnitsCount) / Rows); // Calculate the number of columns
+
+	FVector StartPosition = TargetLocation - FVector(Rows / 2.0f * Spacing, Columns / 2.0f * Spacing, 0.0f); // Calculate the start position
+
+	// iterate through each *row (i) and *column (j) of the grid.
+	for (int32 i = 0; i < Rows; ++i)
+	{
+		for (int32 j = 0; j < Columns; ++j)
+		{
+			if (i * Columns + j >= UnitsCount) break; // Stop if we've placed all units
+
+			FVector Position = StartPosition + FVector(i * Spacing, j * Spacing, 0.0f);
+			Positions.Add(Position);
+		}
+	}
+	
+	return Positions;
+}
+
+void ISelectionInterface::MoveGroupToLocation(TArray<AActor*> Units, FVector TargetLocation)
+{
+	TArray<FVector> FormationPositions = CalculateGridFormationPositions(TargetLocation, Units.Num());
+
+	for (int32 i = 0; i < Units.Num(); ++i)
+	{
+		AActor* Unit = Units[i];
+		FVector AssignedPositions = FormationPositions[i];
+
+		int32 LoopBound = FMath::Min(Units.Num(), FormationPositions.Num());
+		for (int32 INT32 = 0; INT32 < LoopBound; ++INT32)
+		{
+			if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Unit))
+			{
+				if (GenAI->GetController())
+				{
+					GenAI->LocationToMove = AssignedPositions;
+					GenAI->ValidHit = true;
+				}
+			}
+		}
+
+		for (int32 l = 0; l < FormationPositions.Num(); ++l)
+		{
+			FVector Position = FormationPositions[l];
+			UE_LOG(LogTemp, Log, TEXT("Unit %d: Position: %s"), l, *Position.ToString());
+		}
+	}
+	
+	/*for (int32 Index = 0; Index < FormationPositions.Num(); ++Index)
+	{
+		FVector Position = FormationPositions[Index];
+		UE_LOG(LogTemp, Log, TEXT("Position %d: %s"), Index, *Position.ToString());
+	}
+	
+	for (int32 i = 0; i < Units.Num(); ++i)
+	{
+		if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Units[i]))
+		{
+			if (AController* GenController = GenAI->GetController())
+			{
+				// Check the class of the controller
+				if (GenController->IsA<AController>())
+				{
+					if (Cast<AAIController>(GenAI->GetController()))
+					{
+						GenAI->LocationToMove = TargetLocation;
+						GenAI->ValidHit = true;
+					}
+				}
+			}
+		}
+	}*/
+}
+
+
 bool ISelectionInterface::CheckValidHit(AActor* HitActor)
 {
 	// Change

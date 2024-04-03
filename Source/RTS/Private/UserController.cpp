@@ -155,7 +155,7 @@ void AUserController::MoveCamera(const FVector& Direction)
 	{
 		if (bCursorMove)
 		{
-			const float CameraSpeed = 500;
+			constexpr float CameraSpeed = 500;
 			// Get the current view target location
 			const FVector NewCameraLocation = ViewTarget->GetActorLocation() + Direction * CameraSpeed * GetWorld()->
 				GetDeltaSeconds();
@@ -165,7 +165,7 @@ void AUserController::MoveCamera(const FVector& Direction)
 		}
 		else
 		{
-			const float CameraSpeed = 1000;
+			constexpr float CameraSpeed = 1000;
 			// Get the current view target location
 			const FVector NewCameraLocation = ViewTarget->GetActorLocation() + Direction * CameraSpeed * GetWorld()->
 				GetDeltaSeconds();
@@ -180,10 +180,10 @@ void AUserController::MoveCamera(const FVector& Direction)
 void AUserController::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
+
 	EdgeScrolling();
 	UpdateFlow();
-	
+
 	// Defined User Macro, Gets Trace to pawn under cursor. 
 	GetHitResultUnderCursor(mTraceChannel, true, bHit);
 }
@@ -242,21 +242,17 @@ void AUserController::EventKey()
 			                                         WorldMouseLocation + WorldMouseDirection * TraceDistance,
 			                                         ECC_Visibility, CollisionParams))
 			{
-				// Check if the hit actor is a pawn
-				// ReSharper disable once CppDeclaratorNeverUsed
-				
-				//if (AActor* HitActorObj = (HitResult.GetActor()))
-				
+
 				if (AActor* HitActorObj = (HitResult.GetActor()))
 				{
-					if(IResourceInterface* ResourceInterface = Cast<IResourceInterface>(HitActorObj))
+					if (Cast<IResourceInterface>(HitActorObj))
 					{
 						// Draw a debug box at the hit location
-						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green, false,
-									 1, 0, 5.0f);
+						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green,
+						             false,
+						             1, 0, 5.0f);
 						UE_LOG(LogTemp, Warning, TEXT("Hit Res"));
 						HandleResourceGathering(HitActorObj);
-						
 					}
 					else
 					{
@@ -267,7 +263,7 @@ void AUserController::EventKey()
 						UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
 						FVector Location = HitResult.Location;
-						
+
 						HandleMovement(Location);
 					}
 				}
@@ -275,16 +271,6 @@ void AUserController::EventKey()
 		}
 	}
 }
-
-/*	TODO :
-	 * so we identify the resource and contain in a Actor Object.
-	 * we then want to for loop through the actors in the SelectedUnits Array.
-	 * and check what ones have the cangather attribute (through the ActorAttributesComponent)
-	 * we then want to get a fvector pos and assign it the CalcGatherPos from the Resource and worker.
-	 * then move the drone to the locatin.
-	 * 
-	 */
-
 
 void AUserController::HandleResourceGathering(AActor* Resource)
 {
@@ -298,23 +284,22 @@ void AUserController::HandleResourceGathering(AActor* Resource)
 		{
 			// Loop through Worker Drones currently selected & Assign them their own Array.
 			TArray<AActor*> WorkerDrones = SelectionInterface->CheckUnitTypeForGathering(SelectedUnits);
-			
+
 			if (!WorkerDrones.IsEmpty())
 			{
-				
 				TArray<FVector> GatherPositions = ResourceInterface->CalcGatherPos(ResourceActor, WorkerDrones);
 
 				for (int32 i = 0; i < WorkerDrones.Num(); ++i)
 				{
 					AActor* Drone = WorkerDrones[i];
 					FVector GatherPos = GatherPositions[i];
-					
+
 					if (Drone)
 					{
 						FString DroneName = Drone->GetName();
 						UE_LOG(LogTemp, Warning, TEXT("Drone %d: %s"), i, *DroneName);
 					}
-					
+
 					MoveDronesToGatherPos(GatherPos, Drone);
 				}
 			}
@@ -346,31 +331,9 @@ void AUserController::MoveDronesToGatherPos(FVector GatherPos, AActor* Drone)
 
 void AUserController::HandleMovement(FVector Location)
 {
-///FVector Location = HitResult.Location;
-
-	// if the array has a unit in it 
 	if (SelectedUnits.Num() > 0)
 	{
-		for (AActor* Actor : SelectedUnits)
-		{
-			if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Actor))
-			{
-				// Check if the actor has a valid controller
-				if (AController* GenController = GenAI->GetController())
-				{
-					// Check the class of the controller
-					if (GenController->IsA<AController>())
-					{
-						AAIController* Con = Cast<AAIController>(GenAI->GetController());
-						if (Con)
-						{
-							GenAI->LocationToMove = Location;
-							GenAI->ValidHit = true;
-						}
-					}
-				}
-			}
-		}
+		SelectionInterface->MoveGroupToLocation(SelectedUnits, Location);
 	}
 }
 
@@ -383,7 +346,7 @@ void AUserController::StartBoxSelection()
 		bIsSelecting = true;
 
 		CastToActor();
-		
+
 		// Empties the array of selectable classes.
 		if (bNotHit)
 		{
@@ -400,8 +363,6 @@ void AUserController::EndBoxSelection()
 	CursorMoved = false;
 	MultiselectCond = false;
 	bIsDecalSelect = false;
-
-	
 }
 
 
@@ -460,7 +421,7 @@ void AUserController::CastToActor()
 			// draw a debug box at the hit location
 			DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Red, false, 2.0f, 0,
 			             5.0f);
-			
+
 			MouseStart = bHit.Location;
 			if (AActor* HitActor = HitResult.GetActor())
 			{
@@ -521,20 +482,6 @@ void AUserController::HandleSelection(AActor* ActorHit)
 			bNotHit = true;
 		}
 	}
-}
-
-
-TArray<AActor*> AUserController::ConvertPawnArrayToActorArray(const TArray<APawn*>& PawnArray)
-{
-	TArray<AActor*> ActorArray;
-
-	for (APawn* Src : PawnArray)
-	{
-		// Since APawn is a subclass of AActor, you can directly add it to the ActorArray
-		ActorArray.Add(Src);
-	}
-
-	return ActorArray;
 }
 
 

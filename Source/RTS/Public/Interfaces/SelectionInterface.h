@@ -125,8 +125,14 @@ public:
 
 	static void NotHit(TArray<AActor*>& Array);
 
+	// Returns a specific Unit into a sovereign container.
 	static TArray<AActor*> CheckUnitTypeForGathering(TArray<AActor*>& SelectedUnits);
 
+	// Calculates the grid formation positions.
+	static TArray<FVector> CalculateGridFormationPositions(FVector TargetLocation, int32 UnitsCount, float Spacing = 300.0f);
+
+	void MoveGroupToLocation(TArray<AActor*> Units, FVector TargetLocation);
+	
 	static bool CheckValidHit(AActor* HitActor);
 	
 	// Check if a specific element is in the array.
