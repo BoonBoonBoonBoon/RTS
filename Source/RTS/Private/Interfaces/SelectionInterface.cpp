@@ -251,15 +251,12 @@ TArray<FVector> ISelectionInterface::CalculateGridFormationPositions(FVector Tar
 	TArray<FVector> Positions; // Array to store the calculated positions
 	
 	/* Calculate the square root of the number, then truncate to an integer.
-	 * Giving the number of rows. I.e. if 5.7, it will be 5. */
-	//int32 Rows = FMath::Sqrt(float(UnitsCount));
-	
-	//FVector StartPosition = TargetLocation - FVector(Rows / 2.0f * Spacing, Rows / 2.0f * Spacing, 0.0f); // Calculate the start position
-	
+	 * Giving the number of rows. I.e. if 2.5, it will be 2. */
 	int32 Rows = FMath::CeilToInt(FMath::Sqrt(float(UnitsCount))); // Calculate the number of rows
 	int32 Columns = FMath::CeilToInt(float(UnitsCount) / Rows); // Calculate the number of columns
 
-	FVector StartPosition = TargetLocation - FVector(Rows / 2.0f * Spacing, Columns / 2.0f * Spacing, 0.0f); // Calculate the start position
+	// Needs to be in the center, Divide it to be in middle of row, then column with spacing in between.
+	FVector StartPosition = TargetLocation - FVector(Rows / 2.0f * Spacing, Columns / 2.0f * Spacing, 0.0f); 
 
 	// iterate through each *row (i) and *column (j) of the grid.
 	for (int32 i = 0; i < Rows; ++i)
@@ -298,35 +295,10 @@ void ISelectionInterface::MoveGroupToLocation(TArray<AActor*> Units, FVector Tar
 			}
 		}
 
-		for (int32 l = 0; l < FormationPositions.Num(); ++l)
+		/*for (int32 l = 0; l < FormationPositions.Num(); ++l)
 		{
 			FVector Position = FormationPositions[l];
 			UE_LOG(LogTemp, Log, TEXT("Unit %d: Position: %s"), l, *Position.ToString());
-		}
-	}
-	
-	/*for (int32 Index = 0; Index < FormationPositions.Num(); ++Index)
-	{
-		FVector Position = FormationPositions[Index];
-		UE_LOG(LogTemp, Log, TEXT("Position %d: %s"), Index, *Position.ToString());
-	}
-	
-	for (int32 i = 0; i < Units.Num(); ++i)
-	{
-		if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Units[i]))
-		{
-			if (AController* GenController = GenAI->GetController())
-			{
-				// Check the class of the controller
-				if (GenController->IsA<AController>())
-				{
-					if (Cast<AAIController>(GenAI->GetController()))
-					{
-						GenAI->LocationToMove = TargetLocation;
-						GenAI->ValidHit = true;
-					}
-				}
-			}
 		}
 	}*/
 }

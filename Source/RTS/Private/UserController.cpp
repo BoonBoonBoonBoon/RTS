@@ -264,7 +264,10 @@ void AUserController::EventKey()
 
 						FVector Location = HitResult.Location;
 
-						HandleMovement(Location);
+						if (SelectedUnits.Num() > 0)
+						{
+							SelectionInterface->MoveGroupToLocation(SelectedUnits, Location);
+						} 
 					}
 				}
 			}
@@ -326,14 +329,6 @@ void AUserController::MoveDronesToGatherPos(FVector GatherPos, AActor* Drone)
 				}
 			}
 		}
-	}
-}
-
-void AUserController::HandleMovement(FVector Location)
-{
-	if (SelectedUnits.Num() > 0)
-	{
-		SelectionInterface->MoveGroupToLocation(SelectedUnits, Location);
 	}
 }
 
