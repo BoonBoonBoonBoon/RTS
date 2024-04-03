@@ -45,7 +45,7 @@ public:
 	
 	void EventKey(); // Movement and Attack Direction
 	void HandleResourceGathering(AActor* Resource);
-	void MoveDronesToGatherPos(TArray<FVector> GatherPositions,  TArray<AActor*>& Drones);
+	void MoveDronesToGatherPos(FVector GatherPos, AActor* Drone);
 	void HandleMovement(FVector Location);
 	
 	void StartBoxSelection(); // User Input to select Actor

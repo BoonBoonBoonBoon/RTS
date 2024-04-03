@@ -285,13 +285,7 @@ void AUserController::EventKey()
 	 * 
 	 */
 
-//UE_LOG(LogTemp, Warning, TEXT("GatherPos : %s"), *GatherPos[0].ToString();
 
-/*if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Worker))
-{
-	GenAI->LocationToMove = GatherPos;
-	GenAI->ValidHit = true;
-}*/
 void AUserController::HandleResourceGathering(AActor* Resource)
 {
 	if (IResourceInterface* ResourceInterface = Cast<IResourceInterface>(Resource))
@@ -304,38 +298,49 @@ void AUserController::HandleResourceGathering(AActor* Resource)
 		{
 			// Loop through Worker Drones currently selected & Assign them their own Array.
 			TArray<AActor*> WorkerDrones = SelectionInterface->CheckUnitTypeForGathering(SelectedUnits);
+			
 			if (!WorkerDrones.IsEmpty())
 			{
-				for (AActor* Worker : WorkerDrones)
-				{
-					if (UWorkerAttributesComponent* AttributesComponent = Worker->FindComponentByClass<
-						UWorkerAttributesComponent>())
-					{
-						UE_LOG(LogTemp, Warning, TEXT("AttributesComponent Found : %s"),
-						       *AttributesComponent->GetName());
+				
+				TArray<FVector> GatherPositions = ResourceInterface->CalcGatherPos(ResourceActor, WorkerDrones);
 
-						if (AttributesComponent->CanGather())
-						{
-							TArray<FVector> GatherPos = ResourceInterface->CalcGatherPos(ResourceActor, WorkerDrones);
-							MoveDronesToGatherPos(GatherPos, WorkerDrones);
-						}
+				for (int32 i = 0; i < WorkerDrones.Num(); ++i)
+				{
+					AActor* Drone = WorkerDrones[i];
+					FVector GatherPos = GatherPositions[i];
+					
+					if (Drone)
+					{
+						FString DroneName = Drone->GetName();
+						UE_LOG(LogTemp, Warning, TEXT("Drone %d: %s"), i, *DroneName);
 					}
+					
+					MoveDronesToGatherPos(GatherPos, Drone);
 				}
 			}
 		}
 	}
 }
 
-void AUserController::MoveDronesToGatherPos(TArray<FVector> GatherPositions, TArray<AActor*>& Drones)
-{
-	for (int32 i = 0; i < Drones.Num(); ++i)
-	{
-		AActor* Drone = Drones[i];
-		FVector GatherPosition = GatherPositions[i];
 
-		// Assuming you have a method to move your drone to a specific location
-		// For example, setting the actor's location directly or using a movement component
-		Drone->SetActorLocation(GatherPosition);
+void AUserController::MoveDronesToGatherPos(FVector GatherPos, AActor* Drone)
+{
+	if (const AGenericBaseAI* GenAI = Cast<AGenericBaseAI>(Drone))
+	{
+		// Check if the actor has a valid controller
+		if (AController* GenController = GenAI->GetController())
+		{
+			// Check the class of the controller
+			if (GenController->IsA<AController>())
+			{
+				AAIController* Con = Cast<AAIController>(GenAI->GetController());
+				if (Con)
+				{
+					GenAI->LocationToMove = GatherPos;
+					GenAI->ValidHit = true;
+				}
+			}
+		}
 	}
 }
 

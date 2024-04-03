@@ -240,10 +240,9 @@ TArray<AActor*> ISelectionInterface::CheckUnitTypeForGathering(TArray<AActor*>& 
 		if (AWorkerDrone* Worker = Cast<AWorkerDrone>(Src))
 		{
 			WorkerDrones.AddUnique(Worker);
-			return WorkerDrones;
 		}
 	}
-	return {};
+	return WorkerDrones;
 }
 
 bool ISelectionInterface::CheckValidHit(AActor* HitActor)

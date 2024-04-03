@@ -71,7 +71,7 @@ TArray<FVector> IResourceInterface::CalcGatherPos(AActor* Resources, const TArra
 
 		GatherPositions.Add(GatherPosition); // Add the gather position to the array.
 	}
-	return {};
+	return GatherPositions; // Return the array of gather positions.
 }
 
 void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
