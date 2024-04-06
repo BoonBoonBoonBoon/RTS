@@ -177,10 +177,10 @@ public:
 
 	// Stores the attributes of a specific unit.
 	static TMap<EUnitTypes, TArray<EUnitAttributes>> UnitTypeToAttributesMap;
-	static TMap<EUnitTypes, FUnitData> UnitTypeToDataMap;
+	TMap<EUnitTypes, FUnitData> UnitTypeToDataMap;
 
 	// Assigns the attributes of a specific unit.
-	static TMap<EUnitTypes, TArray<EUnitAttributes>> GetAttributesForunit(EUnitTypes UnitTypes); // chucking errors here
+	static TMap<EUnitTypes, TArray<EUnitAttributes>> GetAttributesForUnit(EUnitTypes UnitTypes); // chucking errors here
 	static FUnitData GetUnitDataForUnit(EUnitTypes UnitTypes);
 
 	static void LogUnitTypeToDataMap(const TMap<EUnitTypes, FUnitData>& DataMap);

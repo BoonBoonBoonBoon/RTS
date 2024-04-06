@@ -15,7 +15,7 @@ FOnActorCanGatherDelegate ISelectionInterface::OnActorCanGather;
 class IUnitInterface;
 class AGenericBaseAI;
 TMap<EUnitTypes, TArray<EUnitAttributes>> ISelectionInterface::UnitTypeToAttributesMap;
-TMap<EUnitTypes, FUnitData> ISelectionInterface::UnitTypeToDataMap;
+//TMap<EUnitTypes, FUnitData> ISelectionInterface::UnitTypeToDataMap;
 
 
 const char* to_string(EBuildingTypes e)
@@ -319,19 +319,55 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 		// Identify The Unit Type.
 		const EUnitTypes UnitType = GetUnitType(UnitActor);
 
+		// TODO: Move the shit to its own function so we can keep using UnitType Casts
+		
 		// Identify the attributes of the unit.
-		//const TMap<EUnitTypes, TArray<EUnitAttributes>> UnitAttributes = GetAttributesForunit(UnitType);
+		//const TMap<EUnitTypes, TArray<EUnitAttributes>> UnitAttributes = GetAttributesForUnit(UnitType);
 		
-		FUnitData UnitData = GetUnitDataForUnit(UnitType);
+		//FUnitData UnitData = GetUnitDataForUnit(UnitType);
 		
-		// Logs the Data of the Unit.
-		LogUnitTypeToDataMap(UnitTypeToDataMap);
-	
+		if(auto Worker = Cast<AWorkerDrone>(UnitActor))
+		{
+			//Worker->UnitData = GetUnitDataForUnit(Worker->UnitType);
+			
+			// Log the Unit Data
+			FString AttributesString;
+			for (EUnitAttributes Attribute : Worker->UnitData.Attributes)
+			{
+				AttributesString += EnumToString(Attribute) + TEXT(", ");
+			}
+			// Remove the trailing comma and space if there are any attributes
+			if (Worker->UnitData.Attributes.Num() > 0)
+			{
+				AttributesString.RemoveAt(AttributesString.Len() - 2);
+			}
 
-		UE_LOG(LogTemp, Log, TEXT("Selected Unit Type: %s"), *EnumToString(UnitType));
+			FString StatsString = FString::Printf(TEXT("Health: %.1f, HealthRegeneration: %.1f, Speed: %.1f, GroupSpeed: %.1f, DamageDealt: %.1f, AttackRange: %.1f, AttackSpeed: %.1f"),
+				Worker->UnitData.UnitStats.Health,
+				Worker->UnitData.UnitStats.HealthRegeneration,
+				Worker->UnitData.UnitStats.Speed,
+				Worker->UnitData.UnitStats.GroupSpeed,
+				Worker->UnitData.UnitStats.DamageDealt,
+				Worker->UnitData.UnitStats.AttackRange,
+				Worker->UnitData.UnitStats.AttackSpeed);
+
+			UE_LOG(LogTemp, Log, TEXT("Unit Attributes: [%s], Stats: {%s}"), *AttributesString, *StatsString);
+			
+		} else if (auto Linf = Cast<AlightInfantry>(UnitActor))
+		{
+			
+		}
+
+
+
+		//LogUnitTypeToDataMap(UnitData);
+
+		
+	
 		// Logs The attributes of the unit.
 		//LogUnitTypeToAttributesMap(UnitAttributes);
 
+		
 
 		/*if (UnitTypeToAttributesMap.Contains(UnitType)) // Check if the TMap Contains a valid unit type.
 		{
@@ -376,9 +412,9 @@ EUnitTypes ISelectionInterface::GetUnitType(const AActor* UnitActor)
 	return EUnitTypes::Invalid;
 }
 
-TMap<EUnitTypes, TArray<EUnitAttributes>> ISelectionInterface::GetAttributesForunit(EUnitTypes UnitTypes)
+TMap<EUnitTypes, TArray<EUnitAttributes>> ISelectionInterface::GetAttributesForUnit(EUnitTypes UnitTypes)
 {
-	/*if (UnitTypes == EUnitTypes::Worker)
+	if (UnitTypes == EUnitTypes::Worker)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Unit Type: Worker"));
 		// Map of unit types to attributes.
@@ -395,7 +431,7 @@ TMap<EUnitTypes, TArray<EUnitAttributes>> ISelectionInterface::GetAttributesForu
 			{EUnitTypes::LightInfantry, {EUnitAttributes::Attack, EUnitAttributes::Guard, EUnitAttributes::Patrol}}
 		};
 		return UnitTypeToAttributesMap;
-	}*/
+	}
 	UE_LOG(LogTemp, Warning, TEXT("Invalid Unit Type"));
 	return {};
 }
@@ -411,19 +447,24 @@ FUnitData ISelectionInterface::GetUnitDataForUnit(EUnitTypes UnitTypes)
 			EUnitAttributes::Gather, EUnitAttributes::Repair, EUnitAttributes::Build
 		}; // Worker Attributes
 		WorkerData.UnitStats = {100.0f, 0.0f, 100.0f, 100.0f, 10.0f, 100.0f, 1.0f}; // Worker Stats
-		UnitTypeToDataMap.Add(EUnitTypes::Worker, WorkerData); // Add the Worker Data to the Map.
+		return WorkerData;
+
+		//UnitTypeToDataMap.Add(EUnitTypes::Worker, WorkerData); // Add the Worker Data to the Map.
 	}
-	else if (UnitTypes == EUnitTypes::LightInfantry)
+	
+	if (UnitTypes == EUnitTypes::LightInfantry)
 	{
 		FUnitData LightInfantryData;
 		LightInfantryData.Attributes = {EUnitAttributes::Attack, EUnitAttributes::Guard, EUnitAttributes::Patrol};
 		// Light Infantry Attributes
 		LightInfantryData.UnitStats = {100.0f, 0.0f, 100.0f, 100.0f, 10.0f, 100.0f, 1.0f}; // Light Infantry Stats
-		UnitTypeToDataMap.Add(EUnitTypes::LightInfantry, LightInfantryData);
+		return LightInfantryData;
+		
+		//UnitTypeToDataMap.Add(EUnitTypes::LightInfantry, LightInfantryData);
 	}
 	
 
-	// Access and return the FUnitData for the Specified Unit Type.
+	/*// Access and return the FUnitData for the Specified Unit Type.
 	if (UnitTypeToDataMap.Contains(UnitTypes))
 	{
 		return UnitTypeToDataMap[UnitTypes];
@@ -433,11 +474,10 @@ FUnitData ISelectionInterface::GetUnitDataForUnit(EUnitTypes UnitTypes)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Invalid Unit Type"));
 		return FUnitData(); // Return an empty FUnitData for invalid unit types
-	}
-
-	
+	}*/
 }
 
+/*
 void ISelectionInterface::LogUnitTypeToDataMap(const TMap<EUnitTypes, FUnitData>& DataMap)
 {
 	// Iterate over each key-value pair in the map
@@ -476,6 +516,7 @@ void ISelectionInterface::LogUnitTypeToDataMap(const TMap<EUnitTypes, FUnitData>
 		UE_LOG(LogTemp, Log, TEXT("%s: %s"), *UnitTypeString, *DataString);
 	}
 }
+*/
 
 
 // Function to convert EUnitTypes enum to string

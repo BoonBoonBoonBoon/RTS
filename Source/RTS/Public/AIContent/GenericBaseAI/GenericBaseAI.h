@@ -8,10 +8,10 @@
 #include "GenericController.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/SelectionInterface.h"
 #include "GenericBaseAI.generated.h"
 
 class AUserController; 
-
 
 UCLASS()
 class RTS_API AGenericBaseAI : public ACharacter
@@ -28,7 +28,14 @@ public:
 	// Sets default values for this character's properties
 	AGenericBaseAI();
 
+	UPROPERTY(EditAnywhere, Category = "Unit Data")
+	FUnitData UnitData;
 
+	UPROPERTY(EditAnywhere, Category = "Unit Type")
+	EUnitTypes UnitType;
+
+	ISelectionInterface* SelectionInterface;
+	
 	// EQS Query asset 
 	UPROPERTY()
 	UEnvQuery* MyQuery;

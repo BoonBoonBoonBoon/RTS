@@ -5,8 +5,15 @@
 
 AWorkerDrone::AWorkerDrone()
 {
-	//WorkerAttributesComponent = CreateDefaultSubobject<UWorkerAttributesComponent>(TEXT("AttributesComponent"));
 
+	// Obtain the Unit Type we are working with.
+	EUnitTypes CurrentUnit = EUnitTypes::Worker;
+
+	// Get the Unit Data for the Current Unit.
+	UnitData = ISelectionInterface::GetUnitDataForUnit(CurrentUnit);
+
+	// Pass the Data back some how 
+		
 	WorkerAttributesComponent = CreateDefaultSubobject<UWorkerAttributesComponent>(TEXT("AttributesComponent"));
 	
 	// Identify the Worker Drone.

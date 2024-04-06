@@ -6,6 +6,8 @@
 
 AlightInfantry::AlightInfantry()
 {
+
+	EUnitTypes CurrentUnit = EUnitTypes::LightInfantry;
 	
 	ActorAttributesComponent = CreateDefaultSubobject<ULightInfantryAttributesComponent>(TEXT("AttributesComponent"));
 	
