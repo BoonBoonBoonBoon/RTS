@@ -294,12 +294,6 @@ void ISelectionInterface::MoveGroupToLocation(TArray<AActor*> Units, FVector Tar
 				}
 			}
 		}
-
-		/*for (int32 l = 0; l < FormationPositions.Num(); ++l)
-		{
-			FVector Position = FormationPositions[l];
-			UE_LOG(LogTemp, Log, TEXT("Unit %d: Position: %s"), l, *Position.ToString());
-		}*/
 	}
 }
 

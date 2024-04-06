@@ -52,19 +52,50 @@ USTRUCT()
 struct FUnitStats
 {
 	GENERATED_BODY()
-
 public:
+	// The Units Current Health.
 	UPROPERTY(EditAnywhere, Category= "Health")
 	float Health;
 
-	UPROPERTY(EditAnywhere, Category = "Damage")
-	float DamageDealt;
+	// Regenerates the units health.
+	UPROPERTY(EditAnywhere, Category = "Health Regeneration")
+	float HealthRegeneration;
 
+	// Maximum Movement Speed.
 	UPROPERTY(EditAnywhere, Category = "Speed")
 	float Speed;
 
-	UPROPERTY(EditAnywhere, Category = "UnitType")
-	EUnitTypes UnitType;
+	// Maximum Speed of the Group.
+	UPROPERTY(EditAnywhere, Category= "Group Speed")
+	float GroupSpeed;
+
+	// The amount of damage the unit can deal.
+	UPROPERTY(EditAnywhere, Category = "Damage")
+	float DamageDealt;
+
+	// The range of how far units can attack (Further for ranged Units).
+	UPROPERTY(EditAnywhere, Category = "Attack Range")
+	float AttackRange;
+
+	// The Speed that units can attack.
+	UPROPERTY(EditAnywhere, Category= "Attack Speed")
+	float AttackSpeed;
+	
+};
+
+// Used to access the units available data to store in a Map.
+USTRUCT()
+struct FUnitData
+{
+	GENERATED_BODY()
+public:
+
+	UPROPERTY(EditAnywhere, Category = "Unit Attributes")
+	TArray<EUnitAttributes> Attributes;
+	
+	UPROPERTY(EditAnywhere, Category = "Unit Stats")
+	FUnitStats UnitStats;
+	
 };
 
 // Types of Buildings
