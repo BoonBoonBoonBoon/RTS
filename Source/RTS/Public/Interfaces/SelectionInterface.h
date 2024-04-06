@@ -177,16 +177,22 @@ public:
 
 	// Stores the attributes of a specific unit.
 	static TMap<EUnitTypes, TArray<EUnitAttributes>> UnitTypeToAttributesMap;
+	static TMap<EUnitTypes, FUnitData> UnitTypeToDataMap;
 
 	// Assigns the attributes of a specific unit.
 	static TMap<EUnitTypes, TArray<EUnitAttributes>> GetAttributesForunit(EUnitTypes UnitTypes); // chucking errors here
+	static FUnitData GetUnitDataForUnit(EUnitTypes UnitTypes);
 
+	static void LogUnitTypeToDataMap(const TMap<EUnitTypes, FUnitData>& DataMap);
 
-	// Logging Functions.
+	
+	// Logging Functions for Attribute TMap.
 
 	static FString EnumToString(EUnitTypes EnumValue);
 
 	static FString EnumToString(EUnitAttributes EnumValue);
 
 	static void LogUnitTypeToAttributesMap(TMap<EUnitTypes, TArray<EUnitAttributes>> AttributesMap);
+
+	
 };
