@@ -326,7 +326,7 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 		
 		//FUnitData UnitData = GetUnitDataForUnit(UnitType);
 		
-		if(auto Worker = Cast<AWorkerDrone>(UnitActor))
+		if(AWorkerDrone* Worker = Cast<AWorkerDrone>(UnitActor))
 		{
 			//Worker->UnitData = GetUnitDataForUnit(Worker->UnitType);
 			
@@ -355,7 +355,28 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 			
 		} else if (auto Linf = Cast<AlightInfantry>(UnitActor))
 		{
-			
+			// Log the Unit Data
+			FString AttributesString;
+			for (EUnitAttributes Attribute : Worker->UnitData.Attributes)
+			{
+				AttributesString += EnumToString(Attribute) + TEXT(", ");
+			}
+			// Remove the trailing comma and space if there are any attributes
+			if (Worker->UnitData.Attributes.Num() > 0)
+			{
+				AttributesString.RemoveAt(AttributesString.Len() - 2);
+			}
+
+			FString StatsString = FString::Printf(TEXT("Health: %.1f, HealthRegeneration: %.1f, Speed: %.1f, GroupSpeed: %.1f, DamageDealt: %.1f, AttackRange: %.1f, AttackSpeed: %.1f"),
+				Worker->UnitData.UnitStats.Health,
+				Worker->UnitData.UnitStats.HealthRegeneration,
+				Worker->UnitData.UnitStats.Speed,
+				Worker->UnitData.UnitStats.GroupSpeed,
+				Worker->UnitData.UnitStats.DamageDealt,
+				Worker->UnitData.UnitStats.AttackRange,
+				Worker->UnitData.UnitStats.AttackSpeed);
+
+			UE_LOG(LogTemp, Log, TEXT("Unit Attributes: [%s], Stats: {%s}"), *AttributesString, *StatsString);
 		}
 
 
@@ -461,6 +482,11 @@ FUnitData ISelectionInterface::GetUnitDataForUnit(EUnitTypes UnitTypes)
 		return LightInfantryData;
 		
 		//UnitTypeToDataMap.Add(EUnitTypes::LightInfantry, LightInfantryData);
+	} else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid Unit Type"));
+		// Return an empty FUnitData for invalid or unhandled unit types
+		return FUnitData();
 	}
 	
 
