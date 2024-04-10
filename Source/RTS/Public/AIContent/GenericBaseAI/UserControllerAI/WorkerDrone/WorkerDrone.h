@@ -19,6 +19,8 @@ public:
 
 	AWorkerDrone();
 
+	virtual void BeginPlay() override;
+	
 	UWorkerAttributesComponent* WorkerAttributesComponent;
 
 	//UActorAttributesComponent* ActorAttributesComponent;

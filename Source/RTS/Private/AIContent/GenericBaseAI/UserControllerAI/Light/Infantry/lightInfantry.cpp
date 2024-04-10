@@ -6,11 +6,24 @@
 
 AlightInfantry::AlightInfantry()
 {
-
-	EUnitTypes CurrentUnit = EUnitTypes::LightInfantry;
 	
 	ActorAttributesComponent = CreateDefaultSubobject<ULightInfantryAttributesComponent>(TEXT("AttributesComponent"));
 	
 	// Identify the Worker Drone.
 	Tags.Add("LightInfantry");
+	
+	
+}
+
+void AlightInfantry::BeginPlay()
+{
+	if(SelectionInterface)
+	{
+		EUnitTypes CurrentUnit = EUnitTypes::LightInfantry;
+		
+		// Set the LightInfantryData
+		LightInfantryData = SelectionInterface->GetUnitDataForUnit(CurrentUnit);
+	} else {
+		UE_LOG(LogTemp, Error, TEXT("SelectionInterface is not initialized."));
+	}
 }

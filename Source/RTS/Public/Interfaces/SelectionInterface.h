@@ -181,7 +181,7 @@ public:
 
 	// Assigns the attributes of a specific unit.
 	static TMap<EUnitTypes, TArray<EUnitAttributes>> GetAttributesForUnit(EUnitTypes UnitTypes); // chucking errors here
-	static FUnitData GetUnitDataForUnit(EUnitTypes UnitTypes);
+	FUnitData GetUnitDataForUnit(EUnitTypes UnitTypes);
 
 	static void LogUnitTypeToDataMap(const TMap<EUnitTypes, FUnitData>& DataMap);
 

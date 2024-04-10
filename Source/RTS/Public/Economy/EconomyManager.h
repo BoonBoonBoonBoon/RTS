@@ -43,12 +43,12 @@ public:
 	
 	//UPROPERTY()
 	UPlayerWidget* EconomyWidget;
-
+	
 	ARTSGameModeBase* GameModeRef;
 	
 	/*UPROPERTY()
 	FWoodAMountChangedSignature WoodAmountChanged;*/
-	
+
 private :
 	// Singleton Instance.
 	static UEconomyManager* Instance;
