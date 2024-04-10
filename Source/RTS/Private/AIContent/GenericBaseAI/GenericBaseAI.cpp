@@ -13,6 +13,8 @@ class AUserController;
 // Sets default values
 AGenericBaseAI::AGenericBaseAI()
 {
+	
+	
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
@@ -62,6 +64,15 @@ void AGenericBaseAI::BeginPlay()
 {
 	Super::BeginPlay();
 	SelectedDecalComp->SetVisibility(false);
+	// Cast this to ISelectionInterface
+	SelectionInterface = Cast<ISelectionInterface>(this);
+	if(SelectionInterface)
+	{
+		UE_LOG(LogTemp, Error, TEXT("SelectionInterface is initialized. GB"));
+	} else {
+		UE_LOG(LogTemp, Error, TEXT("SelectionInterface is not initialized. GB"));
+	}
+	
 }
 
 

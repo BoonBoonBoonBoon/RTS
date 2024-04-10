@@ -321,6 +321,7 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 		// Identify The Unit Type.
 		const EUnitTypes UnitType = GetUnitType(UnitActor);
 
+		
 		//if(UnitActor)
 		
 		

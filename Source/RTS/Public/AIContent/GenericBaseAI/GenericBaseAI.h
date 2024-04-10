@@ -14,7 +14,7 @@
 class AUserController; 
 
 UCLASS()
-class RTS_API AGenericBaseAI : public ACharacter
+class RTS_API AGenericBaseAI : public ACharacter, public ISelectionInterface
 {
 	GENERATED_BODY()
 
@@ -60,9 +60,12 @@ public:
 	bool DecalHit = false;
 
 	AAIController* GetAIController(AGenericBaseAI* Actor);
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
+
+	
 	
 	void SetupStimulusSource();
 

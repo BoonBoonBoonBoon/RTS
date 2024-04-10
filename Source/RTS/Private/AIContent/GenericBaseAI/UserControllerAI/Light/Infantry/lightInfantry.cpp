@@ -17,13 +17,19 @@ AlightInfantry::AlightInfantry()
 
 void AlightInfantry::BeginPlay()
 {
-	if(SelectionInterface)
+	Super::BeginPlay();
+
+	if (SelectionInterface)
 	{
 		EUnitTypes CurrentUnit = EUnitTypes::LightInfantry;
-		
+
 		// Set the LightInfantryData
 		LightInfantryData = SelectionInterface->GetUnitDataForUnit(CurrentUnit);
-	} else {
-		UE_LOG(LogTemp, Error, TEXT("SelectionInterface is not initialized."));
+
+		UE_LOG(LogTemp, Error, TEXT("SelectionInterface is initialized. LI"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("SelectionInterface is not initialized. LI"));
 	}
 }
