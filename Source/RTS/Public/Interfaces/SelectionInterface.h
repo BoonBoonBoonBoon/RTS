@@ -6,6 +6,7 @@
 #include "UObject/Interface.h"
 #include "SelectionInterface.generated.h"
 
+class AGenericBaseAI;
 // Declare the delegate for the actor can gather.
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActorCanGatherDelegate, AActor*, GatherActor);
 
@@ -184,6 +185,8 @@ public:
 	FUnitData GetUnitDataForUnit(EUnitTypes UnitTypes);
 
 	static void LogUnitTypeToDataMap(const TMap<EUnitTypes, FUnitData>& DataMap);
+
+	TArray<AGenericBaseAI*> ProccessPatrolMode(TArray<AActor*> Units);
 
 	
 	// Logging Functions for Attribute TMap.

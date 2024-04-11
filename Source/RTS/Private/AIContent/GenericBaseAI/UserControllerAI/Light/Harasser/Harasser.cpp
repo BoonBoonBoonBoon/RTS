@@ -5,7 +5,7 @@
 
 AHarasser::AHarasser()
 {
-	HarraserAttributesComponent = CreateDefaultSubobject<UHarraserAttributesComponent>(TEXT("AttributesComponent"))
+	HarraserAttributesComponent = CreateDefaultSubobject<UHarraserAttributesComponent>(TEXT("AttributesComponent"));
 
 	Tags.Add("Harasser");
 	

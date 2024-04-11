@@ -324,19 +324,30 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 			if(GenActor->UnitDataMap.Contains(GenActor->UnitType))
 			{
 				// Then assign the attributes of the unit to the new Attribute TArray. If the unit has the Gather attribute, then it can gather resources.
-				if (TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes; Att.Contains(EUnitAttributes::Gather))
+				TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes;
+				if (Att.Num() > 0)
 				{
-					UE_LOG(LogTemp, Warning, TEXT("Contains Gather Attribute."));
-					// Find the component of the current incoming unit object.
-					if (UWorkerAttributesComponent* ActorAttributes = GenActor->FindComponentByClass<UWorkerAttributesComponent>())
+
+					// We then Check the Specific Attributes of the Units To See what they can do
+					if(Att.Contains(EUnitAttributes::Gather))
 					{
-						ActorAttributes->SetCanGather(true);
-						UE_LOG(LogTemp, Warning, TEXT("Can Gather Resources"));
+						// Find the component of the current incoming unit object.
+						if (UWorkerAttributesComponent* ActorAttributes = GenActor->FindComponentByClass<UWorkerAttributesComponent>())
+						{
+							ActorAttributes->SetCanGather(true);
+						}
 					}
-				} else
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Can NOT Gather Resources"));
-				}
+					else if(Att.Contains(EUnitAttributes::Patrol)) // Then We check if the boolean is true and if it is we then move to
+						// A new function to then move the units to point a to point b. The Boolean will be need to be in the controller class
+							// and we will need it to be able to only work when the unit has the Guard Attribute so we will have to do a return call from here to
+								// the function or some thing.
+					{
+						/*if(bPatrol)
+						{
+							
+						}*/
+					}
+				} 
 			}
 		}
 	}
@@ -398,8 +409,6 @@ FUnitData ISelectionInterface::GetUnitDataForUnit(EUnitTypes UnitTypes)
 		}; // Worker Attributes
 		WorkerData.UnitStats = {100.0f, 0.0f, 100.0f, 100.0f, 10.0f, 100.0f, 1.0f}; // Worker Stats
 		return WorkerData;
-
-		//UnitTypeToDataMap.Add(EUnitTypes::Worker, WorkerData); // Add the Worker Data to the Map.
 	}
 	
 	if (UnitTypes == EUnitTypes::LightInfantry)
@@ -409,8 +418,7 @@ FUnitData ISelectionInterface::GetUnitDataForUnit(EUnitTypes UnitTypes)
 		// Light Infantry Attributes
 		LightInfantryData.UnitStats = {100.0f, 0.0f, 100.0f, 100.0f, 10.0f, 100.0f, 1.0f}; // Light Infantry Stats
 		return LightInfantryData;
-
-		//UnitTypeToDataMap.Add(EUnitTypes::LightInfantry, LightInfantryData); // Add the Worker Data to the Map.
+		
 	} else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Invalid Unit Type"));
@@ -470,6 +478,33 @@ void ISelectionInterface::LogUnitTypeToDataMap(const TMap<EUnitTypes, FUnitData>
 		// Log the key-value pair
 		UE_LOG(LogTemp, Log, TEXT("%s: %s"), *UnitTypeString, *DataString);
 	}
+}
+
+TArray<AGenericBaseAI*> ISelectionInterface::ProccessPatrolMode(TArray<AActor*> Units)
+{
+	TArray<AGenericBaseAI*> PatrolUnits;
+	
+	for (AActor* Src : Units)
+	{
+		if (auto GenActor = Cast<AGenericBaseAI>(Src))
+		{
+			if(GenActor->UnitDataMap.Contains(GenActor->UnitType))
+			{
+				TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes;
+				if (Att.Num() > 0)
+				{
+					// We then Check the Specific Attributes of the Units To See what they can do
+					if(Att.Contains(EUnitAttributes::Patrol))
+					{
+						PatrolUnits.AddUnique(GenActor);
+						
+						return PatrolUnits;
+					}
+				}
+			}
+		}
+	}
+	return {};
 }
 
 

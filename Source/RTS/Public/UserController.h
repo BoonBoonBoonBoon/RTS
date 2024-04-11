@@ -142,6 +142,19 @@ public:
 
 	// Logic for the Units decal apearing and disapearing
 	void UnitDecals(AGenericBaseAI* HitPawn);
+
+	// Bind Key "P" to Patrol Mode
+	void EnterPatrolMode();
+
+	void ProcessPatrolClick(FHitResult HitResult);
+	
+	// Checks if the AI is in Patrol Mode.
+	bool bPatrolMode;
+	// The Patrol Points for the AI to move to.
+	TArray<FVector*> PatrolPoints;
+	// The Current Patrol Point the AI is moving to.
+	TArray<AGenericBaseAI*> PatrolUnits;
+
 	
 	FHitResult bHit; 
 	

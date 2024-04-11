@@ -5,7 +5,6 @@
 #include "AIController.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
-#include "AIContent/GenericBaseAI/UserControllerAI/WorkerDrone/WorkerAttributesComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
@@ -213,6 +212,8 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAction("UpdateBoxSelection", IE_Released, this, &AUserController::EndBoxSelection);
 
 	InputComponent->BindAction("ActionKey", IE_Pressed, this, &AUserController::EventKey);
+
+	InputComponent->BindKey("PatrolAI", IE_Pressed, this, &AUserController::EnterPatrolMode);
 }
 
 
@@ -247,6 +248,10 @@ void AUserController::EventKey()
 				{
 					if (Cast<IResourceInterface>(HitActorObj))
 					{
+						// Invalidate the patrol.
+						bPatrolMode = false;
+						PatrolPoints.Empty();
+						
 						// Draw a debug box at the hit location
 						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green,
 						             false,
@@ -264,6 +269,12 @@ void AUserController::EventKey()
 
 						FVector Location = HitResult.Location;
 
+						if(bPatrolMode)
+						{
+							// Process the Location of the hit.
+							ProcessPatrolClick(HitResult);
+						}
+						
 						if (SelectedUnits.Num() > 0)
 						{
 							SelectionInterface->MoveGroupToLocation(SelectedUnits, Location);
@@ -583,3 +594,43 @@ void AUserController::UpdateFlow()
 	}
 }
 
+void AUserController::EnterPatrolMode()
+{
+	// Maybe Have a return to check if we have units selected.
+
+	// Check if any units are selected.
+	if(SelectedUnits.Num() > 0)
+	{
+		// if so, obtain which ones can patrol.
+		PatrolUnits = SelectionInterface->ProccessPatrolMode(SelectedUnits);
+		if(PatrolUnits.Num() > 0)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Can Patrol."));
+			bPatrolMode = true;
+			PatrolPoints.Empty();
+		}
+	} else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Cannot Patrol, No Units Selected."));
+	}
+}
+
+void AUserController::ProcessPatrolClick(FHitResult HitResult)
+{
+	if(bPatrolMode)
+	{
+		PatrolPoints.Add(&HitResult.Location);
+		// If we have two points selected.
+		if(PatrolPoints.Num() == 2)
+		{
+			for (AGenericBaseAI* Unit : PatrolUnits)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Unit True."));
+				//Unit->SetPatrolPoints(PatrolPoints[0].PatrolPoints[1]);
+			} 
+		} 
+	}
+}
+/*SelectionInterface->MoveGroupToLocation(PatrolUnits, *PatrolPoints[0]);
+				SelectionInterface->MoveGroupToLocation(PatrolUnits, *PatrolPoints[1]);
+				bPatrolMode = false;*/
