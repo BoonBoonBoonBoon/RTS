@@ -2,12 +2,9 @@
 
 
 #include "Interfaces/ResourceInterface.h"
-
-#include "AIContent/GenericBaseAI/ActorAttributesComponent.h"
 #include "AIContent/GenericBaseAI/UserControllerAI/WorkerDrone/WorkerAttributesComponent.h"
-#include "Chaos/GeometryParticlesfwd.h"
+#include "AIContent/GenericBaseAI/UserControllerAI/WorkerDrone/WorkerDrone.h"
 #include "Economy/ResourceTransaction.h"
-#include "Interfaces/SelectionInterface.h"
 #include "Resources/FoodResource.h"
 #include "Resources/GoldResource.h"
 #include "Resources/StoneResource.h"
@@ -19,22 +16,22 @@
 
 AActor* IResourceInterface::HandleIdentification(AActor* Resource)
 {
-	if(Resource->IsA<AWoodResource>())
+	if (Resource->IsA<AWoodResource>())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Wood"));
 		return Resource;
 	}
-	else if(Resource->IsA<AStoneResource>())
+	else if (Resource->IsA<AStoneResource>())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Stone"));
 		return Resource;
 	}
-	else if(Resource->IsA<AGoldResource>())
+	else if (Resource->IsA<AGoldResource>())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Gold"));
 		return Resource;
 	}
-	else if(Resource->IsA<AFoodResource>())
+	else if (Resource->IsA<AFoodResource>())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Food"));
 		return Resource;
@@ -50,12 +47,12 @@ TArray<FVector> IResourceInterface::CalcGatherPos(AActor* Resources, const TArra
 {
 	// Array Initialization for Gather Positions.
 	TArray<FVector> GatherPositions;
-	
+
 	if (!Resource || Drones.IsEmpty())
 	{
 		return GatherPositions; // Return an empty array if the resource or the drones array is empty.
 	}
-	
+
 	float CollisionSphereRadius = 200.0f; // Radius of the collision sphere around the resource.
 
 	int32 TotalDrones = Drones.Num(); // Total number of drones available for gathering.
@@ -63,12 +60,16 @@ TArray<FVector> IResourceInterface::CalcGatherPos(AActor* Resources, const TArra
 
 	for (int32 DroneIndex = 0; DroneIndex < TotalDrones; ++DroneIndex) // Loop through each drone.
 	{
-		float RandomOffset = FMath::RandRange(-AngleStep / 4, AngleStep / 4); // Random offset to avoid drones gathering at the same position.
+		float RandomOffset = FMath::RandRange(-AngleStep / 4, AngleStep / 4);
+		// Random offset to avoid drones gathering at the same position.
 		float Angle = AngleStep * DroneIndex + RandomOffset; // Calculate the angle for the current drone.
 		float AngleRadians = FMath::DegreesToRadians(Angle); // Convert the angle to radians.
 
-		FVector Offset = FVector(FMath::Cos(AngleRadians) * CollisionSphereRadius, FMath::Sin(AngleRadians) * CollisionSphereRadius, 0.0f); // Calculate the offset for the current drone.
-		FVector GatherPosition = Resources->GetActorLocation() + Offset; // Calculate the gather position for the current drone.
+		FVector Offset = FVector(FMath::Cos(AngleRadians) * CollisionSphereRadius,
+		                         FMath::Sin(AngleRadians) * CollisionSphereRadius,
+		                         0.0f); // Calculate the offset for the current drone.
+		FVector GatherPosition = Resources->GetActorLocation() + Offset;
+		// Calculate the gather position for the current drone.
 
 		GatherPositions.Add(GatherPosition); // Add the gather position to the array.
 	}
@@ -78,71 +79,77 @@ TArray<FVector> IResourceInterface::CalcGatherPos(AActor* Resources, const TArra
 void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
                                             const FHitResult& Hi)
 {
-	for (AActor* Ac : OtherActor)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Attached Actor: %s"), *Ac->GetName());
+	TArray<AActor*> CollectingActors;
+	CollectingActors.Add(OtherActor);
 
-		// Check if the Actor is able to gather resources.
-		UWorkerAttributesComponent* AttributesComponent = Cast<UWorkerAttributesComponent>(
-			OtherActor->GetComponentByClass(UWorkerAttributesComponent::StaticClass()));
-		
-		if (AttributesComponent->CanGather())
+	// Check if the Actor is able to gather resources.
+	UWorkerAttributesComponent* AttributesComponent = Cast<UWorkerAttributesComponent>(
+		OtherActor->GetComponentByClass(UWorkerAttributesComponent::StaticClass()));
+	
+		for (AActor* Src : CollectingActors)
 		{
-			// Cast to All Possible Variants
-			const EResourceType ResourceTypeInvalid = (SelfActor && SelfActor->IsA<AResourceMain>())
-				                                          ? Cast<AResourceMain>(SelfActor)->GetResourceType()
-				                                          : EResourceType::Invalid;
-			const EResourceType ResourceTypeWood = (SelfActor && SelfActor->IsA<AWoodResource>())
-				                                       ? Cast<AWoodResource>(SelfActor)->GetResourceType()
-				                                       : EResourceType::Invalid;
-			const EResourceType ResourceTypeStone = (SelfActor && SelfActor->IsA<AStoneResource>())
-				                                        ? Cast<AStoneResource>(SelfActor)->GetResourceType()
-				                                        : EResourceType::Invalid;
-			const EResourceType ResourceTypeGold = (SelfActor && SelfActor->IsA<AGoldResource>())
-				                                       ? Cast<AGoldResource>(SelfActor)->GetResourceType()
-				                                       : EResourceType::Invalid;
-			const EResourceType ResourceTypeFood = (SelfActor && SelfActor->IsA<AFoodResource>())
-				                                       ? Cast<AFoodResource>(SelfActor)->GetResourceType()
-				                                       : EResourceType::Invalid;
+			if (Src->IsA(AWorkerDrone::StaticClass()))
+			{
+				if (AttributesComponent->CanGather() == true)
+				{
+					// Cast to All Possible Variants
+					const EResourceType ResourceTypeInvalid = (SelfActor && SelfActor->IsA<AResourceMain>())
+						                                          ? Cast<AResourceMain>(SelfActor)->GetResourceType()
+						                                          : EResourceType::Invalid;
+					const EResourceType ResourceTypeWood = (SelfActor && SelfActor->IsA<AWoodResource>())
+						                                       ? Cast<AWoodResource>(SelfActor)->GetResourceType()
+						                                       : EResourceType::Invalid;
+					const EResourceType ResourceTypeStone = (SelfActor && SelfActor->IsA<AStoneResource>())
+						                                        ? Cast<AStoneResource>(SelfActor)->GetResourceType()
+						                                        : EResourceType::Invalid;
+					const EResourceType ResourceTypeGold = (SelfActor && SelfActor->IsA<AGoldResource>())
+						                                       ? Cast<AGoldResource>(SelfActor)->GetResourceType()
+						                                       : EResourceType::Invalid;
+					const EResourceType ResourceTypeFood = (SelfActor && SelfActor->IsA<AFoodResource>())
+						                                       ? Cast<AFoodResource>(SelfActor)->GetResourceType()
+						                                       : EResourceType::Invalid;
 
-			// Creates a new object of the Resource Transaction Class.
-			UResourceTransaction* ResourceTransaction = NewObject<UResourceTransaction>();
+					// Creates a new object of the Resource Transaction Class.
+					UResourceTransaction* ResourceTransaction = NewObject<UResourceTransaction>();
 
-			if (ResourceTypeInvalid == EResourceType::Invalid)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Invalid"));
-				ResourceTransaction->TransactionProcess(Cast<AResourceMain>(SelfActor));
+					if (ResourceTypeInvalid == EResourceType::Invalid)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Invalid"));
+						ResourceTransaction->TransactionProcess(Cast<AResourceMain>(SelfActor));
+					}
+					else if (ResourceTypeWood == EResourceType::Wood)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Wood"));
+						ResourceTransaction->TransactionProcess(Cast<AWoodResource>(SelfActor));
+					}
+					else if (ResourceTypeStone == EResourceType::Stone)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Stone"));
+						ResourceTransaction->TransactionProcess(Cast<AStoneResource>(SelfActor));
+					}
+					else if (ResourceTypeGold == EResourceType::Gold)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Gold"));
+						ResourceTransaction->TransactionProcess(Cast<AGoldResource>(SelfActor));
+					}
+					else if (ResourceTypeFood == EResourceType::Food)
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Food"));
+						ResourceTransaction->TransactionProcess(Cast<AFoodResource>(SelfActor));
+					}
+				}
 			}
-			else if (ResourceTypeWood == EResourceType::Wood)
+			else
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Wood"));
-				ResourceTransaction->TransactionProcess(Cast<AWoodResource>(SelfActor));
-			}
-			else if (ResourceTypeStone == EResourceType::Stone)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Stone"));
-				ResourceTransaction->TransactionProcess(Cast<AStoneResource>(SelfActor));
-			}
-			else if (ResourceTypeGold == EResourceType::Gold)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Gold"));
-				ResourceTransaction->TransactionProcess(Cast<AGoldResource>(SelfActor));
-			}
-			else if (ResourceTypeFood == EResourceType::Food)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Food"));
-				ResourceTransaction->TransactionProcess(Cast<AFoodResource>(SelfActor));
+				UE_LOG(LogTemp, Warning, TEXT("Actor Can't Gather Resources."));
+				CollectingActors.Remove(Src);
+				return;
 			}
 		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Actor Can't Gather Resources."));
-			return;
-		}
-		// Use transaction class. where in function we tell wood resource to reduce its int, and resource interface to increase its int.
-		//Mediator Pattern: Introduce a mediator class that handles communication between classes. Instead of classes communicating directly with each other, they communicate through the mediator, which reduces direct dependencies.
 	}
-}
+	// Use transaction class. where in function we tell wood resource to reduce its int, and resource interface to increase its int.
+	//Mediator Pattern: Introduce a mediator class that handles communication between classes. Instead of classes communicating directly with each other, they communicate through the mediator, which reduces direct dependencies.
+
 
 
 int32 IResourceInterface::GetAmount(int Amount)
