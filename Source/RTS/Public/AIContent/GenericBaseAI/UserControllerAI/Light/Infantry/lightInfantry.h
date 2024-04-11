@@ -25,6 +25,4 @@ public:
 
 	virtual void BeginPlay() override;
 	
-	UPROPERTY(EditAnywhere, Category = "Unit Data")
-	FUnitData LightInfantryData;
 };

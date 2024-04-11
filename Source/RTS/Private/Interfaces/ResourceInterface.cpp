@@ -5,6 +5,7 @@
 
 #include "AIContent/GenericBaseAI/ActorAttributesComponent.h"
 #include "AIContent/GenericBaseAI/UserControllerAI/WorkerDrone/WorkerAttributesComponent.h"
+#include "Chaos/GeometryParticlesfwd.h"
 #include "Economy/ResourceTransaction.h"
 #include "Interfaces/SelectionInterface.h"
 #include "Resources/FoodResource.h"
@@ -77,63 +78,69 @@ TArray<FVector> IResourceInterface::CalcGatherPos(AActor* Resources, const TArra
 void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
                                             const FHitResult& Hi)
 {
-	// Check if the Actor is able to gather resources.
-	UWorkerAttributesComponent* AttributesComponent = Cast<UWorkerAttributesComponent>(
-		OtherActor->GetComponentByClass(UWorkerAttributesComponent::StaticClass()));
-	if (AttributesComponent->CanGather())
+	for (AActor* Ac : OtherActor)
 	{
-		// Cast to All Possible Variants
-		const EResourceType ResourceTypeInvalid = (SelfActor && SelfActor->IsA<AResourceMain>())
-			                                          ? Cast<AResourceMain>(SelfActor)->GetResourceType()
-			                                          : EResourceType::Invalid;
-		const EResourceType ResourceTypeWood = (SelfActor && SelfActor->IsA<AWoodResource>())
-			                                       ? Cast<AWoodResource>(SelfActor)->GetResourceType()
-			                                       : EResourceType::Invalid;
-		const EResourceType ResourceTypeStone = (SelfActor && SelfActor->IsA<AStoneResource>())
-			                                        ? Cast<AStoneResource>(SelfActor)->GetResourceType()
-			                                        : EResourceType::Invalid;
-		const EResourceType ResourceTypeGold = (SelfActor && SelfActor->IsA<AGoldResource>())
-			                                       ? Cast<AGoldResource>(SelfActor)->GetResourceType()
-			                                       : EResourceType::Invalid;
-		const EResourceType ResourceTypeFood = (SelfActor && SelfActor->IsA<AFoodResource>())
-			                                       ? Cast<AFoodResource>(SelfActor)->GetResourceType()
-			                                       : EResourceType::Invalid;
+		UE_LOG(LogTemp, Warning, TEXT("Attached Actor: %s"), *Ac->GetName());
 
-		// Creates a new object of the Resource Transaction Class.
-		UResourceTransaction* ResourceTransaction = NewObject<UResourceTransaction>();
+		// Check if the Actor is able to gather resources.
+		UWorkerAttributesComponent* AttributesComponent = Cast<UWorkerAttributesComponent>(
+			OtherActor->GetComponentByClass(UWorkerAttributesComponent::StaticClass()));
+		
+		if (AttributesComponent->CanGather())
+		{
+			// Cast to All Possible Variants
+			const EResourceType ResourceTypeInvalid = (SelfActor && SelfActor->IsA<AResourceMain>())
+				                                          ? Cast<AResourceMain>(SelfActor)->GetResourceType()
+				                                          : EResourceType::Invalid;
+			const EResourceType ResourceTypeWood = (SelfActor && SelfActor->IsA<AWoodResource>())
+				                                       ? Cast<AWoodResource>(SelfActor)->GetResourceType()
+				                                       : EResourceType::Invalid;
+			const EResourceType ResourceTypeStone = (SelfActor && SelfActor->IsA<AStoneResource>())
+				                                        ? Cast<AStoneResource>(SelfActor)->GetResourceType()
+				                                        : EResourceType::Invalid;
+			const EResourceType ResourceTypeGold = (SelfActor && SelfActor->IsA<AGoldResource>())
+				                                       ? Cast<AGoldResource>(SelfActor)->GetResourceType()
+				                                       : EResourceType::Invalid;
+			const EResourceType ResourceTypeFood = (SelfActor && SelfActor->IsA<AFoodResource>())
+				                                       ? Cast<AFoodResource>(SelfActor)->GetResourceType()
+				                                       : EResourceType::Invalid;
 
-		if (ResourceTypeInvalid == EResourceType::Invalid)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Invalid"));
-			ResourceTransaction->TransactionProcess(Cast<AResourceMain>(SelfActor));
-		}
-		else if (ResourceTypeWood == EResourceType::Wood)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Wood"));
-			ResourceTransaction->TransactionProcess(Cast<AWoodResource>(SelfActor));
-		}
-		else if (ResourceTypeStone == EResourceType::Stone)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Stone"));
-			ResourceTransaction->TransactionProcess(Cast<AStoneResource>(SelfActor));
-		}
-		else if (ResourceTypeGold == EResourceType::Gold)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Gold"));
-			ResourceTransaction->TransactionProcess(Cast<AGoldResource>(SelfActor));
-		}
-		else if (ResourceTypeFood == EResourceType::Food)
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Food"));
-			ResourceTransaction->TransactionProcess(Cast<AFoodResource>(SelfActor));
-		}
+			// Creates a new object of the Resource Transaction Class.
+			UResourceTransaction* ResourceTransaction = NewObject<UResourceTransaction>();
 
+			if (ResourceTypeInvalid == EResourceType::Invalid)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Invalid"));
+				ResourceTransaction->TransactionProcess(Cast<AResourceMain>(SelfActor));
+			}
+			else if (ResourceTypeWood == EResourceType::Wood)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Wood"));
+				ResourceTransaction->TransactionProcess(Cast<AWoodResource>(SelfActor));
+			}
+			else if (ResourceTypeStone == EResourceType::Stone)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Stone"));
+				ResourceTransaction->TransactionProcess(Cast<AStoneResource>(SelfActor));
+			}
+			else if (ResourceTypeGold == EResourceType::Gold)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Gold"));
+				ResourceTransaction->TransactionProcess(Cast<AGoldResource>(SelfActor));
+			}
+			else if (ResourceTypeFood == EResourceType::Food)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Food"));
+				ResourceTransaction->TransactionProcess(Cast<AFoodResource>(SelfActor));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Actor Can't Gather Resources."));
+			return;
+		}
 		// Use transaction class. where in function we tell wood resource to reduce its int, and resource interface to increase its int.
 		//Mediator Pattern: Introduce a mediator class that handles communication between classes. Instead of classes communicating directly with each other, they communicate through the mediator, which reduces direct dependencies.
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Actor Can't Gather Resources."));
 	}
 }
 

@@ -318,13 +318,27 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 	// Checks validity of the unit.
 	if (IsUnitSelected(UnitArray, UnitActor))
 	{
-		// Identify The Unit Type.
-		const EUnitTypes UnitType = GetUnitType(UnitActor);
 
-		
-		//if(UnitActor)
-		
-		
+		if (auto GenActor = Cast<AGenericBaseAI>(UnitActor))
+		{
+			if(GenActor->UnitDataMap.Contains(GenActor->UnitType))
+			{
+				// Then assign the attributes of the unit to the new Attribute TArray. If the unit has the Gather attribute, then it can gather resources.
+				if (TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes; Att.Contains(EUnitAttributes::Gather))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Contains Gather Attribute."));
+					// Find the component of the current incoming unit object.
+					if (UWorkerAttributesComponent* ActorAttributes = GenActor->FindComponentByClass<UWorkerAttributesComponent>())
+					{
+						ActorAttributes->SetCanGather(true);
+						UE_LOG(LogTemp, Warning, TEXT("Can Gather Resources"));
+					}
+				} else
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Can NOT Gather Resources"));
+				}
+			}
+		}
 	}
 	else
 	{
@@ -376,10 +390,9 @@ TMap<EUnitTypes, TArray<EUnitAttributes>> ISelectionInterface::GetAttributesForU
 FUnitData ISelectionInterface::GetUnitDataForUnit(EUnitTypes UnitTypes)
 {
 	// Ensure the map is populated with data for each unit type.
-	
 	if (UnitTypes == EUnitTypes::Worker)
 	{
-		FUnitData WorkerData; // Container for Unit Type.
+		FUnitData WorkerData; 
 		WorkerData.Attributes = {
 			EUnitAttributes::Gather, EUnitAttributes::Repair, EUnitAttributes::Build
 		}; // Worker Attributes
@@ -396,7 +409,8 @@ FUnitData ISelectionInterface::GetUnitDataForUnit(EUnitTypes UnitTypes)
 		// Light Infantry Attributes
 		LightInfantryData.UnitStats = {100.0f, 0.0f, 100.0f, 100.0f, 10.0f, 100.0f, 1.0f}; // Light Infantry Stats
 		return LightInfantryData;
-		
+
+		//UnitTypeToDataMap.Add(EUnitTypes::LightInfantry, LightInfantryData); // Add the Worker Data to the Map.
 	} else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Invalid Unit Type"));

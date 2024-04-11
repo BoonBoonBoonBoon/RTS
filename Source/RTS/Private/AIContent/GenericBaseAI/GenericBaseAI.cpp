@@ -63,16 +63,11 @@ AAIController* AGenericBaseAI::GetAIController(AGenericBaseAI* Actor)
 void AGenericBaseAI::BeginPlay()
 {
 	Super::BeginPlay();
+	
 	SelectedDecalComp->SetVisibility(false);
+	
 	// Cast this to ISelectionInterface
 	SelectionInterface = Cast<ISelectionInterface>(this);
-	if(SelectionInterface)
-	{
-		UE_LOG(LogTemp, Error, TEXT("SelectionInterface is initialized. GB"));
-	} else {
-		UE_LOG(LogTemp, Error, TEXT("SelectionInterface is not initialized. GB"));
-	}
-	
 }
 
 

@@ -28,12 +28,22 @@ public:
 	// Sets default values for this character's properties
 	AGenericBaseAI();
 
+	// UNIT DATA ------------
+
+	// Container to store the Attribute & Stats of the unit.
 	UPROPERTY(EditAnywhere, Category = "Unit Data")
 	FUnitData UnitData;
 
+	// Container to store the type of unit.
 	UPROPERTY(EditAnywhere, Category = "Unit Type")
 	EUnitTypes UnitType;
 
+	// TMap to store the data of the unit types amd their stats. 
+	UPROPERTY(EditAnywhere, Category = "Tmap Unit Data")
+	TMap<EUnitTypes, FUnitData> UnitDataMap;
+	
+	// ----------------------
+	
 	ISelectionInterface* SelectionInterface;
 	
 	// EQS Query asset 

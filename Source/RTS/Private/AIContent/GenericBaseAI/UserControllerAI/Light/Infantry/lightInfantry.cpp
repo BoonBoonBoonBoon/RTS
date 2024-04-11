@@ -21,15 +21,17 @@ void AlightInfantry::BeginPlay()
 
 	if (SelectionInterface)
 	{
-		EUnitTypes CurrentUnit = EUnitTypes::LightInfantry;
+		// Assigns the UnitType as a Worker.
+		UnitType = SelectionInterface->GetUnitType(this);
 
-		// Set the LightInfantryData
-		LightInfantryData = SelectionInterface->GetUnitDataForUnit(CurrentUnit);
+		// Obtains The Unit Data for the Current Unit (Attributes & Stats).
+		UnitData = SelectionInterface->GetUnitDataForUnit(UnitType);
 
-		UE_LOG(LogTemp, Error, TEXT("SelectionInterface is initialized. LI"));
-	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("SelectionInterface is not initialized. LI"));
+		// Adds the Currently Obtained Unit Data to the Unit Data Map.
+		// UnitDataMap Now stores the current Type of Unit and its Data.
+		UnitDataMap.Add(UnitType, UnitData);
+
+		// Logs the Data we assigned to the unit.
+		SelectionInterface->LogUnitTypeToDataMap(UnitDataMap);
 	}
 }
