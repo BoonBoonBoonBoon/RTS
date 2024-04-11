@@ -19,5 +19,7 @@ public:
 	UBasicScoutAttributesComponent* ScoutAttributesComponent;
 	
 	ABasicScout();
+
+	virtual void BeginPlay() override;
 	
 };

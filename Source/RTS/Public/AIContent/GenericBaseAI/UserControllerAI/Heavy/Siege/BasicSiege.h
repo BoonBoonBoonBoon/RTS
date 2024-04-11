@@ -17,6 +17,8 @@ class RTS_API ABasicSiege : public AGenericBaseAI
 public:
 
 	ABasicSiege();
+
+	virtual void BeginPlay() override;
 	
 	UBasicScoutAttributesComponent* BasicScoutAttributesComponent;
 };
