@@ -43,16 +43,33 @@ void AGenericBaseAI::MovePTR()
 				C->MoveLoc = LocationToMove;
 
 				UE_LOG(LogTemp, Warning, TEXT("MovePTR() Called"));
-				// Log the name of the controller
-				//UE_LOG(LogTemp, Warning, TEXT("Current Controller Name: %s"), *C->GetName());
 				ValidHit = false;
-			}else {
-				
-				//UE_LOG(LogTemp, Warning, TEXT("AGenericController* C = Cast<AGenericController>(CTRL) Failed"));
 			}
 		}
 	}
 }
+
+void AGenericBaseAI::SetPatrolPoints(FVector PointA, FVector PointB)
+{
+
+	// Use AIController to move to the next point
+	AGenericController* AIController = Cast<AGenericController>(GetController());
+	if (AIController)
+	{
+		AIController->PatrolPointA = PointA;
+		AIController->PatrolPointB = PointB;
+		AIController->bIsPatrolling = true;
+
+		// Clear Out the patrol elements.
+		if (AUserController* PController = Cast<AUserController>(GetController()))
+		{
+			PController->bPatrolMode=false;
+			PController->PatrolPoints.Empty();
+		}
+	}
+}
+
+
 
 AAIController* AGenericBaseAI::GetAIController(AGenericBaseAI* Actor)
 {

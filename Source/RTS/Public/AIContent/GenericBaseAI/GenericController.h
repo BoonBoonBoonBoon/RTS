@@ -19,6 +19,15 @@ public:
 	mutable FVector MoveLoc;
 	mutable bool CheckValid;
 	void MovePawn();
+
+	bool bIsPatrolling = false;
+	FVector PatrolPointA;
+	FVector PatrolPointB;
+	bool FirstMove = true;
+
+	
+	void PatrolLoc();
+
 	
 	FVector* DestLoc;
 

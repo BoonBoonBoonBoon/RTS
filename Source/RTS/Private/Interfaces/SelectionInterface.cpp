@@ -483,28 +483,24 @@ void ISelectionInterface::LogUnitTypeToDataMap(const TMap<EUnitTypes, FUnitData>
 TArray<AGenericBaseAI*> ISelectionInterface::ProccessPatrolMode(TArray<AActor*> Units)
 {
 	TArray<AGenericBaseAI*> PatrolUnits;
-	
+
 	for (AActor* Src : Units)
 	{
 		if (auto GenActor = Cast<AGenericBaseAI>(Src))
 		{
-			if(GenActor->UnitDataMap.Contains(GenActor->UnitType))
+			if (GenActor->UnitDataMap.Contains(GenActor->UnitType))
 			{
 				TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes;
-				if (Att.Num() > 0)
+
+				// We then Check the Specific Attributes of the Units To See what they can do
+				if (Att.Contains(EUnitAttributes::Patrol))
 				{
-					// We then Check the Specific Attributes of the Units To See what they can do
-					if(Att.Contains(EUnitAttributes::Patrol))
-					{
-						PatrolUnits.AddUnique(GenActor);
-						
-						return PatrolUnits;
-					}
+					PatrolUnits.AddUnique(GenActor);
 				}
 			}
 		}
 	}
-	return {};
+	return PatrolUnits;
 }
 
 

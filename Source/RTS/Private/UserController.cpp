@@ -212,8 +212,9 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAction("UpdateBoxSelection", IE_Released, this, &AUserController::EndBoxSelection);
 
 	InputComponent->BindAction("ActionKey", IE_Pressed, this, &AUserController::EventKey);
-
-	InputComponent->BindKey("PatrolAI", IE_Pressed, this, &AUserController::EnterPatrolMode);
+	InputComponent->BindAction("PatrolAI", IE_Pressed, this, &AUserController::EnterPatrolMode);
+	
+	//InputComponent->BindKey("PatrolAI", IE_Pressed, this, &AUserController::EnterPatrolMode);
 }
 
 
@@ -274,11 +275,24 @@ void AUserController::EventKey()
 							// Process the Location of the hit.
 							ProcessPatrolClick(HitResult);
 						}
-						
-						if (SelectedUnits.Num() > 0)
+						else if (SelectedUnits.Num() > 0)
 						{
+							// Empty Array Patrol Array to reset it.
+							//PatrolPoints.Empty();
+
+							/*for(AActor* Unit : SelectedUnits)
+							{
+								if(AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Unit))
+								{
+									if (AGenericController* GenController = Cast<AGenericController>(BaseAI->GetController()))
+									{
+										GenController->bIsPatrolling= false;
+									}
+								}
+							}*/
+							
 							SelectionInterface->MoveGroupToLocation(SelectedUnits, Location);
-						} 
+						}
 					}
 				}
 			}
@@ -607,27 +621,47 @@ void AUserController::EnterPatrolMode()
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Can Patrol."));
 			bPatrolMode = true;
+
+			// Clear out old patrol points.
 			PatrolPoints.Empty();
 		}
-	} else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Cannot Patrol, No Units Selected."));
-	}
+	} 
 }
 
 void AUserController::ProcessPatrolClick(FHitResult HitResult)
 {
 	if(bPatrolMode)
 	{
-		PatrolPoints.Add(&HitResult.Location);
+		
+		/*
+		// Only add new points if we have less than 2
+		//if(PatrolPoints.Num() < 2)
+		{
+			//PatrolPoints.AddUnique(HitResult.Location);
+			/*UE_LOG(LogTemp, Warning, TEXT("Patrol Point First Element: X=%f, Y=%f, Z=%f"), PatrolPoints[0].X, PatrolPoints[0].Y, PatrolPoints[0].Z);
+			if(PatrolPoints.Num() == 2){UE_LOG(LogTemp, Warning, TEXT("Patrol Point second Element: X=%f, Y=%f, Z=%f"), PatrolPoints[1].X, PatrolPoints[1].Y, PatrolPoints[1].Z);}
+			}#1#
+			*/
+
+		PatrolPoints.AddUnique(HitResult.Location);
+		
+		// If we click outside the specified amount of patrol points we just move on to the new location.
+		 if (PatrolPoints.Num() > 2)
+		{
+			PatrolPoints.Empty();
+		 	bPatrolMode = false;
+		 	SelectionInterface->MoveGroupToLocation(SelectedUnits, HitResult.Location);
+		}
+		
 		// If we have two points selected.
 		if(PatrolPoints.Num() == 2)
 		{
 			for (AGenericBaseAI* Unit : PatrolUnits)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Unit True."));
-				//Unit->SetPatrolPoints(PatrolPoints[0].PatrolPoints[1]);
-			} 
+				UE_LOG(LogTemp, Warning, TEXT("Unit Name: %s"), *Unit->GetName());
+				Unit->SetPatrolPoints(PatrolPoints[0], PatrolPoints[1]);
+			}
+			
 		} 
 	}
 }

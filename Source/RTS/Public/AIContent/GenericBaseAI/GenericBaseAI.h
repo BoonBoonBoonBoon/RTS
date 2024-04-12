@@ -66,6 +66,15 @@ public:
 	// Checks if the vector is valid
 	mutable bool ValidHit;
 	void MovePTR();
+
+
+	// PATROL POINTS ------------
+
+	// Sets the patrol points for the AI to move to.
+	void SetPatrolPoints(FVector PointA, FVector PointB);
+	
+	
+	// --------------------------
 	
 	bool DecalHit = false;
 

@@ -4,12 +4,57 @@
 #include "AIContent/GenericBaseAI/GenericController.h"
 
 
+
 void AGenericController::MovePawn()
 {
 	if(CheckValid)
 	{
 		MoveToLocation(MoveLoc);
 		CheckValid = false;
+	}
+}
+
+
+void AGenericController::PatrolLoc()
+{
+	if (bIsPatrolling)
+	{
+		
+		if(FirstMove)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("FirstMove"));
+			MoveToLocation(PatrolPointA);
+			FirstMove = false;
+		}
+
+
+		float distA = FVector::Dist(GetPawn()->GetActorLocation(), PatrolPointA);
+		float distB = FVector::Dist(GetPawn()->GetActorLocation(), PatrolPointB);
+		UE_LOG(LogTemp, Warning, TEXT("Distance to A: %f, Distance to B: %f"), distA, distB);
+
+
+		if (distA < 110.0f)
+		{
+			MoveToLocation(PatrolPointB);
+			UE_LOG(LogTemp, Warning, TEXT("PatrolPointB Location: X=%f, Y=%f, Z=%f"), PatrolPointB.X, PatrolPointB.Y, PatrolPointB.Z);
+		}
+		else if (distB < 110.0f)
+		{
+			MoveToLocation(PatrolPointA);
+			UE_LOG(LogTemp, Warning, TEXT("PatrolPointA Location: X=%f, Y=%f, Z=%f"), PatrolPointA.X, PatrolPointA.Y, PatrolPointA.Z);
+		}
+
+		
+		/*if (FVector::Dist(GetPawn()->GetActorLocation(), PatrolPointA) < 50.0f)
+		{
+			MoveToLocation(PatrolPointB);
+			UE_LOG(LogTemp, Warning, TEXT("PatrolPointB Location: X=%f, Y=%f, Z=%f"), PatrolPointB.X, PatrolPointB.Y, PatrolPointB.Z);
+		}
+		else if (FVector::Dist(GetPawn()->GetActorLocation(), PatrolPointB) < 50.0f)
+		{
+			MoveToLocation(PatrolPointA);
+			UE_LOG(LogTemp, Warning, TEXT("PatrolPointA Location: X=%f, Y=%f, Z=%f"), PatrolPointA.X, PatrolPointA.Y, PatrolPointA.Z);
+		}*/
 	}
 }
 
@@ -21,8 +66,12 @@ void AGenericController::Tick(float DeltaSeconds)
 	{
 		MovePawn();
 	}
+
+	if (bIsPatrolling)
+	{
+		PatrolLoc();
+	}
 	
-	//MoveTo(*DestLoc);
 }
 
 AGenericController::AGenericController(FObjectInitializer const& ObjectInitializer)

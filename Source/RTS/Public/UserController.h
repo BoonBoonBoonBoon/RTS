@@ -151,7 +151,7 @@ public:
 	// Checks if the AI is in Patrol Mode.
 	bool bPatrolMode;
 	// The Patrol Points for the AI to move to.
-	TArray<FVector*> PatrolPoints;
+	TArray<FVector> PatrolPoints;
 	// The Current Patrol Point the AI is moving to.
 	TArray<AGenericBaseAI*> PatrolUnits;
 
