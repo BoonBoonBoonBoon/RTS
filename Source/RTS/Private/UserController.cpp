@@ -630,24 +630,28 @@ void AUserController::EnterPatrolMode()
 
 void AUserController::ProcessPatrolClick(FHitResult HitResult)
 {
-	if(bPatrolMode)
+	if (bPatrolMode)
 	{
-		
-		/*
+		//PatrolPoints.AddUnique(HitResult.Location);
+
 		// Only add new points if we have less than 2
-		//if(PatrolPoints.Num() < 2)
-		{
-			//PatrolPoints.AddUnique(HitResult.Location);
-			/*UE_LOG(LogTemp, Warning, TEXT("Patrol Point First Element: X=%f, Y=%f, Z=%f"), PatrolPoints[0].X, PatrolPoints[0].Y, PatrolPoints[0].Z);
-			if(PatrolPoints.Num() == 2){UE_LOG(LogTemp, Warning, TEXT("Patrol Point second Element: X=%f, Y=%f, Z=%f"), PatrolPoints[1].X, PatrolPoints[1].Y, PatrolPoints[1].Z);}
-			}#1#
-			*/
 
 		PatrolPoints.AddUnique(HitResult.Location);
+		
 		
 		// If we click outside the specified amount of patrol points we just move on to the new location.
 		 if (PatrolPoints.Num() > 2)
 		{
+		 	// clear the previously set patrol points.
+		 	for (int32 i = 0; i < PatrolUnits.Num(); ++i)
+		 	{
+		 		AGenericController* GenController = Cast<AGenericController>(PatrolUnits[i]->GetController());
+		 		GenController->bIsPatrolling = false;
+		 		GenController->FirstMove = true;
+		 		GenController->PatrolPointA = {};
+		 		GenController->PatrolPointB = {};
+		 	}
+		 	
 			PatrolPoints.Empty();
 		 	bPatrolMode = false;
 		 	SelectionInterface->MoveGroupToLocation(SelectedUnits, HitResult.Location);
@@ -661,10 +665,6 @@ void AUserController::ProcessPatrolClick(FHitResult HitResult)
 				UE_LOG(LogTemp, Warning, TEXT("Unit Name: %s"), *Unit->GetName());
 				Unit->SetPatrolPoints(PatrolPoints[0], PatrolPoints[1]);
 			}
-			
 		} 
 	}
 }
-/*SelectionInterface->MoveGroupToLocation(PatrolUnits, *PatrolPoints[0]);
-				SelectionInterface->MoveGroupToLocation(PatrolUnits, *PatrolPoints[1]);
-				bPatrolMode = false;*/
