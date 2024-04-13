@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "GenericController.generated.h"
 
+class AGenericBaseAI;
 /**
  * 
  */
@@ -24,8 +25,15 @@ public:
 	FVector PatrolPointA;
 	FVector PatrolPointB;
 	bool FirstMove = true;
-
 	
+	// The Current Patrol Point the AI is moving to.
+	TArray<AGenericBaseAI*> PatrolUnits;
+
+	// Checks if the AI is at the patrol point.
+	bool bIsAtPointA = false;
+	bool bIsAtPointB = false;
+	
+	// The Current Patrol Point the AI is moving to.
 	void PatrolLoc();
 
 	

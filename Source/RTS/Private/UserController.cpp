@@ -660,10 +660,19 @@ void AUserController::ProcessPatrolClick(FHitResult HitResult)
 		// If we have two points selected.
 		if(PatrolPoints.Num() == 2)
 		{
+			// Obtain the patrol units and set the patrol points.
 			for (AGenericBaseAI* Unit : PatrolUnits)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("Unit Name: %s"), *Unit->GetName());
+				for (int32 i = 0; i < PatrolUnits.Num(); ++i)
+				{
+					AGenericController* GenController = Cast<AGenericController>(PatrolUnits[i]->GetController());
+					GenController->PatrolUnits = PatrolUnits;
+					Unit->SetPatrolPoints(PatrolPoints[0], PatrolPoints[1]);
+				}
+				/*
+				AGenericController* GenController = Cast<AGenericController>(PatrolUnits[i]->GetController());
 				Unit->SetPatrolPoints(PatrolPoints[0], PatrolPoints[1]);
+				*/
 			}
 		} 
 	}
