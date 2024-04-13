@@ -8,13 +8,14 @@
 #include "GenericController.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/Character.h"
+#include "Interfaces/CombatInterface.h"
 #include "Interfaces/SelectionInterface.h"
 #include "GenericBaseAI.generated.h"
 
 class AUserController; 
 
 UCLASS()
-class RTS_API AGenericBaseAI : public ACharacter, public ISelectionInterface
+class RTS_API AGenericBaseAI : public ACharacter, public ISelectionInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -61,30 +62,43 @@ public:
 	UPROPERTY(EditAnywhere)
 	AGenericController* Con;
 
+	// MOVEMENT ------------
+	
 	// Takes in the vector where we want to move to 
 	mutable FVector LocationToMove;
 	// Checks if the vector is valid
 	mutable bool ValidHit;
 	void MovePTR();
 
+	// ----------------------
 
 	// PATROL POINTS ------------
 
 	// Sets the patrol points for the AI to move to.
 	void SetPatrolPoints(FVector PointA, FVector PointB);
 	
-	
 	// --------------------------
-	
+
 	bool DecalHit = false;
 
 	AAIController* GetAIController(AGenericBaseAI* Actor);
+	
+	// COMBAT -------------------
+	
+	/*
+	virtual FVector FoundEnemyLocation() override;
+	virtual bool MoveToEnemy() override;
+	virtual void AttackEnemy() override;
 
+	float AttackRange = 100.f;*/
+	// --------------------------
+
+private:
+	AActor* TargetEnemy = nullptr;
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	
 	
 	void SetupStimulusSource();
 

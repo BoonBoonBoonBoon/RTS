@@ -87,6 +87,9 @@ protected:
 
 	// Selection Interface that stores important Data for the Unit selection;
 	ISelectionInterface* SelectionInterface;
+
+	// Combat Interface that stores important Data for the Combat;
+	ICombatInterface* CombatInterface;
 public:
 
 	

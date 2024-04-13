@@ -246,6 +246,7 @@ void AUserController::EventKey()
 
 				if (AActor* HitActorObj = (HitResult.GetActor()))
 				{
+					// Check if the Hit Result is a Resource.
 					if (Cast<IResourceInterface>(HitActorObj))
 					{
 						// Invalidate the patrol.
@@ -256,17 +257,17 @@ void AUserController::EventKey()
 						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green,
 						             false,
 						             1, 0, 5.0f);
-						UE_LOG(LogTemp, Warning, TEXT("Hit Res"));
+					
 						HandleResourceGathering(HitActorObj);
+					}
+					else if (HitActorObj->Tags.Contains("Enemy"))
+					{
+						UE_LOG(LogTemp, Warning, TEXT("Found Enemy"));
+						
+						CombatInterface->MoveToEnemy(HitActorObj, SelectedUnits);
 					}
 					else
 					{
-						// Draw a debug box at the hit location
-						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green,
-									 false,
-									 15, 0, 5.0f);
-						UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
-
 						FVector Location = HitResult.Location;
 
 						if(bPatrolMode)
@@ -278,6 +279,12 @@ void AUserController::EventKey()
 						{
 							SelectionInterface->MoveGroupToLocation(SelectedUnits, Location);
 						}
+						
+						// Draw a debug box at the hit location
+						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green,
+									 false,
+									 15, 0, 5.0f);
+					
 					}
 				}
 			}
@@ -622,17 +629,6 @@ void AUserController::ProcessPatrolClick(FHitResult HitResult)
 		// If we click outside the specified amount of patrol points we just move on to the new location.
 		 if (PatrolPoints.Num() > 2)
 		{
-		 	/*// clear the previously set patrol points.
-		 	for (int32 i = 0; i < PatrolUnits.Num(); ++i)
-		 	{
-		 		AGenericController* GenController = Cast<AGenericController>(PatrolUnits[i]->GetController());
-		 		//GenController->bIsPatrolling = false;
-		 		//GenController->FirstMove = true;
-		 		//GenController->PatrolPointA = FVector::ZeroVector;
-		 		//GenController->PatrolPointB = FVector::ZeroVector;;
-		 	}
-		 	*/
-		 	
 			PatrolPoints.Empty();
 		 	bPatrolMode = false;
 		 	SelectionInterface->MoveGroupToLocation(SelectedUnits, HitResult.Location);
@@ -650,10 +646,6 @@ void AUserController::ProcessPatrolClick(FHitResult HitResult)
 					GenController->PatrolUnits = PatrolUnits;
 					Unit->SetPatrolPoints(PatrolPoints[0], PatrolPoints[1]);
 				}
-				/*
-				AGenericController* GenController = Cast<AGenericController>(PatrolUnits[i]->GetController());
-				Unit->SetPatrolPoints(PatrolPoints[0], PatrolPoints[1]);
-				*/
 			}
 		} 
 	}

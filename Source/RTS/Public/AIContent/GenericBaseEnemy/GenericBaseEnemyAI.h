@@ -26,4 +26,29 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	// Health attribute
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float Health;
+
+	// Maximum health attribute
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float MaxHealth;
+
+	// Health regeneration rate per second
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float HealthRegenRate;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	float TimeSinceLastDamage;
+
+	bool bIsGettingHealing; // When the AI is reciving healing from a building or ai
+	
+	// Method for taking damage
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void TakeDamage(float DamageAmount);
+
+	// Method for regenerating health
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void RegenerateHealth(float DeltaTime);
+	
 };
