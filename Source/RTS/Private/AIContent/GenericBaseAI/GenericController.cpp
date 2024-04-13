@@ -46,7 +46,7 @@ void AGenericController::PatrolLoc()
 			{
 				float distA = FVector::Dist(Unit->GetActorLocation(), PatrolPointA);
 
-				if (distA < 250.0f)
+				if (distA < 300.0f)
 				{
 					// Calculate grid formation positions for the second patrol point.
 					TArray<FVector> FormationPositionsB = AI->CalculateGridFormationPositions(
@@ -72,7 +72,7 @@ void AGenericController::PatrolLoc()
 			{
 				float distB = FVector::Dist(Unit->GetActorLocation(), PatrolPointB);
 
-				if (distB < 250.0f)
+				if (distB < 300.0f)
 				{
 					// Calculate grid formation positions for the first patrol point.
 					TArray<FVector> FormationPositionsA = AI->CalculateGridFormationPositions(

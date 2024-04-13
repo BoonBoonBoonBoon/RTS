@@ -214,7 +214,6 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAction("ActionKey", IE_Pressed, this, &AUserController::EventKey);
 	InputComponent->BindAction("PatrolAI", IE_Pressed, this, &AUserController::EnterPatrolMode);
 	
-	//InputComponent->BindKey("PatrolAI", IE_Pressed, this, &AUserController::EnterPatrolMode);
 }
 
 
@@ -264,8 +263,8 @@ void AUserController::EventKey()
 					{
 						// Draw a debug box at the hit location
 						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green,
-						             false,
-						             15, 0, 5.0f);
+									 false,
+									 15, 0, 5.0f);
 						UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
 						FVector Location = HitResult.Location;
@@ -277,20 +276,6 @@ void AUserController::EventKey()
 						}
 						else if (SelectedUnits.Num() > 0)
 						{
-							// Empty Array Patrol Array to reset it.
-							//PatrolPoints.Empty();
-
-							/*for(AActor* Unit : SelectedUnits)
-							{
-								if(AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Unit))
-								{
-									if (AGenericController* GenController = Cast<AGenericController>(BaseAI->GetController()))
-									{
-										GenController->bIsPatrolling= false;
-									}
-								}
-							}*/
-							
 							SelectionInterface->MoveGroupToLocation(SelectedUnits, Location);
 						}
 					}
@@ -610,31 +595,26 @@ void AUserController::UpdateFlow()
 
 void AUserController::EnterPatrolMode()
 {
-	// Maybe Have a return to check if we have units selected.
-
 	// Check if any units are selected.
-	if(SelectedUnits.Num() > 0)
+	if (SelectedUnits.Num() > 0)
 	{
 		// if so, obtain which ones can patrol.
 		PatrolUnits = SelectionInterface->ProccessPatrolMode(SelectedUnits);
-		if(PatrolUnits.Num() > 0)
+
+		if (PatrolUnits.Num() > 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Can Patrol."));
 			bPatrolMode = true;
 
 			// Clear out old patrol points.
 			PatrolPoints.Empty();
 		}
-	} 
+	}
 }
 
 void AUserController::ProcessPatrolClick(FHitResult HitResult)
 {
 	if (bPatrolMode)
 	{
-		//PatrolPoints.AddUnique(HitResult.Location);
-
-		// Only add new points if we have less than 2
 
 		PatrolPoints.AddUnique(HitResult.Location);
 		
@@ -642,15 +622,16 @@ void AUserController::ProcessPatrolClick(FHitResult HitResult)
 		// If we click outside the specified amount of patrol points we just move on to the new location.
 		 if (PatrolPoints.Num() > 2)
 		{
-		 	// clear the previously set patrol points.
+		 	/*// clear the previously set patrol points.
 		 	for (int32 i = 0; i < PatrolUnits.Num(); ++i)
 		 	{
 		 		AGenericController* GenController = Cast<AGenericController>(PatrolUnits[i]->GetController());
-		 		GenController->bIsPatrolling = false;
-		 		GenController->FirstMove = true;
-		 		GenController->PatrolPointA = {};
-		 		GenController->PatrolPointB = {};
+		 		//GenController->bIsPatrolling = false;
+		 		//GenController->FirstMove = true;
+		 		//GenController->PatrolPointA = FVector::ZeroVector;
+		 		//GenController->PatrolPointB = FVector::ZeroVector;;
 		 	}
+		 	*/
 		 	
 			PatrolPoints.Empty();
 		 	bPatrolMode = false;
