@@ -265,7 +265,7 @@ void AUserController::EventKey()
 						// Draw a debug box at the hit location
 						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green,
 						             false,
-						             1, 0, 5.0f);
+						             15, 0, 5.0f);
 						UE_LOG(LogTemp, Warning, TEXT("Hit Ground"));
 
 						FVector Location = HitResult.Location;
