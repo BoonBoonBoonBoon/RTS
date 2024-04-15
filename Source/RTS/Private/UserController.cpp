@@ -5,6 +5,7 @@
 #include "AIController.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
+#include "AIContent/GenericBaseEnemy/GenericBaseEnemyAI.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
@@ -28,6 +29,9 @@ AUserController::AUserController()
 
 	SelectionArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SelectionArea"));
 	SelectionArea->SetBoxExtent(FVector(0));
+	
+	// Initialize the CombatInterface
+	CombatInterface = Cast<ICombatInterface>(this);
 }
 
 void AUserController::OnPossess(APawn* InPawn)
@@ -194,6 +198,10 @@ void AUserController::BeginPlay()
 	UserCharacter = Cast<AUserCharacter>(GetPawn());
 	SelectedBuilding.Empty();
 	bNotHit = false;
+	
+	// Initialize the CombatInterface
+	CombatInterface = Cast<ICombatInterface>(this);
+
 }
 
 void AUserController::SetupInputComponent()
@@ -243,7 +251,6 @@ void AUserController::EventKey()
 			                                         WorldMouseLocation + WorldMouseDirection * TraceDistance,
 			                                         ECC_Visibility, CollisionParams))
 			{
-
 				if (AActor* HitActorObj = (HitResult.GetActor()))
 				{
 					// Check if the Hit Result is a Resource.
@@ -252,25 +259,30 @@ void AUserController::EventKey()
 						// Invalidate the patrol.
 						bPatrolMode = false;
 						PatrolPoints.Empty();
-						
+
 						// Draw a debug box at the hit location
 						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green,
 						             false,
 						             1, 0, 5.0f);
-					
+
 						HandleResourceGathering(HitActorObj);
 					}
 					else if (HitActorObj->Tags.Contains("Enemy"))
 					{
-						UE_LOG(LogTemp, Warning, TEXT("Found Enemy"));
-						
-						CombatInterface->MoveToEnemy(HitActorObj, SelectedUnits);
+						if (CombatInterface != nullptr)
+						{
+							CombatInterface->MoveToEnemy(HitActorObj, SelectedUnits);
+						}
+						else
+						{
+							UE_LOG(LogTemp, Warning, TEXT("Null"));
+						}
 					}
 					else
 					{
 						FVector Location = HitResult.Location;
 
-						if(bPatrolMode)
+						if (bPatrolMode)
 						{
 							// Process the Location of the hit.
 							ProcessPatrolClick(HitResult);
@@ -279,12 +291,11 @@ void AUserController::EventKey()
 						{
 							SelectionInterface->MoveGroupToLocation(SelectedUnits, Location);
 						}
-						
+
 						// Draw a debug box at the hit location
 						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green,
-									 false,
-									 15, 0, 5.0f);
-					
+						             false,
+						             15, 0, 5.0f);
 					}
 				}
 			}
@@ -650,3 +661,15 @@ void AUserController::ProcessPatrolClick(FHitResult HitResult)
 		} 
 	}
 }
+
+/*void AUserController::InitializeCombatInterface(AActor* InitActor)
+{
+	// Initialize the CombatInterface
+	if (InitActor == GetPawn())
+	{
+		if (AGenericBaseAI* GB = Cast<AGenericBaseAI>(InitActor))
+		{
+			CombatInterface = Cast<ICombatInterface>(GB);
+		}
+	}
+}*/

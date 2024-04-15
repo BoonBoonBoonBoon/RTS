@@ -132,10 +132,6 @@ void AGenericController::SetupPer()
 void AGenericController::MoveToDes(FVector& Destination)
 {
 	
-		// Print the hit location coordinates to the output log
-		//UE_LOG(LogTemp, Warning, TEXT("Hit Location: X=%f, Y=%f, Z=%f"), Destination.X, Destination.Y, Destination.Z);
-
-	//UE_LOG(LogTemp, Warning, TEXT("Controller Address %p"), &Destination);
-		//MoveToLocation(Destination);
+	
 }
 

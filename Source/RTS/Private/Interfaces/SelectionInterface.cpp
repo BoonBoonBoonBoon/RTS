@@ -482,6 +482,7 @@ void ISelectionInterface::LogUnitTypeToDataMap(const TMap<EUnitTypes, FUnitData>
 
 TArray<AGenericBaseAI*> ISelectionInterface::ProccessPatrolMode(TArray<AActor*> Units)
 {
+	// Temp array to store the units that can patrol.
 	TArray<AGenericBaseAI*> PatrolUnits;
 
 	for (AActor* Src : Units)

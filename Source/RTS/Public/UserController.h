@@ -15,7 +15,7 @@
 
 
 class IBuildingInterface;
-//class EBuildingTypes;
+class ICombatInterface;
 class UDecalComponent;
 class UBoxComponent;
 
@@ -24,7 +24,7 @@ class UBoxComponent;
  * 
  */
 UCLASS()
-class RTS_API AUserController : public APlayerController
+class RTS_API AUserController : public APlayerController, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -87,10 +87,12 @@ protected:
 
 	// Selection Interface that stores important Data for the Unit selection;
 	ISelectionInterface* SelectionInterface;
-
+	
 	// Combat Interface that stores important Data for the Combat;
 	ICombatInterface* CombatInterface;
+	
 public:
+
 
 	
 	UPROPERTY(BlueprintReadWrite)
@@ -160,5 +162,7 @@ public:
 
 	
 	FHitResult bHit; 
+
+	void InitializeCombatInterface(AActor* InitActor);
 	
 };

@@ -6,6 +6,8 @@
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
+class AGenericBaseAI;
+
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
 class UCombatInterface : public UInterface
@@ -30,11 +32,15 @@ public:
 	*/
 
 	
+	
+	TArray<AGenericBaseAI*> AttackingUnits;
+	
 	virtual void CustomTick(float DeltaTime);
 	
 	void MoveToEnemy(AActor* EnemyActor,TArray<AActor*> FriendlyActors);
-
+	
+	TArray<AGenericBaseAI*> ProccessAttackMode(TArray<AActor*> Units);
+	
 	bool bFoundEnemyLocation = false;
-
-	bool FoundEnemyLocation();
+	
 };

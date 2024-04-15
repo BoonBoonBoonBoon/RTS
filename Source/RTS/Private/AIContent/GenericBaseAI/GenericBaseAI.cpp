@@ -85,6 +85,9 @@ void AGenericBaseAI::BeginPlay()
 	
 	// Cast this to ISelectionInterface
 	SelectionInterface = Cast<ISelectionInterface>(this);
+
+	// Initialize the CombatInterface
+	CombatInterface = Cast<ICombatInterface>(this);
 }
 
 

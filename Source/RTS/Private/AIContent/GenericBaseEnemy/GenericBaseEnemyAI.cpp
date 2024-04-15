@@ -8,9 +8,11 @@ AGenericBaseEnemyAI::AGenericBaseEnemyAI()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	// Initialize the CombatInterface
+	//CombatInterface = Cast<ICombatInterface>(this);
 	
 	// Initialize health attributes
-	
 	Health = 100.f;
 	MaxHealth = 100.f;
 	HealthRegenRate = 5.f;

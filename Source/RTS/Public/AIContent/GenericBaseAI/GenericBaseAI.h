@@ -12,6 +12,7 @@
 #include "Interfaces/SelectionInterface.h"
 #include "GenericBaseAI.generated.h"
 
+
 class AUserController; 
 
 UCLASS()
@@ -46,6 +47,8 @@ public:
 	// ----------------------
 	
 	ISelectionInterface* SelectionInterface;
+
+	ICombatInterface* CombatInterface;
 	
 	// EQS Query asset 
 	UPROPERTY()
