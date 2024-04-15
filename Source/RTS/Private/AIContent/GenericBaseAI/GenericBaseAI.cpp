@@ -101,10 +101,16 @@ void AGenericBaseAI::SetupStimulusSource()
 	}
 }
 
-void AGenericBaseAI::MoveToDes(FVector& Destination)
+void AGenericBaseAI::GatherAroundEnemy(FVector& Destination)
 {
+	
+	/*AGenericController* AIController = Cast<AGenericController>(GetController());
+
+	AIController->MoveLoc = Destination;
+	AIController->CheckValid = true;
+	
 	// Print the hit location coordinates to the output log
-	UE_LOG(LogTemp, Warning, TEXT("Hit Location: X=%f, Y=%f, Z=%f"), Destination.X, Destination.Y, Destination.Z);
+	UE_LOG(LogTemp, Warning, TEXT("Hit Location: X=%f, Y=%f, Z=%f"), Destination.X, Destination.Y, Destination.Z);*/
 }
 
 // Called every frame
@@ -116,19 +122,6 @@ void AGenericBaseAI::Tick(float DeltaTime)
 	{
 		MovePTR();
 	}
-
-	
-	/*if (TargetEnemy)
-	{
-		if (FVector::Dist(GetActorLocation(), TargetEnemy->GetActorLocation()) <= AttackRange)
-		{
-			AttackEnemy();
-		}
-		else
-		{
-			MoveToEnemy();
-		}
-	}*/
 }
 
 // Called to bind functionality to input

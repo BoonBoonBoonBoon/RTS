@@ -125,13 +125,5 @@ void AGenericController::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AGenericController::SetupPer()
-{
-}
 
-void AGenericController::MoveToDes(FVector& Destination)
-{
-	
-	
-}
 

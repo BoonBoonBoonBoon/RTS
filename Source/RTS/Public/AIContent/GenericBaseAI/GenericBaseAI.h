@@ -107,7 +107,7 @@ protected:
 
 public:
 
-	void MoveToDes(FVector& Destination);
+	void GatherAroundEnemy(FVector& Destination);
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

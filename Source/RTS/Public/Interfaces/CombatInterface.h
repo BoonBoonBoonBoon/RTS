@@ -32,12 +32,17 @@ public:
 	*/
 
 	
+	TArray<FVector> CalculateSurroundingPositions(FVector EnemyLocation, int32 UnitsCount, float Radius);
+
+	TArray<FVector> CalculateRandomPositions(FVector EnemyLocation, int32 UnitsCount, float Radius);
 	
 	TArray<AGenericBaseAI*> AttackingUnits;
 	
 	virtual void CustomTick(float DeltaTime);
 	
 	void MoveToEnemy(AActor* EnemyActor,TArray<AActor*> FriendlyActors);
+
+	void SurroundEnemy(AActor* EnemyActor, TArray<AGenericBaseAI*> FriendlyActors);
 	
 	TArray<AGenericBaseAI*> ProccessAttackMode(TArray<AActor*> Units);
 	

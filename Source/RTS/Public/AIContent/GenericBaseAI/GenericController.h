@@ -49,8 +49,4 @@ public:
 	// Run behaviour tree immediately
 	virtual void BeginPlay() override;
 	
-	// Sight Perception
-	void SetupPer();
-
-	void MoveToDes(FVector& Destination);
 };
