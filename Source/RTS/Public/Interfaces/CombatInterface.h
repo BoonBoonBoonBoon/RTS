@@ -38,7 +38,9 @@ public:
 	
 	TArray<AGenericBaseAI*> AttackingUnits;
 	
-	virtual void CustomTick(float DeltaTime);
+	bool IsLocationOccupied(FVector Location, TArray<AActor*> FriendlyActors, float Radius);
+	
+	///virtual void CustomTick(float DeltaTime);
 	
 	void MoveToEnemy(AActor* EnemyActor,TArray<AActor*> FriendlyActors);
 

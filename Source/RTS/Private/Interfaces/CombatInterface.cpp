@@ -4,7 +4,63 @@
 #include "Interfaces/CombatInterface.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 
+TArray<FVector> ICombatInterface::CalculateSurroundingPositions(FVector EnemyLocation, int32 UnitsCount, float Radius)
+{
+    TArray<FVector> Positions;
+    float AngleStep = 360.0f / UnitsCount;
 
+    for (int32 i = 0; i < UnitsCount; ++i)
+    {
+        float AngleRadians = FMath::DegreesToRadians(AngleStep * i);
+        Positions.Add(EnemyLocation + Radius * FVector(FMath::Cos(AngleRadians), FMath::Sin(AngleRadians), 0.0f));
+    }
+
+    return Positions;
+}
+
+void ICombatInterface::MoveToEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors)
+{
+    if (FriendlyActors.Num() > 0)
+    {
+        AttackingUnits = ProccessAttackMode(FriendlyActors);
+        TArray<FVector> SurroundingPositions = CalculateSurroundingPositions(EnemyActor->GetActorLocation(), FriendlyActors.Num(), 300.0f);
+
+        if (AttackingUnits.Num() > 0)
+        {
+            for(int32 i = 0; i < AttackingUnits.Num(); ++i)
+            {
+                if (AAIController* AIController = Cast<AAIController>(AttackingUnits[i]->GetController()))
+                {
+                    AIController->MoveToLocation(SurroundingPositions[i]);
+                }
+            }
+        }
+    }
+}
+
+TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Units)
+{
+    TArray<AGenericBaseAI*> UnitsCanAttack;
+
+    for (AActor* Src : Units)
+    {
+        if (auto GenActor = Cast<AGenericBaseAI>(Src))
+        {
+            if(GenActor->UnitDataMap.Contains(GenActor->UnitType))
+            {
+                if(TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes; Att.Contains(EUnitAttributes::Attack))
+                {
+                    UnitsCanAttack.AddUnique(GenActor);
+                }
+            }
+        }
+    }
+    return UnitsCanAttack;
+}
+
+
+
+/*
 TArray<FVector> ICombatInterface::CalculateSurroundingPositions(FVector EnemyLocation, int32 UnitsCount, float Radius)
 {
 	TArray<FVector> Positions; // Array to store the calculated positions
@@ -141,4 +197,5 @@ TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Uni
 	}
 	return UnitsCanAttack;
 }
+*/
 
