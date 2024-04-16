@@ -20,6 +20,8 @@ AGenericBaseAI::AGenericBaseAI()
 	
 	SelectedDecalComp = CreateDefaultSubobject<UDecalComponent>("Decal");
 	SelectedDecalComp->SetupAttachment(RootComponent);
+
+    AGenericBaseAI::SetupStimulusSource();
 	
 	// Set Tag to building
 	Tags.Add("Unit");
@@ -93,11 +95,11 @@ void AGenericBaseAI::BeginPlay()
 
 void AGenericBaseAI::SetupStimulusSource()
 {
-	StimuliSourcePredator = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus Source"));
-	if(StimuliSourcePredator)
+	StimuliSourceAi = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Stimulus Source"));
+	if(StimuliSourceAi)
 	{
-		StimuliSourcePredator->RegisterForSense(TSubclassOf<UAISense_Sight>());
-		StimuliSourcePredator->RegisterWithPerceptionSystem();
+		StimuliSourceAi->RegisterForSense(TSubclassOf<UAISense_Sight>());
+		StimuliSourceAi->RegisterWithPerceptionSystem();
 	}
 }
 

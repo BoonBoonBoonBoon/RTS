@@ -21,7 +21,8 @@ class RTS_API AGenericBaseAI : public ACharacter, public ISelectionInterface, pu
 	GENERATED_BODY()
 
 	// Used as a generator for the pawn to emit a stimuli. Need this as the AI will use this as a tool to percept.
-	class UAIPerceptionStimuliSourceComponent* StimuliSourcePredator;
+	UPROPERTY(EditAnywhere, Category = "AI Sight")
+	class UAIPerceptionStimuliSourceComponent* StimuliSourceAi;
 
 	UPROPERTY()
 	UActorAttributesComponent* ActorAttributesComponent;
@@ -103,7 +104,7 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 	
-	void SetupStimulusSource();
+	virtual void SetupStimulusSource();
 
 public:
 

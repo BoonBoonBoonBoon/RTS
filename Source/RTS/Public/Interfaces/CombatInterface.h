@@ -25,13 +25,37 @@ class RTS_API ICombatInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	/*
-	virtual FVector FoundEnemyLocation() = 0;
-	virtual bool MoveToEnemy() = 0;
-	virtual void AttackEnemy() = 0;
-	*/
+	virtual void CombatTick(float DeltaTime);
+
+	// Enemy Detection -----
+	AActor* CurrentEnemy = nullptr;
+	bool EnemyFound = false;
+	FVector AttackLocation;
+	FVector EnemyLocation;
+	TArray<AActor*> EnemyActors;
+	
+	// ---------------------
+
+	// Friendly AI -----
+	TArray<AGenericBaseAI*> AttackingUnits;
+	// -----------------
+	
+	void FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors);
+	
+	TArray<AGenericBaseAI*> ProccessAttackMode(TArray<AActor*> Units);
+	
+	TArray<FVector> UpdateEnemyLocation();
+
+	FVector FindAttackLocation(AGenericBaseAI* FriendlyActor);
+
+	void MoveToAttackLocation(AGenericBaseAI* FriendlyActor, FVector AttackLocation);
+	
+
+
+
 
 	
+	/*
 	TArray<FVector> CalculateSurroundingPositions(FVector EnemyLocation, int32 UnitsCount, float Radius);
 
 	TArray<FVector> CalculateRandomPositions(FVector EnemyLocation, int32 UnitsCount, float Radius);
@@ -40,14 +64,14 @@ public:
 	
 	bool IsLocationOccupied(FVector Location, TArray<AActor*> FriendlyActors, float Radius);
 	
-	///virtual void CustomTick(float DeltaTime);
-	
+
 	void MoveToEnemy(AActor* EnemyActor,TArray<AActor*> FriendlyActors);
 
 	void SurroundEnemy(AActor* EnemyActor, TArray<AGenericBaseAI*> FriendlyActors);
 	
 	TArray<AGenericBaseAI*> ProccessAttackMode(TArray<AActor*> Units);
-	
-	bool bFoundEnemyLocation = false;
+
+	TArray<FVector> SurroundingPositions;
+	*/
 	
 };

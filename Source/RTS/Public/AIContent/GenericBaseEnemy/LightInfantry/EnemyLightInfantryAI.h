@@ -12,7 +12,8 @@ class RTS_API AEnemyLightInfantryAI : public AGenericBaseEnemyAI
 public:
  // Sets default values for this character's properties
  AEnemyLightInfantryAI();
-
+ 
+ 
 protected:
  // Called when the game starts or when spawned
  virtual void BeginPlay() override;

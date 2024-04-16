@@ -189,6 +189,9 @@ void AUserController::Tick(float DeltaTime)
 
 	// Defined User Macro, Gets Trace to pawn under cursor. 
 	GetHitResultUnderCursor(mTraceChannel, true, bHit);
+
+	// Combat Interface Tick
+	CombatTick(DeltaTime);
 }
 
 void AUserController::BeginPlay()
@@ -271,7 +274,7 @@ void AUserController::EventKey()
 					{
 						if (CombatInterface != nullptr)
 						{
-							CombatInterface->MoveToEnemy(HitActorObj, SelectedUnits);
+							CombatInterface->FindEnemy(HitActorObj, SelectedUnits);
 						}
 						else
 						{

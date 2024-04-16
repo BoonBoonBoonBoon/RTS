@@ -4,8 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
-#include "Interfaces/CombatInterface.h"
 #include "GenericBaseEnemyAI.generated.h"
+
 
 UCLASS()
 class RTS_API AGenericBaseEnemyAI : public ACharacter
@@ -26,8 +26,7 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	ICombatInterface* CombatInterface;
+	
 	
 	// Health attribute
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
