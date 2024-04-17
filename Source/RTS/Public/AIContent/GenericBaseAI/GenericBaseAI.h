@@ -9,6 +9,7 @@
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatInterface.h"
+#include "GenericTeamAgentInterface.h"
 #include "Interfaces/SelectionInterface.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "GenericBaseAI.generated.h"
@@ -17,7 +18,7 @@
 class AUserController; 
 
 UCLASS()
-class RTS_API AGenericBaseAI : public ACharacter, public ISelectionInterface, public ICombatInterface
+class RTS_API AGenericBaseAI : public ACharacter, public ISelectionInterface, public ICombatInterface, public IGenericTeamAgentInterface
 {
 	GENERATED_BODY()
 
@@ -115,6 +116,19 @@ protected:
 
 public:
 
+	// Team ID ------------
+	
+	// Override the GetGenericTeamId method from the IGenericTeamAgentInterface
+	virtual FGenericTeamId GetGenericTeamId() const override;
+
+	// Override the GetTeamAttitudeTowards method from the IGenericTeamAgentInterface
+	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
+
+	// Add a member variable to store the team id
+	FGenericTeamId TeamId;
+
+	// -------------------
+	
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
