@@ -5,6 +5,7 @@
 #include "UserController.h"
 #include "AIContent/GenericBaseAI/GenericController.h"
 #include "Components/DecalComponent.h"
+#include "Perception/AIPerceptionComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 
@@ -21,7 +22,11 @@ AGenericBaseAI::AGenericBaseAI()
 	SelectedDecalComp = CreateDefaultSubobject<UDecalComponent>("Decal");
 	SelectedDecalComp->SetupAttachment(RootComponent);
 
-    AGenericBaseAI::SetupStimulusSource();
+	// Initialize the Stimulus Source
+    SetupStimulusSource();
+	
+	// Initialize the Perception System
+	InitializePerceptionSystem();
 	
 	// Set Tag to building
 	Tags.Add("Unit");
@@ -90,6 +95,8 @@ void AGenericBaseAI::BeginPlay()
 
 	// Initialize the CombatInterface
 	CombatInterface = Cast<ICombatInterface>(this);
+
+
 }
 
 
@@ -103,17 +110,34 @@ void AGenericBaseAI::SetupStimulusSource()
 	}
 }
 
-void AGenericBaseAI::GatherAroundEnemy(FVector& Destination)
+void AGenericBaseAI::InitializePerceptionSystem()
 {
+	// Initialize the Perception Component
+	PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("PerceptionComponent"));
 	
-	/*AGenericController* AIController = Cast<AGenericController>(GetController());
+	// Initialize the Sight Config
+	SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
+	if (SightConfig)
+	{
+		SightConfig->SightRadius = 1000.f;
+		SightConfig->LoseSightRadius = SightConfig->SightRadius + 500.f;
+		SightConfig->PeripheralVisionAngleDegrees = 90.f;
+		SightConfig->SetMaxAge(5.f);
+		SightConfig->AutoSuccessRangeFromLastSeenLocation = 100000.f;
+		SightConfig->DetectionByAffiliation.bDetectEnemies = true;
+		SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+		SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
 
-	AIController->MoveLoc = Destination;
-	AIController->CheckValid = true;
+		PerceptionComponent->SetDominantSense(*SightConfig->GetSenseImplementation());
+		PerceptionComponent->ConfigureSense(*SightConfig);
+	}
 	
-	// Print the hit location coordinates to the output log
-	UE_LOG(LogTemp, Warning, TEXT("Hit Location: X=%f, Y=%f, Z=%f"), Destination.X, Destination.Y, Destination.Z);*/
+	/*if (PerceptionComponent && SightConfig)
+	{
+		PerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AGenericBaseAI::OnTargetPerceptionUpdated);
+	}*/
 }
+
 
 // Called every frame
 void AGenericBaseAI::Tick(float DeltaTime)

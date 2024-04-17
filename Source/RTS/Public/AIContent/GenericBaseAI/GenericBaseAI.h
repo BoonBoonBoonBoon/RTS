@@ -10,6 +10,7 @@
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatInterface.h"
 #include "Interfaces/SelectionInterface.h"
+#include "Perception/AISenseConfig_Sight.h"
 #include "GenericBaseAI.generated.h"
 
 
@@ -24,6 +25,15 @@ class RTS_API AGenericBaseAI : public ACharacter, public ISelectionInterface, pu
 	UPROPERTY(EditAnywhere, Category = "AI Sight")
 	class UAIPerceptionStimuliSourceComponent* StimuliSourceAi;
 
+	// Used to detect the stimuli emitted by the pawn.
+	UPROPERTY(EditAnywhere, Category = "AI Sight")
+	class UAIPerceptionComponent* PerceptionComponent;
+
+	// Used to configure the sight sense of the AI.
+	UPROPERTY(EditAnywhere, Category = "AI Sight")
+	UAISenseConfig_Sight* SightConfig;
+
+	
 	UPROPERTY()
 	UActorAttributesComponent* ActorAttributesComponent;
 	
@@ -86,16 +96,6 @@ public:
 	bool DecalHit = false;
 
 	AAIController* GetAIController(AGenericBaseAI* Actor);
-	
-	// COMBAT -------------------
-	
-	/*
-	virtual FVector FoundEnemyLocation() override;
-	virtual bool MoveToEnemy() override;
-	virtual void AttackEnemy() override;
-
-	float AttackRange = 100.f;*/
-	// --------------------------
 
 private:
 	AActor* TargetEnemy = nullptr;
@@ -106,9 +106,11 @@ protected:
 	
 	virtual void SetupStimulusSource();
 
+	void InitializePerceptionSystem();
+	//void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+
 public:
 
-	void GatherAroundEnemy(FVector& Destination);
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
