@@ -110,6 +110,20 @@ void AGenericBaseAI::SetupStimulusSource()
 	}
 }
 
+void AGenericBaseAI::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus)
+{
+	if (Stimulus.WasSuccessfullySensed())
+	{
+		// Set the Target Enemy
+		TargetEnemy = Actor;
+	}
+	else
+	{
+		// Reset the Target Enemy
+		TargetEnemy = nullptr;
+	}
+}
+
 void AGenericBaseAI::InitializePerceptionSystem()
 {
 	// Initialize the Perception Component
@@ -132,10 +146,10 @@ void AGenericBaseAI::InitializePerceptionSystem()
 		PerceptionComponent->ConfigureSense(*SightConfig);
 	}
 	
-	/*if (PerceptionComponent && SightConfig)
+	if (PerceptionComponent && SightConfig)
 	{
 		PerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AGenericBaseAI::OnTargetPerceptionUpdated);
-	}*/
+	}
 }
 
 

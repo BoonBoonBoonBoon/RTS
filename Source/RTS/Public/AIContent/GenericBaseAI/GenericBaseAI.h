@@ -34,6 +34,7 @@ class RTS_API AGenericBaseAI : public ACharacter, public ISelectionInterface, pu
 	UAISenseConfig_Sight* SightConfig;
 
 	
+	
 	UPROPERTY()
 	UActorAttributesComponent* ActorAttributesComponent;
 	
@@ -106,8 +107,11 @@ protected:
 	
 	virtual void SetupStimulusSource();
 
+	UFUNCTION()
+	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	
 	void InitializePerceptionSystem();
-	//void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
+	
 
 public:
 

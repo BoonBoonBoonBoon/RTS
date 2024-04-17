@@ -28,16 +28,16 @@
 
 void ICombatInterface::CombatTick(float DeltaTime)
 {
-	if(EnemyFound)
+	/*if(EnemyFound)
 	{
 		//UpdateEnemyLocation();
 
-		/*for (AActor* FriendlyActor : /* all friendly AIs with the Attack attribute #1#)
+		for (AActor* FriendlyActor : /* all friendly AIs with the Attack attribute #1#)
 		{
 			AttackLocation = FindAttackLocation(AttackingUnits);
 			MoveToAttackLocation(AttackingUnits, AttackLocation);
-		}*/
-	}
+		}
+	}*/
 }
 
 // 1. First Call from event key in usercontroller
@@ -82,6 +82,7 @@ TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Uni
 	}
 	return UnitsCanAttack;
 }
+
 
 
 /*

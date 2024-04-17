@@ -17,7 +17,11 @@ class AGenericBaseAI;
 TMap<EUnitTypes, TArray<EUnitAttributes>> ISelectionInterface::UnitTypeToAttributesMap;
 //TMap<EUnitTypes, FUnitData> ISelectionInterface::UnitTypeToDataMap;
 
-
+/**
+ * Function to convert EBuildingTypes enum to string
+ * @param e - EBuildingTypes enum value
+ * @return string representation of the enum value
+ */
 const char* to_string(EBuildingTypes e)
 {
 	switch (e)
@@ -30,7 +34,11 @@ const char* to_string(EBuildingTypes e)
 	}
 }
 
-
+/**
+ * Function to get the building type of a given actor
+ * @param Building - AActor pointer
+ * @return EBuildingTypes enum value representing the building type
+ */
 EBuildingTypes ISelectionInterface::GetBuildingType(const AActor* Building)
 {
 	if (Building)
@@ -47,6 +55,11 @@ EBuildingTypes ISelectionInterface::GetBuildingType(const AActor* Building)
 	return {};
 }
 
+/**
+ * Function to assign a building type to a given actor
+ * @param Building - AActor pointer
+ * @return EBuildingTypes enum value representing the assigned building type
+ */
 EBuildingTypes ISelectionInterface::AssignBuildingType(const AActor* Building)
 {
 	if (Building)
@@ -71,6 +84,10 @@ EBuildingTypes ISelectionInterface::AssignBuildingType(const AActor* Building)
 	return {};
 }
 
+/**
+ * Function to cast a given pawn to AMainBuilding and set visibility of its SelectedDecalComp to false
+ * @param Pawn - AActor pointer
+ */
 void ISelectionInterface::CastTo(AActor* Pawn)
 {
 	if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Pawn))
@@ -80,6 +97,10 @@ void ISelectionInterface::CastTo(AActor* Pawn)
 	}
 }
 
+/**
+ * Function to add a given building to an array and set visibility of its SelectedDecalComp to true
+ * @param Building - TArray of AActor pointers
+ */
 void ISelectionInterface::FillArray(TArray<AActor*> Building)
 {
 	// Adds the selected building to the array
@@ -93,6 +114,10 @@ void ISelectionInterface::FillArray(TArray<AActor*> Building)
 	}
 }
 
+/**
+ * Function to remove a given building from an array and set visibility of its SelectedDecalComp to false
+ * @param Building - TArray of AActor pointers
+ */
 void ISelectionInterface::EmptyArray(TArray<AActor*> Building)
 {
 	// Deletes the selected building from the array
@@ -108,6 +133,12 @@ void ISelectionInterface::EmptyArray(TArray<AActor*> Building)
 	Building.Empty();
 }
 
+/**
+ * Function to check if a given building is in an array
+ * @param BuildingArray - TArray of APawn pointers
+ * @param BuildingToCheck - APawn pointer
+ * @return true if the building is in the array, false otherwise
+ */
 bool ISelectionInterface::IsBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck)
 {
 	return BuildingArray.Contains(BuildingToCheck);
@@ -117,6 +148,12 @@ void ISelectionInterface::UnitSelection()
 {
 }
 
+
+/**
+ * Function to handle unit selection with a given array of selected actors and a hit actor
+ * @param Selected - TArray of AActor pointers
+ * @param HitActor - AActor pointer
+ */
 void ISelectionInterface::UnitSelection(TArray<AActor*>& Selected, AActor* HitActor)
 {
 	// If Array is empty
@@ -141,6 +178,11 @@ void ISelectionInterface::UnitSelection(TArray<AActor*>& Selected, AActor* HitAc
 	}
 }
 
+/**
+ * Function to handle building array when it is empty
+ * @param Building - TArray of AActor pointers
+ * @param HitPawn - AActor pointer
+ */
 void ISelectionInterface::BuildingArrayIsEmpty(TArray<AActor*>& Building, AActor* HitPawn)
 {
 	if (Building.IsEmpty())
@@ -156,6 +198,11 @@ void ISelectionInterface::BuildingArrayIsEmpty(TArray<AActor*>& Building, AActor
 	}
 }
 
+/**
+ * Function to change an element in an array with a given hit pawn
+ * @param Array - TArray of AActor pointers
+ * @param HitPawn - AActor pointer
+ */
 void ISelectionInterface::ChangeElementInArray(TArray<AActor*>& Array, AActor* HitPawn)
 {
 	if (Array.Num() > 0)
@@ -195,6 +242,11 @@ void ISelectionInterface::ChangeElementInArray(TArray<AActor*>& Array, AActor* H
 	}
 }
 
+/**
+ * Function to handle multi unit selection with a given array of selected actors and a hit actor
+ * @param Selected - TArray of AActor pointers
+ * @param HitActor - AActor pointer
+ */
 void ISelectionInterface::MultiUnitSelection(TArray<AActor*>& Selected, AActor* HitActor)
 {
 	if (Cast<AGenericBaseAI>(HitActor))
@@ -213,6 +265,10 @@ void ISelectionInterface::MultiUnitSelection(TArray<AActor*>& Selected, AActor* 
 	}
 }
 
+/**
+ * Function to handle when a hit is not made
+ * @param Array - TArray of AActor pointers
+ */
 void ISelectionInterface::NotHit(TArray<AActor*>& Array)
 {
 	// Loops through all the elements and turns vis off
@@ -232,6 +288,11 @@ void ISelectionInterface::NotHit(TArray<AActor*>& Array)
 	}
 }
 
+/**
+ * Function to check unit type for gathering
+ * @param SelectedUnits - TArray of AActor pointers
+ * @return TArray of AActor pointers that are worker drones
+ */
 TArray<AActor*> ISelectionInterface::CheckUnitTypeForGathering(TArray<AActor*>& SelectedUnits)
 {
 	TArray<AActor*> WorkerDrones;
@@ -247,6 +308,13 @@ TArray<AActor*> ISelectionInterface::CheckUnitTypeForGathering(TArray<AActor*>& 
 	return WorkerDrones;
 }
 
+/**
+ * Function to calculate grid formation positions
+ * @param TargetLocation - FVector representing the target location
+ * @param UnitsCount - int32 representing the number of units
+ * @param Spacing - float representing the spacing between units
+ * @return TArray of FVector representing the calculated positions
+ */
 TArray<FVector> ISelectionInterface::CalculateGridFormationPositions(FVector TargetLocation, int32 UnitsCount,
 	float Spacing)
 {
@@ -275,6 +343,11 @@ TArray<FVector> ISelectionInterface::CalculateGridFormationPositions(FVector Tar
 	return Positions;
 }
 
+/**
+ * Moves a group of units to a specified location.
+ * @param Units - An array of actors representing the units to be moved.
+ * @param TargetLocation - The target location to move the units to.
+ */
 void ISelectionInterface::MoveGroupToLocation(TArray<AActor*> Units, FVector TargetLocation)
 {
 	TArray<FVector> FormationPositions = CalculateGridFormationPositions(TargetLocation, Units.Num());
@@ -299,20 +372,33 @@ void ISelectionInterface::MoveGroupToLocation(TArray<AActor*> Units, FVector Tar
 	}
 }
 
-
+/**
+ * Checks if a hit is valid.
+ * @param HitActor - The actor that was hit.
+ * @return A boolean indicating whether the hit is valid.
+ */
 bool ISelectionInterface::CheckValidHit(AActor* HitActor)
 {
 	// Change
 	return {};
 }
 
+/**
+ * Checks if a unit is selected.
+ * @param UnitArray - An array of actors representing the selected units.
+ * @param UnitToCheck - The unit to check.
+ * @return A boolean indicating whether the unit is selected.
+ */
 bool ISelectionInterface::IsUnitSelected(const TArray<AActor*>& UnitArray, const AActor* UnitToCheck)
 {
 	return UnitArray.Contains(UnitToCheck);
 }
 
-
-
+/**
+ * Handles the types of units.
+ * @param UnitArray - An array of actors representing the units.
+ * @param UnitActor - The actor representing the unit.
+ */
 void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* UnitActor)
 {
 	// Checks validity of the unit.
@@ -357,6 +443,11 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 	}
 }
 
+/**
+ * Gets the type of a unit.
+ * @param UnitActor - The actor representing the unit.
+ * @return The type of the unit.
+ */
 EUnitTypes ISelectionInterface::GetUnitType(const AActor* UnitActor)
 {
 	if (UnitActor)
@@ -374,6 +465,11 @@ EUnitTypes ISelectionInterface::GetUnitType(const AActor* UnitActor)
 	return EUnitTypes::Invalid;
 }
 
+/**
+ * Gets the attributes for a unit.
+ * @param UnitTypes - The type of the unit.
+ * @return A map of unit types to attributes.
+ */
 TMap<EUnitTypes, TArray<EUnitAttributes>> ISelectionInterface::GetAttributesForUnit(EUnitTypes UnitTypes)
 {
 	if (UnitTypes == EUnitTypes::Worker)
@@ -398,6 +494,11 @@ TMap<EUnitTypes, TArray<EUnitAttributes>> ISelectionInterface::GetAttributesForU
 	return {};
 }
 
+/**
+ * Gets the data for a unit.
+ * @param UnitTypes - The type of the unit.
+ * @return The data for the unit.
+ */
 FUnitData ISelectionInterface::GetUnitDataForUnit(EUnitTypes UnitTypes)
 {
 	// Ensure the map is populated with data for each unit type.
@@ -440,7 +541,11 @@ FUnitData ISelectionInterface::GetUnitDataForUnit(EUnitTypes UnitTypes)
 	}*/
 }
 
-
+/**
+ * Gets the data for a unit.
+ * @param UnitTypes - The type of the unit.
+ * @return The data for the unit.
+ */
 void ISelectionInterface::LogUnitTypeToDataMap(const TMap<EUnitTypes, FUnitData>& DataMap)
 {
 	// Iterate over each key-value pair in the map
@@ -480,6 +585,15 @@ void ISelectionInterface::LogUnitTypeToDataMap(const TMap<EUnitTypes, FUnitData>
 	}
 }
 
+/**
+ * @brief Processes the given units and returns those that can patrol.
+ *
+ * This function iterates over the given array of units, checks if each unit has the "Patrol" attribute,
+ * and if so, adds it to a new array. This new array, containing only the units that can patrol, is then returned.
+ *
+ * @param Units An array of actors representing the units to be processed.
+ * @return An array of GenericBaseAI pointers representing the units that can patrol.
+ */
 TArray<AGenericBaseAI*> ISelectionInterface::ProccessPatrolMode(TArray<AActor*> Units)
 {
 	// Temp array to store the units that can patrol.
