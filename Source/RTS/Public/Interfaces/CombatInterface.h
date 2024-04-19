@@ -44,14 +44,13 @@ public:
 	
 	TArray<AGenericBaseAI*> ProccessAttackMode(TArray<AActor*> Units);
 	
-	TArray<FVector> UpdateEnemyLocation();
+	FVector UpdateEnemyLocation();
 
 	FVector FindAttackLocation(AGenericBaseAI* FriendlyActor);
 
 	void MoveToAttackLocation(AGenericBaseAI* FriendlyActor, FVector AttackLocation);
 	
-
-
+	TArray<FVector> SurroundingPositions;
 
 
 	

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "Perception/AISenseConfig_Sight.h"
 #include "GenericController.generated.h"
 
 class AGenericBaseAI;
@@ -16,7 +17,17 @@ class RTS_API AGenericController : public AAIController
 	GENERATED_BODY()
 
 public:
+	
+	// Used to detect the stimuli emitted by the pawn.
+	UPROPERTY(EditAnywhere, Category = "AI Sight")
+	class UAIPerceptionComponent* PerceptionComp;
 
+	// Used to configure the sight sense of the AI.
+	UPROPERTY(EditAnywhere, Category = "AI Sight")
+	UAISenseConfig_Sight* SightConfig;
+	
+	AActor* TargetEnemy = nullptr;
+	
 	mutable FVector MoveLoc;
 	mutable bool CheckValid;
 	void MovePawn();
@@ -35,8 +46,8 @@ public:
 	
 	// The Current Patrol Point the AI is moving to.
 	void PatrolLoc();
-
 	
+
 	FVector* DestLoc;
 
 	virtual void Tick(float DeltaSeconds) override;

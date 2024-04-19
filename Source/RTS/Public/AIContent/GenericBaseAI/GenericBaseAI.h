@@ -9,7 +9,6 @@
 #include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatInterface.h"
-#include "GenericTeamAgentInterface.h"
 #include "Interfaces/SelectionInterface.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "GenericBaseAI.generated.h"
@@ -18,7 +17,7 @@
 class AUserController; 
 
 UCLASS()
-class RTS_API AGenericBaseAI : public ACharacter, public ISelectionInterface, public ICombatInterface, public IGenericTeamAgentInterface
+class RTS_API AGenericBaseAI : public ACharacter, public ISelectionInterface, public ICombatInterface
 {
 	GENERATED_BODY()
 
@@ -26,13 +25,13 @@ class RTS_API AGenericBaseAI : public ACharacter, public ISelectionInterface, pu
 	UPROPERTY(EditAnywhere, Category = "AI Sight")
 	class UAIPerceptionStimuliSourceComponent* StimuliSourceAi;
 
-	// Used to detect the stimuli emitted by the pawn.
+	/*// Used to detect the stimuli emitted by the pawn.
 	UPROPERTY(EditAnywhere, Category = "AI Sight")
 	class UAIPerceptionComponent* PerceptionComponent;
 
 	// Used to configure the sight sense of the AI.
 	UPROPERTY(EditAnywhere, Category = "AI Sight")
-	UAISenseConfig_Sight* SightConfig;
+	UAISenseConfig_Sight* SightConfig;*/
 
 	
 	
@@ -108,24 +107,29 @@ protected:
 	
 	virtual void SetupStimulusSource();
 
+	/*
 	UFUNCTION()
 	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
 	
 	void InitializePerceptionSystem();
+	*/
 	
 
 public:
 
 	// Team ID ------------
 	
+	/*
 	// Override the GetGenericTeamId method from the IGenericTeamAgentInterface
-	virtual FGenericTeamId GetGenericTeamId() const override;
+	virtual FGenericTeamId GetGenericTeamId() const override {return TeamId; }
 
 	// Override the GetTeamAttitudeTowards method from the IGenericTeamAgentInterface
 	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
 
 	// Add a member variable to store the team id
+	UPROPERTY(EditAnywhere)
 	FGenericTeamId TeamId;
+	*/
 
 	// -------------------
 	

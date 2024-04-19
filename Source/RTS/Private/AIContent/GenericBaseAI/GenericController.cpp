@@ -2,8 +2,9 @@
 
 
 #include "AIContent/GenericBaseAI/GenericController.h"
-
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
+#include "Perception/AIPerceptionComponent.h"
+
 
 
 void AGenericController::MovePawn()
@@ -15,6 +16,16 @@ void AGenericController::MovePawn()
 	}
 }
 
+/**
+ * @brief Handles the patrol logic for the AI controller.
+ *
+ * This function is responsible for managing the patrol behavior of the AI controller.
+ * If the AI is set to patrol, it will move between two points (PatrolPointA and PatrolPointB) in a grid formation.
+ * The function first checks if this is the first move, and if so, calculates the grid formation positions for the first patrol point and moves each unit to its position.
+ * Then, it checks if the units are at the first patrol point. If they are, it calculates the grid formation positions for the second patrol point and moves each unit to its position.
+ * If the units are not at the first patrol point, it assumes they are at the second patrol point, calculates the grid formation positions for the first patrol point, and moves each unit back to its position.
+ * The function uses a distance check to determine when the units have reached a patrol point and should move to the next one.
+ */
 void AGenericController::PatrolLoc()
 {
 	if (bIsPatrolling)
