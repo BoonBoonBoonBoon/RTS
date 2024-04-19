@@ -28,21 +28,32 @@ public:
 	virtual void CombatTick(float DeltaTime);
 
 	// Enemy Detection -----
-	AActor* CurrentEnemy = nullptr;
-	bool EnemyFound = false;
-	FVector AttackLocation;
+	
+	/*bool EnemyFound = false;
+	
 	FVector EnemyLocation;
-	TArray<AActor*> EnemyActors;
+	TArray<AActor*> EnemyActors;*/
 	
 	// ---------------------
 
 	// Friendly AI -----
 	TArray<AGenericBaseAI*> AttackingUnits;
 	// -----------------
+	TArray<FVector> GetAllLocationsAroundEnemy(FVector enemyLocation, float radius, float stepSize);
+	
+	TArray<FVector> GetAllLocationsWithinRadius(FVector center, float radius);
 	
 	void FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors);
 	
 	TArray<AGenericBaseAI*> ProccessAttackMode(TArray<AActor*> Units);
+
+	bool IsLocationOccupied(FVector Location, TArray<AGenericBaseAI*> FriendlyActors, float Radius);
+	void MoveUnitsToSeparateLocations(TArray<AGenericBaseAI*> FriendlyActors, FVector TargetLocation);
+	float MeleeAttackRange = 150.f;
+	float RangedAttackRange = 1000.f;
+	FVector CurrentEnemy = FVector::ZeroVector;
+	FVector AttackLocation;
+	TArray<FVector> AssignedLocations;
 	
 	FVector UpdateEnemyLocation();
 
@@ -51,26 +62,5 @@ public:
 	void MoveToAttackLocation(AGenericBaseAI* FriendlyActor, FVector AttackLocation);
 	
 	TArray<FVector> SurroundingPositions;
-
-
-	
-	/*
-	TArray<FVector> CalculateSurroundingPositions(FVector EnemyLocation, int32 UnitsCount, float Radius);
-
-	TArray<FVector> CalculateRandomPositions(FVector EnemyLocation, int32 UnitsCount, float Radius);
-	
-	TArray<AGenericBaseAI*> AttackingUnits;
-	
-	bool IsLocationOccupied(FVector Location, TArray<AActor*> FriendlyActors, float Radius);
-	
-
-	void MoveToEnemy(AActor* EnemyActor,TArray<AActor*> FriendlyActors);
-
-	void SurroundEnemy(AActor* EnemyActor, TArray<AGenericBaseAI*> FriendlyActors);
-	
-	TArray<AGenericBaseAI*> ProccessAttackMode(TArray<AActor*> Units);
-
-	TArray<FVector> SurroundingPositions;
-	*/
 	
 };
