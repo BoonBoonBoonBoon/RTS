@@ -69,21 +69,6 @@ void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyAct
     
     MoveUnitsToSeparateLocations(AttackingUnits, AttackLocation);
    
-	
-    // Todo : Find locations the AttackingUnits can move to.
-	
-
-	
-    /*if (AttackingUnits.Num() > 0)
-    {
-        for(int32 i = 0; i < AttackingUnits.Num(); ++i)
-        {
-            if (AGenericController* AIController = Cast<AGenericController>(AttackingUnits[i]->GetController()))
-            {
-                AIController->MoveToLocation(AttackLocation);
-            }
-        }
-    }*/
 }
 
 /**
@@ -172,7 +157,6 @@ TArray<FVector> ICombatInterface::GetAllLocationsWithinRadius(FVector center, fl
     return locationsWithinRadius;
 }
 
-
 /**
  * @brief Function to get all locations around an enemy within a certain radius.
  * @param enemyLocation - The location of the enemy.
@@ -201,6 +185,12 @@ TArray<FVector> ICombatInterface::GetAllLocationsAroundEnemy(FVector enemyLocati
     return locations;
 }
 
+/**
+ * @brief Function to move friendly AI units to separate locations.
+ * It calculates a circular formation around the target location and moves each unit to a unique position on the circle's circumference.
+ * @param FriendlyActors - The array of friendly AI units.
+ * @param TargetLocation - The target location.
+ */
 void ICombatInterface::MoveUnitsToSeparateLocations(TArray<AGenericBaseAI*> FriendlyActors, FVector TargetLocation)
 {
     int32 NumUnits = FriendlyActors.Num();
@@ -238,20 +228,4 @@ bool ICombatInterface::IsLocationOccupied(FVector Location, TArray<AGenericBaseA
     return false;
 }
 
-
-
-/**
- * @brief Function to move a friendly AI unit to a given attack location.
- * @param FriendlyActor - The friendly AI unit.
- * @param AttackLocation - The location to move to.
- */
-/*
-void ICombatInterface::MoveToAttackLocation(AGenericBaseAI* FriendlyActor, FVector AttackLocation)
-{
-    if(AGenericController* AIController = Cast<AGenericController>(FriendlyActor->GetController()))
-    {
-        AIController->MoveToLocation(AttackLocation);
-    }
-}
-*/
 

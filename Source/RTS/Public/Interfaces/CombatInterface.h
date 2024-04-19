@@ -39,6 +39,8 @@ public:
 	// Friendly AI -----
 	TArray<AGenericBaseAI*> AttackingUnits;
 	// -----------------
+	
+	
 	TArray<FVector> GetAllLocationsAroundEnemy(FVector enemyLocation, float radius, float stepSize);
 	
 	TArray<FVector> GetAllLocationsWithinRadius(FVector center, float radius);
