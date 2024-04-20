@@ -140,12 +140,77 @@ void AGenericBaseAI::SetupStimulusSource()
 void AGenericBaseAI::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	for (AGenericBaseAI* Unit : AttackingUnits)
+	{
+		FUnitData unitData = Unit->UnitDataMap[Unit->UnitType];
+        
+		if (unitData.Attributes.Contains(EUnitAttributes::Attack))
+		{
+			// Calculate the distance between the AI and the target
+			float distance = FVector::Dist(Unit->GetActorLocation(), CurrentEnemy);
+			 UE_LOG(LogTemp, Warning, TEXT("distance: %f"), distance);
 
+			
+			// Check if the AI is within a certain distance
+			if (distance <= 300.f)
+			{
+				// Set isAttacking to true for the individual instance of the actor
+				unitData.UnitStats.bIsAttacking = true;
+				
+				InitiateCombat(unitData.UnitStats.bIsAttacking, Unit);
+				UE_LOG(LogTemp, Warning, TEXT(" Attacking1"));
+			}
+			/*else
+			{
+				// Set isAttacking to false for the individual instance of the actor
+				unitData.UnitStats.bIsAttacking = false;
+				InitiateCombat(unitData.UnitStats.bIsAttacking, Unit);
+				//UE_LOG(LogTemp, Warning, TEXT("Not Attacking"));
+			}*/
+		}
+	}
 	if(ValidHit)
 	{
 		MovePTR();
 	}
 }
+
+void AGenericBaseAI::InitiateCombat(bool bIsAttacking, AGenericBaseAI* Unit)
+{
+	
+	if (bIsAttacking)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Get World"));
+		GetWorld()->GetTimerManager().SetTimer(Unit->AttackTimerHandle, this, &AGenericBaseAI::TimerCallback, TimeValue, true);
+	} else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("attack false "));
+	}
+}
+
+// Add a new member function to the ICombatInterface class
+void AGenericBaseAI::TimerCallback()
+{
+	--TimeValue;
+	UE_LOG(LogTemp, Warning, TEXT("TimeValue: %f"), TimeValue);
+	
+	if (TimeValue <= 0)
+	{
+		++TimeValue;
+		AttackEnemy();
+	}
+}
+
+
+
+
+
+
+
+
+
+
 
 // Called to bind functionality to input
 void AGenericBaseAI::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

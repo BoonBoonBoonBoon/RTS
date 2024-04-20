@@ -191,7 +191,7 @@ void AUserController::Tick(float DeltaTime)
 	GetHitResultUnderCursor(mTraceChannel, true, bHit);
 
 	// Combat Interface Tick
-	CombatTick(DeltaTime);
+	//CombatTick(DeltaTime);
 }
 
 void AUserController::BeginPlay()

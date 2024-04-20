@@ -48,12 +48,16 @@ enum class EUnitAttributes
 	Invalid,
 };
 
-// Stores the manipulative elements a unit can contain.
+/**
+ * @struct FUnitStats
+ * @brief A structure to store the manipulative elements a unit can contain.
+ */
 USTRUCT()
 struct FUnitStats
 {
 	GENERATED_BODY()
 public:
+	
 	// The Units Current Health.
 	UPROPERTY(EditAnywhere, Category= "Health")
 	float Health;
@@ -74,6 +78,9 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Damage")
 	float DamageDealt;
 
+	UPROPERTY(EditAnywhere, Category = "Check Attack")
+	bool bIsAttacking;
+	
 	// The range of how far units can attack (Further for ranged Units).
 	UPROPERTY(EditAnywhere, Category = "Attack Range")
 	float AttackRange;

@@ -25,7 +25,7 @@ class RTS_API ICombatInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 
-	virtual void CombatTick(float DeltaTime);
+//	virtual void CombatTick(float DeltaTime);
 
 	// Enemy Detection -----
 	
@@ -39,14 +39,14 @@ public:
 	// Friendly AI -----
 	TArray<AGenericBaseAI*> AttackingUnits;
 	// -----------------
-	
-	
+
+
 	TArray<FVector> GetAllLocationsAroundEnemy(FVector enemyLocation, float radius, float stepSize);
-	
+
 	TArray<FVector> GetAllLocationsWithinRadius(FVector center, float radius);
-	
+
 	void FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors);
-	
+
 	TArray<AGenericBaseAI*> ProccessAttackMode(TArray<AActor*> Units);
 
 	bool IsLocationOccupied(FVector Location, TArray<AGenericBaseAI*> FriendlyActors, float Radius);
@@ -56,13 +56,15 @@ public:
 	FVector CurrentEnemy = FVector::ZeroVector;
 	FVector AttackLocation;
 	TArray<FVector> AssignedLocations;
-	
+	FTimerHandle AttackTimerHandle;
+	//void InitiateCombat(bool bIsAttacking, AGenericBaseAI* Unit);
+	virtual void AttackEnemy();
+	float TimeValue = 2.f ; // Represents a time value
 	FVector UpdateEnemyLocation();
 
 	FVector FindAttackLocation(AGenericBaseAI* FriendlyActor);
 
 	void MoveToAttackLocation(AGenericBaseAI* FriendlyActor, FVector AttackLocation);
-	
+
 	TArray<FVector> SurroundingPositions;
-	
 };

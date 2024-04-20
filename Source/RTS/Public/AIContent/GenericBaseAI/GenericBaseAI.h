@@ -10,7 +10,6 @@
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatInterface.h"
 #include "Interfaces/SelectionInterface.h"
-#include "Perception/AISenseConfig_Sight.h"
 #include "GenericBaseAI.generated.h"
 
 
@@ -136,6 +135,8 @@ public:
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	void InitiateCombat(bool bIsAttacking, AGenericBaseAI* Unit);
+	void TimerCallback();
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;

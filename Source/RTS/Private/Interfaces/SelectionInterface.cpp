@@ -508,7 +508,7 @@ FUnitData ISelectionInterface::GetUnitDataForUnit(EUnitTypes UnitTypes)
 		WorkerData.Attributes = {
 			EUnitAttributes::Gather, EUnitAttributes::Repair, EUnitAttributes::Build
 		}; // Worker Attributes
-		WorkerData.UnitStats = {100.0f, 0.0f, 100.0f, 100.0f, 10.0f, 100.0f, 1.0f}; // Worker Stats
+		WorkerData.UnitStats = {100.0f, 0.0f, 100.0f, 100.0f, 0.0f, false, 0.0f, 0.0f}; // Worker Stats
 		return WorkerData;
 	}
 	
@@ -517,7 +517,7 @@ FUnitData ISelectionInterface::GetUnitDataForUnit(EUnitTypes UnitTypes)
 		FUnitData LightInfantryData;
 		LightInfantryData.Attributes = {EUnitAttributes::Attack, EUnitAttributes::Guard, EUnitAttributes::Patrol};
 		// Light Infantry Attributes
-		LightInfantryData.UnitStats = {100.0f, 0.0f, 100.0f, 100.0f, 10.0f, 100.0f, 1.0f}; // Light Infantry Stats
+		LightInfantryData.UnitStats = {100.0f, 0.0f, 100.0f, 100.0f, 10.0f, false, 200.0f, 2.0f}; // Light Infantry Stats
 		return LightInfantryData;
 		
 	} else

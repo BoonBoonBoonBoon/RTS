@@ -20,29 +20,12 @@
   * 
   */
 
+//bool isAttacking = unitData.UnitStats.bIsAttacking;
 
-
-
-
-
-
-/**
- * @brief Function that is called every tick and checks if an enemy has been found.
- * If an enemy has been found, it iterates over all friendly AI units that can attack,
- * finds the best location for each unit to attack from, and then moves the unit to that location.
- * @param DeltaTime - The time since the last tick.
- */
-void ICombatInterface::CombatTick(float DeltaTime)
+/*void ICombatInterface::CombatTick(float DeltaTime)
 {
-    /*if(EnemyFound)
-    {
-        for (AGenericBaseAI* FriendlyActor : AttackingUnits)
-        {
-            AttackLocation = FindAttackLocation(FriendlyActor);
-            MoveToAttackLocation(FriendlyActor, AttackLocation);
-        }
-    }*/
-}
+    
+}*/
 
 
 /**
@@ -66,9 +49,7 @@ void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyAct
     {
         AttackLocation = FindAttackLocation(FriendlyActor);
     }
-    
     MoveUnitsToSeparateLocations(AttackingUnits, AttackLocation);
-   
 }
 
 /**
@@ -97,13 +78,53 @@ TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Uni
             }
         }
     }
-
-
+    
     // Log the amount of units that will be returned
     UE_LOG(LogTemp, Warning, TEXT("Amount of units that will be returned: %d"), UnitsCanAttack.Num());
     
     return UnitsCanAttack;
 }
+
+
+void ICombatInterface::AttackEnemy()
+{
+    UE_LOG(LogTemp, Warning, TEXT("AttackEnemy"));
+}
+
+/*// Get the world from the unit
+       UWorld* World = Unit->GetWorld();
+       if (World)
+       {
+           // Set a timer to call the AttackEnemy function every second
+           World->GetTimerManager().SetTimer(Unit->AttackTimerHandle, Unit, &AGenericBaseAI::AttackEnemy, 1.0f, true);
+       }
+   }
+   else
+   {
+       // If not attacking, clear the timer
+       if (Unit->AttackTimerHandle.IsValid())
+       {
+           Unit->GetWorld()->GetTimerManager().ClearTimer(Unit->AttackTimerHandle);
+       }*/
+
+/*
+// UE_LOG(LogTemp, Warning, TEXT("InitiateCombat"));
+// Get the damage modifier for the friendly unit and cast that damage to the enemies health.
+// Also get a timer or something to modify the time it takes to attack the enemy
+        
+// Get the world from the current context
+UWorld* World = Unit->GetWorld();
+if (!World) return;
+
+// Get the timer manager
+FTimerManager& TimerManager = World->GetTimerManager();
+
+// Access the UnitStats from the unitData
+FUnitData unitData = Unit->UnitDataMap[Unit->UnitType];
+
+// Set up a timer to call the AttackEnemy function every AttackSpeed seconds
+TimerManager.SetTimer(AttackTimerHandle, Unit, &ICombatInterface::AttackEnemy, unitData.UnitStats.AttackSpeed, true);
+*/
 
 /**
  * @brief Function to find the best location for a friendly AI unit to attack from.

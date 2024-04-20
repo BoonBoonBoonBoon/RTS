@@ -44,12 +44,6 @@ void AGenericBaseEnemyAI::Tick(float DeltaTime)
 	}
 }
 
-// Called to bind functionality to input
-void AGenericBaseEnemyAI::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-}
 
 void AGenericBaseEnemyAI::TakeDamage(float DamageAmount)
 {
