@@ -140,36 +140,47 @@ void AGenericBaseAI::SetupStimulusSource()
 void AGenericBaseAI::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	
-	for (AGenericBaseAI* Unit : AttackingUnits)
+	if(bUnitFound)
 	{
-		FUnitData unitData = Unit->UnitDataMap[Unit->UnitType];
-        
-		if (unitData.Attributes.Contains(EUnitAttributes::Attack))
+		UE_LOG(LogTemp, Warning, TEXT("AttackingUnits: %d"), AttackingUnits.Num());
+		
+		for (AActor* Src: AttackingUnits)
 		{
-			// Calculate the distance between the AI and the target
-			float distance = FVector::Dist(Unit->GetActorLocation(), CurrentEnemy);
-			 UE_LOG(LogTemp, Warning, TEXT("distance: %f"), distance);
+			if(auto Unit = Cast<AGenericBaseAI>(Src))
+			{
+				FUnitData unitData = Unit->UnitDataMap[Unit->UnitType];
+		
+				UE_LOG(LogTemp, Warning, TEXT(" A"));
+		
+				if (unitData.Attributes.Contains(EUnitAttributes::Attack))
+				{
+					// Calculate the distance between the AI and the target
+					float distance = FVector::Dist(Unit->GetActorLocation(), CurrentEnemy);
+					UE_LOG(LogTemp, Warning, TEXT("distance: %f"), distance);
 
 			
-			// Check if the AI is within a certain distance
-			if (distance <= 300.f)
-			{
-				// Set isAttacking to true for the individual instance of the actor
-				unitData.UnitStats.bIsAttacking = true;
-				
-				InitiateCombat(unitData.UnitStats.bIsAttacking, Unit);
-				UE_LOG(LogTemp, Warning, TEXT(" Attacking1"));
+					// Check if the AI is within a certain distance
+					if (distance <= 300.f)
+					{
+						// Set isAttacking to true for the individual instance of the actor
+						unitData.UnitStats.bIsAttacking = true;
+						//InitiateCombat(unitData.UnitStats.bIsAttacking, Unit);
+						UE_LOG(LogTemp, Warning, TEXT(" Attacking1"));
+					}
+					else
+					{
+						// Set isAttacking to false for the individual instance of the actor
+						unitData.UnitStats.bIsAttacking = false;
+						//InitiateCombat(unitData.UnitStats.bIsAttacking, Unit);
+						//UE_LOG(LogTemp, Warning, TEXT("Not Attacking"));
+					}
+				}
 			}
-			/*else
-			{
-				// Set isAttacking to false for the individual instance of the actor
-				unitData.UnitStats.bIsAttacking = false;
-				InitiateCombat(unitData.UnitStats.bIsAttacking, Unit);
-				//UE_LOG(LogTemp, Warning, TEXT("Not Attacking"));
-			}*/
 		}
 	}
+	
+	
+	
 	if(ValidHit)
 	{
 		MovePTR();

@@ -41,7 +41,9 @@ void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyAct
 {
     // Find all friendly actors that can attack.
     AttackingUnits = ProccessAttackMode(FriendlyActors);
-
+   
+    bUnitFound = AttackingUnits.Num() > 0;
+    
     CurrentEnemy = EnemyActor->GetActorLocation();
     UE_LOG(LogTemp, Warning, TEXT("Actor's location: %s"), *CurrentEnemy.ToString());
     

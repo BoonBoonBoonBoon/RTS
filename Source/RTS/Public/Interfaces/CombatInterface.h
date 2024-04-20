@@ -48,7 +48,7 @@ public:
 	void FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors);
 
 	TArray<AGenericBaseAI*> ProccessAttackMode(TArray<AActor*> Units);
-
+	bool bUnitFound;
 	bool IsLocationOccupied(FVector Location, TArray<AGenericBaseAI*> FriendlyActors, float Radius);
 	void MoveUnitsToSeparateLocations(TArray<AGenericBaseAI*> FriendlyActors, FVector TargetLocation);
 	float MeleeAttackRange = 150.f;
