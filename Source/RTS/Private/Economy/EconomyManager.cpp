@@ -2,14 +2,10 @@
 
 
 #include "Economy/EconomyManager.h"
-
 #include "Kismet/GameplayStatics.h"
 #include "RTS/RTSGameModeBase.h"
 
 
-//UPlayerWidget* UEconomyManager::EconomyWidgetRef = nullptr;
-
-//: ResourceType(), ResourceStats(), EconomyWidget(nullptr)
 UEconomyManager::UEconomyManager()
 {
 	//WoodAmountChanged.AddDynamic(EconomyWidget, &UPlayerWidget::SetDisplayWoodAmount);
@@ -30,28 +26,32 @@ void UEconomyManager::GlobalEconomy()
 
 void UEconomyManager::IncomingResource(int32 IncomingResourceAmount, EResourceType IncomingResourceType)
 {
-	if(IncomingResourceAmount > 0)
+	if (IncomingResourceAmount > 0)
 	{
-		if(IncomingResourceType == EResourceType::Wood)
+		if (IncomingResourceType == EResourceType::Wood)
 		{
 			RWoodAmount += IncomingResourceAmount;
 			UE_LOG(LogTemp, Warning, TEXT("Wood Amount Stored At HUB: %d"), RWoodAmount);
-			UpdateEconomyWidget();
+			OnWoodChanged.Broadcast(RWoodAmount);
+			//UpdateEconomyWidget();
 		}
-		else if(IncomingResourceType == EResourceType::Stone)
+		else if (IncomingResourceType == EResourceType::Stone)
 		{
 			RStoneAmount += IncomingResourceAmount;
 			UE_LOG(LogTemp, Warning, TEXT("Stone Amount : %d"), RStoneAmount);
+			OnStoneChanged.Broadcast(RStoneAmount);
 		}
-		else if(IncomingResourceType == EResourceType::Food)
+		else if (IncomingResourceType == EResourceType::Food)
 		{
 			RFoodAmount += IncomingResourceAmount;
 			UE_LOG(LogTemp, Warning, TEXT("Food Amount : %d"), RFoodAmount);
+			OnFoodChanged.Broadcast(RFoodAmount);
 		}
-			else if(IncomingResourceType == EResourceType::Stone)
+		else if (IncomingResourceType == EResourceType::Gold)
 		{
 			RGoldAmount += IncomingResourceAmount;
 			UE_LOG(LogTemp, Warning, TEXT("Gold Amount : %d"), RGoldAmount);
+			OnGoldChanged.Broadcast(RGoldAmount);
 		}
 	}
 }
@@ -75,20 +75,17 @@ UEconomyManager* UEconomyManager::GetInstance()
 
 void UEconomyManager::UpdateEconomyWidget()
 {
-	
-	 //GameModeRef = (ARTSGameModeBase*)GetWorld()->GetAuthGameMode();
-
-	/*
+	//GameModeRef = (ARTSGameModeBase*)GetWorld()->GetAuthGameMode();
 	GameModeRef = Cast<ARTSGameModeBase>(UGameplayStatics::GetGameMode(GetOuter()->GetWorld()));
-	
-	if(GameModeRef != nullptr)
+
+	if (GameModeRef != nullptr)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("GameMode IS VALID!!."));
 		EconomyWidget = GameModeRef->Getter();
-		
-		if(EconomyWidget)
+
+		if (EconomyWidget)
 		{
-			EconomyWidget->SetDisplayWoodAmount(RWoodAmount);
+			//EconomyWidget->SetDisplayWoodAmount(RWoodAmount);
 			UE_LOG(LogTemp, Warning, TEXT("EconomyWidget is Valid."));
 		}
 		else
@@ -96,30 +93,26 @@ void UEconomyManager::UpdateEconomyWidget()
 			UE_LOG(LogTemp, Error, TEXT("EconomyWidget is Invalid."));
 		}
 	}
-	*/
-
-	
-
-	/*if(EconomyWidget)
-	{
-		//EconomyWidget->SetDisplayWoodAmount(RWoodAmount);
-	}*/
-	
-	/*if(EconomyWidget)
-	{
-		auto EcomWidgetInstance = Cast<UPlayerWidget>(EconomyWidget);
-		if(EcomWidgetInstance)
-		{
-			EcomWidgetInstance->SetDisplayWoodAmount(RWoodAmount);
-		}
-	}*/
-
-	/*ARTSGameModeBase* GameMode = Cast<ARTSGameModeBase>(GetWorld());
-	if(GameMode)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("GameMode."));
-	}*/
 }
 
+/*if(EconomyWidget)
+{
+	//EconomyWidget->SetDisplayWoodAmount(RWoodAmount);
+}*/
+	
+/*if(EconomyWidget)
+{
+	auto EcomWidgetInstance = Cast<UPlayerWidget>(EconomyWidget);
+	if(EcomWidgetInstance)
+	{
+		EcomWidgetInstance->SetDisplayWoodAmount(RWoodAmount);
+	}
+}*/
+
+/*ARTSGameModeBase* GameMode = Cast<ARTSGameModeBase>(GetWorld());
+if(GameMode)
+{
+	UE_LOG(LogTemp, Warning, TEXT("GameMode."));
+}*/
 
 

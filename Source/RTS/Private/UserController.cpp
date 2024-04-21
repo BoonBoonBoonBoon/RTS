@@ -9,6 +9,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
+#include "Economy/EconomyManager.h"
 #include "GameFramework/Pawn.h"
 #include "Interfaces/ResourceInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -32,6 +33,7 @@ AUserController::AUserController()
 	
 	// Initialize the CombatInterface
 	CombatInterface = Cast<ICombatInterface>(this);
+	
 }
 
 void AUserController::OnPossess(APawn* InPawn)
@@ -204,7 +206,15 @@ void AUserController::BeginPlay()
 	
 	// Initialize the CombatInterface
 	CombatInterface = Cast<ICombatInterface>(this);
-
+	
+	EconomyManager = UEconomyManager::GetInstance();
+	if (EconomyManager)
+	{
+		EconomyManager->OnWoodChanged.AddDynamic(this, &AUserController::OnWoodChanged);
+		EconomyManager->OnStoneChanged.AddDynamic(this, &AUserController::OnStoneChanged);
+		EconomyManager->OnFoodChanged.AddDynamic(this, &AUserController::OnFoodChanged);
+		EconomyManager->OnGoldChanged.AddDynamic(this, &AUserController::OnGoldChanged);
+	}
 }
 
 void AUserController::SetupInputComponent()
@@ -528,6 +538,10 @@ void AUserController::HandleMarqueePawnSelection(AActor* HitPawn)
 	}
 }
 
+
+void AUserController::UpdateResources()
+{
+}
 
 void AUserController::UnitDecals(AGenericBaseAI* HitPawn)
 {

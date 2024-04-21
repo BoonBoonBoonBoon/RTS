@@ -180,7 +180,7 @@ void AGenericBaseAI::Tick(float DeltaTime)
 		}
 	} else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AttackingUnits Not Attacjubg: %d"), AttackingUnits.Num());
+	//	UE_LOG(LogTemp, Warning, TEXT("AttackingUnits Not Attacjubg: %d"), AttackingUnits.Num());
 	}
 	
 	if(ValidHit)

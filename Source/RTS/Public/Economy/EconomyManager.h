@@ -9,6 +9,13 @@
 /**
  * 
  */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnWoodChanged, int32, WoodAmount);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStoneChanged, int32, StoneAmount);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnFoodChanged, int32, FoodAmount);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnGoldChanged, int32, GoldAmount);
 
 class UPlayerWidget;
 
@@ -46,8 +53,11 @@ public:
 	
 	ARTSGameModeBase* GameModeRef;
 	
-	/*UPROPERTY()
-	FWoodAMountChangedSignature WoodAmountChanged;*/
+	
+	FOnWoodChanged OnWoodChanged;
+	FOnStoneChanged OnStoneChanged;
+	FOnFoodChanged OnFoodChanged;
+	FOnGoldChanged OnGoldChanged;
 
 private :
 	// Singleton Instance.

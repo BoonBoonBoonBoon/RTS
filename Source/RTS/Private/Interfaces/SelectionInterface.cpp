@@ -425,11 +425,13 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 					{
 						TArray<AActor*> IncAtkUnits;
 						
-						IncAtkUnits.AddUnique(GenActor);
-						
-						if(ICombatInterface* CombatInterface = GenActor->CombatInterface)
+						for (AActor* src : UnitArray)
 						{
-							CombatInterface->ProccessActors(IncAtkUnits);
+							IncAtkUnits.AddUnique(src);
+							if(ICombatInterface* CombatInterface = GenActor->CombatInterface)
+							{
+								CombatInterface->ProccessActors(IncAtkUnits);
+							}
 						}
 					}
 				} 

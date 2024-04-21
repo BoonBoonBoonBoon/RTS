@@ -8,6 +8,7 @@
 #include "NiagaraSystem.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
+#include "Economy/EconomyManager.h"
 #include "Engine/DecalActor.h"
 #include "GameFramework/PlayerController.h"
 #include "Interfaces/SelectionInterface.h"
@@ -29,7 +30,7 @@ class RTS_API AUserController : public APlayerController, public ICombatInterfac
 	GENERATED_BODY()
 
 public:
-	
+	UEconomyManager* EconomyManager = nullptr;
 	AUserController();
 	virtual void OnPossess(APawn* InPawn) override;
 
@@ -139,6 +140,29 @@ protected:
 
 public:
 
+	// Economy --
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resources")
+	int UWoodAmount;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resources")
+	int UStoneAmount;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resources")
+	int UFoodAmount;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resources")
+	int UGoldAmount;
+
+	UFUNCTION(BlueprintCallable)
+	void OnWoodChanged(int32 NewAmount) { UWoodAmount = NewAmount; };
+	UFUNCTION(BlueprintCallable)
+	void OnStoneChanged(int32 NewAmount) { UStoneAmount = NewAmount; };
+	UFUNCTION(BlueprintCallable)
+	void OnFoodChanged(int32 NewAmount) { UFoodAmount = NewAmount; };
+	UFUNCTION(BlueprintCallable)
+	void OnGoldChanged(int32 NewAmount) { UGoldAmount = NewAmount; };
+
+	// ------------
+	void UpdateResources();
+	
 	// Checks if we are selecting multiple ai
 	bool MultiselectCond;
 

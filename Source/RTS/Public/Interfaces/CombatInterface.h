@@ -65,7 +65,7 @@ public:
  * @param Units - The array of units to process.
  * @return TArray<AGenericBaseAI*> - The array of units that can attack.
  */
-	TArray<AGenericBaseAI*> ProccessAttackMode(TArray<AActor*> Units);
+	TArray<AGenericBaseAI*> ProccessAttackMode(AActor* Units);
 
 	
 	void ProccessActors(TArray<AActor*> Array);
@@ -75,7 +75,7 @@ public:
 	void MoveUnitsToSeparateLocations(TArray<AGenericBaseAI*> FriendlyActors, FVector TargetLocation);
 	float MeleeAttackRange = 150.f;
 	float RangedAttackRange = 1000.f;
-	FVector CurrentEnemy = FVector::ZeroVector;
+	FVector CurrentEnemy = {};
 	FVector AttackLocation;
 	TArray<FVector> AssignedLocations;
 	FTimerHandle AttackTimerHandle;

@@ -28,7 +28,7 @@ void ICombatInterface::ProccessActors(TArray<AActor*> Array)
         if (auto Unit = Cast<AGenericBaseAI>(Src))
         {
             AttackingUnits = ProccessAttackMode(Unit);
-
+            UE_LOG(LogTemp, Warning, TEXT("Attacking Units: %d"), AttackingUnits.Num());
 
             
             // Calculate the distance between the AI and the target
@@ -39,6 +39,8 @@ void ICombatInterface::ProccessActors(TArray<AActor*> Array)
 
 void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors)
 {
+   CurrentEnemy = EnemyActor->GetActorLocation();
+    UE_LOG(LogTemp, Warning, TEXT("enemy location: %s"), *CurrentEnemy.ToString());
     bUnitFound = AttackingUnits.Num() > 0;
     
     /*// Find all friendly actors that can attack.
@@ -59,7 +61,32 @@ void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyAct
     MoveUnitsToSeparateLocations(AttackingUnits, AttackLocation);#1#*/
 }
 
+TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(AActor* Units)
+{
+    TArray<AGenericBaseAI*> UnitsCanAttack;
 
+    if (auto GenActor = Cast<AGenericBaseAI>(Units))
+    {
+        if (GenActor->UnitDataMap.Contains(GenActor->UnitType))
+        {
+            if (TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes; Att.Contains(
+                EUnitAttributes::Attack))
+            {
+                UnitsCanAttack.AddUnique(GenActor);
+            }
+        }
+    }
+
+    // Log the amount of units that will be returned
+    UE_LOG(LogTemp, Warning, TEXT("Amount of units that will be returned: %d"), UnitsCanAttack.Num());
+    return UnitsCanAttack;
+}
+
+
+
+
+
+/*
 TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Units)
 {
     TArray<AGenericBaseAI*> UnitsCanAttack;
@@ -81,6 +108,7 @@ TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Uni
     UE_LOG(LogTemp, Warning, TEXT("Amount of units that will be returned: %d"), UnitsCanAttack.Num());
     return UnitsCanAttack;
 }
+*/
 
 
 

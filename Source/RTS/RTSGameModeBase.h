@@ -21,7 +21,7 @@ class RTS_API ARTSGameModeBase : public AGameModeBase
 public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	class UPlayerWidget* PlayerWidget;
+	TObjectPtr<UPlayerWidget> PlayerWidget;
 
 	ARTSGameModeBase();
 
