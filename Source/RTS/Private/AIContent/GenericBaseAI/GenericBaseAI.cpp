@@ -140,6 +140,7 @@ void AGenericBaseAI::SetupStimulusSource()
 void AGenericBaseAI::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
 	if(bUnitFound)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AttackingUnits: %d"), AttackingUnits.Num());
@@ -150,7 +151,7 @@ void AGenericBaseAI::Tick(float DeltaTime)
 			{
 				FUnitData unitData = Unit->UnitDataMap[Unit->UnitType];
 		
-				UE_LOG(LogTemp, Warning, TEXT(" A"));
+				
 		
 				if (unitData.Attributes.Contains(EUnitAttributes::Attack))
 				{
@@ -177,9 +178,10 @@ void AGenericBaseAI::Tick(float DeltaTime)
 				}
 			}
 		}
+	} else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AttackingUnits Not Attacjubg: %d"), AttackingUnits.Num());
 	}
-	
-	
 	
 	if(ValidHit)
 	{

@@ -20,49 +20,46 @@
   * 
   */
 
-//bool isAttacking = unitData.UnitStats.bIsAttacking;
 
-/*void ICombatInterface::CombatTick(float DeltaTime)
+void ICombatInterface::ProccessActors(TArray<AActor*> Array)
 {
-    
-}*/
+    for (AActor* Src : Array)
+    {
+        if (auto Unit = Cast<AGenericBaseAI>(Src))
+        {
+            AttackingUnits = ProccessAttackMode(Unit);
 
 
-/**
- * @brief Function to find an enemy actor and initiate the attack process.
- * It finds all friendly actors that can attack and initiates the attack process.
- * If there are friendly actors that can attack, it iterates over them and,
- * for each one, it gets its AI controller and moves it to a location.
- * Finally, it sets the current enemy to the provided enemy actor and sets the EnemyFound flag to true.
- * @param EnemyActor - The enemy actor to find.
- * @param FriendlyActors - The array of friendly actors.
- */
+            
+            // Calculate the distance between the AI and the target
+           // float distance = FVector::Dist(Unit->GetActorLocation(), CurrentEnemy);
+        }
+    }
+}
+
 void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors)
 {
-    // Find all friendly actors that can attack.
-    AttackingUnits = ProccessAttackMode(FriendlyActors);
-   
     bUnitFound = AttackingUnits.Num() > 0;
     
-    CurrentEnemy = EnemyActor->GetActorLocation();
+    /*// Find all friendly actors that can attack.
+  //  AttackingUnits = ProccessAttackMode(FriendlyActors);
+  //  UE_LOG(LogTemp, Warning, TEXT("Attacking Units: %d"), AttackingUnits.Num());
+    
+  
+    
+   // UE_LOG(LogTemp, Warning, TEXT("bUnitFound: %s"), bUnitFound ? TEXT("True") : TEXT("False"));
+    
+    /*CurrentEnemy = EnemyActor->GetActorLocation();
     UE_LOG(LogTemp, Warning, TEXT("Actor's location: %s"), *CurrentEnemy.ToString());
     
     for (AGenericBaseAI* FriendlyActor : AttackingUnits)
     {
         AttackLocation = FindAttackLocation(FriendlyActor);
     }
-    MoveUnitsToSeparateLocations(AttackingUnits, AttackLocation);
+    MoveUnitsToSeparateLocations(AttackingUnits, AttackLocation);#1#*/
 }
 
-/**
- * @brief Function to process a given array of units and return those that can attack.
- * It iterates over the given array of units. For each unit, it attempts to cast it to an `AGenericBaseAI`.
- * If the cast is successful and the unit's type is in its `UnitDataMap`, it checks if the unit has the `Attack` attribute.
- * If the unit has the `Attack` attribute, it is added to the `UnitsCanAttack` array.
- * The function returns the `UnitsCanAttack` array, which contains all units from the input array that can attack.
- * @param Units - The array of units to process.
- * @return TArray<AGenericBaseAI*> - The array of units that can attack.
- */
+
 TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Units)
 {
     TArray<AGenericBaseAI*> UnitsCanAttack;
@@ -80,12 +77,24 @@ TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Uni
             }
         }
     }
-    
     // Log the amount of units that will be returned
     UE_LOG(LogTemp, Warning, TEXT("Amount of units that will be returned: %d"), UnitsCanAttack.Num());
-    
     return UnitsCanAttack;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 void ICombatInterface::AttackEnemy()

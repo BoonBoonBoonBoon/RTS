@@ -404,7 +404,6 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 	// Checks validity of the unit.
 	if (IsUnitSelected(UnitArray, UnitActor))
 	{
-
 		if (auto GenActor = Cast<AGenericBaseAI>(UnitActor))
 		{
 			if(GenActor->UnitDataMap.Contains(GenActor->UnitType))
@@ -413,7 +412,6 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 				TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes;
 				if (Att.Num() > 0)
 				{
-
 					// We then Check the Specific Attributes of the Units To See what they can do
 					if(Att.Contains(EUnitAttributes::Gather))
 					{
@@ -423,15 +421,16 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 							ActorAttributes->SetCanGather(true);
 						}
 					}
-					else if(Att.Contains(EUnitAttributes::Patrol)) // Then We check if the boolean is true and if it is we then move to
-						// A new function to then move the units to point a to point b. The Boolean will be need to be in the controller class
-							// and we will need it to be able to only work when the unit has the Guard Attribute so we will have to do a return call from here to
-								// the function or some thing.
+					else if(Att.Contains(EUnitAttributes::Attack)) 
 					{
-						/*if(bPatrol)
+						TArray<AActor*> IncAtkUnits;
+						
+						IncAtkUnits.AddUnique(GenActor);
+						
+						if(ICombatInterface* CombatInterface = GenActor->CombatInterface)
 						{
-							
-						}*/
+							CombatInterface->ProccessActors(IncAtkUnits);
+						}
 					}
 				} 
 			}
@@ -527,18 +526,6 @@ FUnitData ISelectionInterface::GetUnitDataForUnit(EUnitTypes UnitTypes)
 		// Return an empty FUnitData for invalid or unhandled unit types
 		return FUnitData();
 	}
-
-	/*// Access and return the FUnitData for the Specified Unit Type.
-	if (UnitTypeToDataMap.Contains(UnitTypes))
-	{
-		return UnitTypeToDataMap[UnitTypes];
-		
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Invalid Unit Type"));
-		return FUnitData(); // Return an empty FUnitData for invalid unit types
-	}*/
 }
 
 /**
