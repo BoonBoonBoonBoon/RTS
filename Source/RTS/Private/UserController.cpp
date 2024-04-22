@@ -33,7 +33,12 @@ AUserController::AUserController()
 	
 	// Initialize the CombatInterface
 	CombatInterface = Cast<ICombatInterface>(this);
-	
+
+
+	UWoodAmount = 0;
+	UStoneAmount = 0;
+	UFoodAmount = 0;
+	UGoldAmount = 0;
 }
 
 void AUserController::OnPossess(APawn* InPawn)
@@ -208,12 +213,20 @@ void AUserController::BeginPlay()
 	CombatInterface = Cast<ICombatInterface>(this);
 	
 	EconomyManager = UEconomyManager::GetInstance();
-	if (EconomyManager)
+	if (!EconomyManager == NULL)
 	{
+		/*
 		EconomyManager->OnWoodChanged.AddDynamic(this, &AUserController::OnWoodChanged);
 		EconomyManager->OnStoneChanged.AddDynamic(this, &AUserController::OnStoneChanged);
 		EconomyManager->OnFoodChanged.AddDynamic(this, &AUserController::OnFoodChanged);
 		EconomyManager->OnGoldChanged.AddDynamic(this, &AUserController::OnGoldChanged);
+		*/
+
+
+		UEconomyManager::GetInstance()->OnWoodChanged.AddDynamic(this, &AUserController::OnWoodChanged);
+		UEconomyManager::GetInstance()->OnStoneChanged.AddDynamic(this, &AUserController::OnStoneChanged);
+		UEconomyManager::GetInstance()->OnFoodChanged.AddDynamic(this, &AUserController::OnFoodChanged);
+		UEconomyManager::GetInstance()->OnGoldChanged.AddDynamic(this, &AUserController::OnGoldChanged);
 	}
 }
 

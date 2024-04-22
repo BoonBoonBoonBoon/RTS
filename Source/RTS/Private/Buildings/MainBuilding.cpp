@@ -24,7 +24,7 @@ AMainBuilding::AMainBuilding()
 	//BoxComponent->SetupAttachment(RootComponent);
 	
 	SelectedDecalComp = CreateDefaultSubobject<UDecalComponent>("Decal");
-	//SelectedDecalComp->SetupAttachment(RootComponent);
+	SelectedDecalComp->SetupAttachment(BoxComponent);
 	
 	// Set Tag to building
 	Tags.Add("Building");
