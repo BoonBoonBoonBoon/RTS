@@ -31,6 +31,23 @@ class RTS_API AUserController : public APlayerController, public ICombatInterfac
 
 public:
 	UEconomyManager* EconomyManager = nullptr;
+
+	// Widget for the User Interface //
+
+	// The Widget Class for the User Interface.
+	UClass* WidgetClass;
+
+	// Instance of the Widget Class.
+	UUserWidget* ResourceWidgetInstance;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GetUnits")
+	TArray<AGenericBaseAI*> GrabAllUnits;
+	
+	int32 AllUnitAmountInt (TArray<AGenericBaseAI*> AllU);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GetUnits")
+	int32 AllWorldUnitsINT32;
+	
 	AUserController();
 	virtual void OnPossess(APawn* InPawn) override;
 

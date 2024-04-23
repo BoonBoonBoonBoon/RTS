@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "PlayerWidget.generated.h"
 
@@ -25,7 +26,9 @@ class RTS_API UPlayerWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-
+	
+	
+	/*
 	UPROPERTY(BlueprintType, BlueprintAssignable)
 	FWOODAMOUNTUPDATEDSIGNATURE WoodAmountUpdated;
 	
@@ -40,9 +43,8 @@ public:
 	
 	UFUNCTION(BlueprintImplementableEvent, Category = "Resources")
 	void UpdateGoldAmount(int32 NewAmount);
-
-
-
+	*/
+	
 	
 	virtual bool Initialize() override;
 
@@ -54,17 +56,8 @@ public:
 	TObjectPtr<UPlayerWidget> ThisWidget;
 	
 
-	/*
-	UFUNCTION(BlueprintCallable, Category = "WidgetCurrentResource")	// Blueprint Event to Update the Wood Amount.
-	void SetDisplayWoodAmount(int32 WoodAmount);
-	*/
 
 private:
 	
-	/*
-	// Determines the View Mode of the HUD.
-	UPROPERTY(EditAnywhere)
-	EHudViewMode CurrentViewMode = EHudViewMode::Moderate;
-	*/
 
 };

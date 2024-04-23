@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "GameFramework/GameModeBase.h"
 #include "Widets/PlayerWidget.h"
 #include "RTSGameModeBase.generated.h"
@@ -16,10 +17,9 @@ class RTS_API ARTSGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
-
-	
 public:
-
+	TArray<AGenericBaseAI*> GetAllFriendlyAI(UWorld* World);
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	TObjectPtr<UPlayerWidget> PlayerWidget;
 

@@ -1,9 +1,23 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "RTSGameModeBase.h"
+
+#include "EngineUtils.h"
 #include "UserController.h"
 #include "Blueprint/UserWidget.h"
 #include "Economy/EconomyManager.h"
+
+TArray<AGenericBaseAI*> ARTSGameModeBase::GetAllFriendlyAI(UWorld* World)
+{
+	TArray<AGenericBaseAI*> GenericBaseAIUnits;
+
+	for (TActorIterator<AGenericBaseAI> It(World); It; ++It)
+	{
+		GenericBaseAIUnits.Add(*It);
+	}
+
+	return GenericBaseAIUnits;
+}
 
 ARTSGameModeBase::ARTSGameModeBase()
 {

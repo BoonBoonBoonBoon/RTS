@@ -18,6 +18,15 @@ class EbuildingTypes;
 
 #define mTraceChannel ECollisionChannel::ECC_Pawn
 
+
+int32 AUserController::AllUnitAmountInt(TArray<AGenericBaseAI*> AllU)
+
+{
+	return GrabAllUnits.Num();
+}
+
+
+
 //#include "InteractiveToolManager.h"
 AUserController::AUserController()
 {
@@ -197,8 +206,12 @@ void AUserController::Tick(float DeltaTime)
 	// Defined User Macro, Gets Trace to pawn under cursor. 
 	GetHitResultUnderCursor(mTraceChannel, true, bHit);
 
-	// Combat Interface Tick
-	//CombatTick(DeltaTime);
+	ARTSGameModeBase* GameMode = Cast<ARTSGameModeBase>(GetWorld()->GetAuthGameMode());
+	
+	GrabAllUnits = GameMode->GetAllFriendlyAI(GetWorld());
+	
+	AllWorldUnitsINT32 = AllUnitAmountInt (GrabAllUnits);
+	
 }
 
 void AUserController::BeginPlay()
@@ -212,8 +225,17 @@ void AUserController::BeginPlay()
 	// Initialize the CombatInterface
 	CombatInterface = Cast<ICombatInterface>(this);
 
+	if(WidgetClass)
+	{
+		ResourceWidgetInstance = CreateWidget<UUserWidget>(this, WidgetClass);
+		if(ResourceWidgetInstance)
+		{
+			ResourceWidgetInstance->AddToViewport();
+		}
+	}
+	
+	// Economy Resource Interface
 	UserControllerPtr = this;
-
 	EconomyManager = UEconomyManager::GetInstance();
 	if (!EconomyManager == NULL)
 	{
@@ -230,6 +252,10 @@ void AUserController::BeginPlay()
 		}
 		/*EconomyManager->OnWoodChanged.AddDynamic(this, &AUserController::OnWoodChanged);*/
 	}
+
+	/*// Set the input mode to Game and UI so the player can interact with both the game world and the UI
+	FInputModeGameAndUI InputModeData;
+	SetInputMode(InputModeData);*/
 }
 
 void AUserController::SetupInputComponent()
