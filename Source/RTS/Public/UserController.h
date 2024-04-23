@@ -34,20 +34,32 @@ public:
 
 	// Widget for the User Interface //
 
-	// The Widget Class for the User Interface.
+	// The Widget Class for the User Interface. 
 	UClass* WidgetClass;
 
 	// Instance of the Widget Class.
 	UUserWidget* ResourceWidgetInstance;
-	
+
+
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GetUnits")
 	TArray<AGenericBaseAI*> GrabAllUnits;
+	
+	// --
+	
 	
 	int32 AllUnitAmountInt (TArray<AGenericBaseAI*> AllU);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GetUnits")
 	int32 AllWorldUnitsINT32;
-	
+
+	UFUNCTION(BlueprintCallable, Category = "GetUnits")
+	TArray<AActor*> GetSelectedUnitsBP();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GetUnits")
+	bool SetAllUnitsTrue = false;
+
+	// --------------------------------
 	AUserController();
 	virtual void OnPossess(APawn* InPawn) override;
 
@@ -136,8 +148,11 @@ public:
 	// Stores the building type.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> SelectedBuilding;
-
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Controller")
 	TWeakObjectPtr<AUserController> UserControllerPtr;
+	
+	
 	
 protected:
 	

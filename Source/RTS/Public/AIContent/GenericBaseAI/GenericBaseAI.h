@@ -70,7 +70,7 @@ public:
 
 	void MyQueryFinished(TSharedPtr<FEnvQueryResult> Result);
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UDecalComponent* SelectedDecalComp;
 
 	UPROPERTY(EditAnywhere)

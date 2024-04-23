@@ -4,7 +4,6 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
-#include "Components/Button.h"
 #include "Components/TextBlock.h"
 #include "PlayerWidget.generated.h"
 
@@ -26,7 +25,7 @@ class RTS_API UPlayerWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	
+
 	
 	/*
 	UPROPERTY(BlueprintType, BlueprintAssignable)

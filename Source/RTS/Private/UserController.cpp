@@ -5,7 +5,6 @@
 #include "AIController.h"
 #include "UserCharacter.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
-#include "AIContent/GenericBaseEnemy/GenericBaseEnemyAI.h"
 #include "Camera/CameraComponent.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
@@ -26,6 +25,10 @@ int32 AUserController::AllUnitAmountInt(TArray<AGenericBaseAI*> AllU)
 }
 
 
+TArray<AActor*> AUserController::GetSelectedUnitsBP()
+{
+	return SelectedUnits;
+}
 
 //#include "InteractiveToolManager.h"
 AUserController::AUserController()
@@ -210,8 +213,19 @@ void AUserController::Tick(float DeltaTime)
 	
 	GrabAllUnits = GameMode->GetAllFriendlyAI(GetWorld());
 	
-	AllWorldUnitsINT32 = AllUnitAmountInt (GrabAllUnits);
+    AllWorldUnitsINT32 = AllUnitAmountInt (GrabAllUnits);
+
+	/*if(SetAllUnitsTrue)
+	{
+		for (AGenericBaseAI* Unit : GrabAllUnits)
+		{
+			SelectedUnits.Add(Cast<AActor>(Unit));
+			Unit->SelectedDecalComp->SetVisibility(true);
+		}
+	}*/
 	
+	UE_LOG(LogTemp, Warning, TEXT("Number of selected units: %d"), SelectedUnits.Num());
+	//UE_LOG(LogTemp, Warning, TEXT("Number of All Units: %d"), AllWorldUnitsINT32);
 }
 
 void AUserController::BeginPlay()
@@ -419,6 +433,9 @@ void AUserController::StartBoxSelection()
 	// Get the Coordinates of the mouse when clicked
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
+		
+		SetAllUnitsTrue = false;
+		
 		bIsSelecting = true;
 
 		CastToActor();
