@@ -30,7 +30,7 @@ AUserController::AUserController()
 
 	SelectionArea = CreateDefaultSubobject<UBoxComponent>(TEXT("SelectionArea"));
 	SelectionArea->SetBoxExtent(FVector(0));
-	
+
 	// Initialize the CombatInterface
 	CombatInterface = Cast<ICombatInterface>(this);
 
@@ -208,25 +208,27 @@ void AUserController::BeginPlay()
 	UserCharacter = Cast<AUserCharacter>(GetPawn());
 	SelectedBuilding.Empty();
 	bNotHit = false;
-	
+
 	// Initialize the CombatInterface
 	CombatInterface = Cast<ICombatInterface>(this);
-	
+
+	UserControllerPtr = this;
+
 	EconomyManager = UEconomyManager::GetInstance();
 	if (!EconomyManager == NULL)
 	{
-		/*
-		EconomyManager->OnWoodChanged.AddDynamic(this, &AUserController::OnWoodChanged);
-		EconomyManager->OnStoneChanged.AddDynamic(this, &AUserController::OnStoneChanged);
-		EconomyManager->OnFoodChanged.AddDynamic(this, &AUserController::OnFoodChanged);
-		EconomyManager->OnGoldChanged.AddDynamic(this, &AUserController::OnGoldChanged);
-		*/
-
-
-		UEconomyManager::GetInstance()->OnWoodChanged.AddDynamic(this, &AUserController::OnWoodChanged);
-		UEconomyManager::GetInstance()->OnStoneChanged.AddDynamic(this, &AUserController::OnStoneChanged);
-		UEconomyManager::GetInstance()->OnFoodChanged.AddDynamic(this, &AUserController::OnFoodChanged);
-		UEconomyManager::GetInstance()->OnGoldChanged.AddDynamic(this, &AUserController::OnGoldChanged);
+		if (UserControllerPtr.IsValid())
+		{
+			UEconomyManager::GetInstance()->OnWoodChanged.AddDynamic(UserControllerPtr.Get(),
+			                                                         &AUserController::OnWoodChanged);
+			UEconomyManager::GetInstance()->OnStoneChanged.AddDynamic(UserControllerPtr.Get(),
+			                                                          &AUserController::OnStoneChanged);
+			UEconomyManager::GetInstance()->OnFoodChanged.AddDynamic(UserControllerPtr.Get(),
+			                                                         &AUserController::OnFoodChanged);
+			UEconomyManager::GetInstance()->OnGoldChanged.AddDynamic(UserControllerPtr.Get(),
+			                                                         &AUserController::OnGoldChanged);
+		}
+		/*EconomyManager->OnWoodChanged.AddDynamic(this, &AUserController::OnWoodChanged);*/
 	}
 }
 
@@ -247,7 +249,6 @@ void AUserController::SetupInputComponent()
 
 	InputComponent->BindAction("ActionKey", IE_Pressed, this, &AUserController::EventKey);
 	InputComponent->BindAction("PatrolAI", IE_Pressed, this, &AUserController::EnterPatrolMode);
-	
 }
 
 
@@ -663,20 +664,19 @@ void AUserController::ProcessPatrolClick(FHitResult HitResult)
 {
 	if (bPatrolMode)
 	{
-
 		PatrolPoints.AddUnique(HitResult.Location);
-		
-		
+
+
 		// If we click outside the specified amount of patrol points we just move on to the new location.
-		 if (PatrolPoints.Num() > 2)
+		if (PatrolPoints.Num() > 2)
 		{
 			PatrolPoints.Empty();
-		 	bPatrolMode = false;
-		 	SelectionInterface->MoveGroupToLocation(SelectedUnits, HitResult.Location);
+			bPatrolMode = false;
+			SelectionInterface->MoveGroupToLocation(SelectedUnits, HitResult.Location);
 		}
-		
+
 		// If we have two points selected.
-		if(PatrolPoints.Num() == 2)
+		if (PatrolPoints.Num() == 2)
 		{
 			// Obtain the patrol units and set the patrol points.
 			for (AGenericBaseAI* Unit : PatrolUnits)
@@ -688,7 +688,7 @@ void AUserController::ProcessPatrolClick(FHitResult HitResult)
 					Unit->SetPatrolPoints(PatrolPoints[0], PatrolPoints[1]);
 				}
 			}
-		} 
+		}
 	}
 }
 

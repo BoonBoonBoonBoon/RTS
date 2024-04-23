@@ -119,6 +119,8 @@ public:
 	// Stores the building type.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> SelectedBuilding;
+
+	TWeakObjectPtr<AUserController> UserControllerPtr;
 	
 protected:
 	
