@@ -7,23 +7,14 @@
 
 AMarketplaceBuilding::AMarketplaceBuilding()
 {
-	
 }
 
-EBuildingTypes AMarketplaceBuilding::GetBuildingType(EBuildingTypes BuildingType)
-{
-	return BuildingType = EBuildingTypes::Trader;
-}
+
 
 void AMarketplaceBuilding::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	SelectionInterface->AssignBuildingType(this);
+ //SelectionInterface->AssignBuildingType(this);
 }
 
-/*
-void AMarketplaceBuilding::GetBuildingType(EBuildingTypes BuildingType)
-{
-}
-*/

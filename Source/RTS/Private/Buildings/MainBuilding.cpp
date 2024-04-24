@@ -37,7 +37,11 @@ void AMainBuilding::BeginPlay()
 
 	// Shouldn't be visible at the start of the game.
 	SelectedDecalComp->SetVisibility(false);
-	
+
+	// Cast this to ISelectionInterface
+	SelectionInterface = Cast<ISelectionInterface>(this);
+
+	SelectionInterface->AssignBuildingType(this);
 }
 
 

@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
+#include "Widets/PlayerWidget.h"
 #include "SelectionInterface.generated.h"
 
 class AGenericBaseAI;
@@ -125,26 +126,29 @@ class RTS_API ISelectionInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+	// Selects the building for tasks.
+	//static void FillArray(TArray<AActor*> Building);
+
+	// Empties the array for building.
+	//static void EmptyArray(TArray<AActor*> Building);
+
+	// Check if a specific element is in the array.
+	//static bool IsBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck);
+
+
+	// --------------
+
+	
+	// Assigns the type of building.
+	EBuildingTypes AssignBuildingType(const AActor* Building);
 
 	static FOnActorCanGatherDelegate OnActorCanGather;
 	
 	// Returns the type of building.
 	static EBuildingTypes GetBuildingType(const AActor* Building);
-
-	// Assigns the type of building.
-	static EBuildingTypes AssignBuildingType(const AActor* Building);
-
+	
 	// Casts the building to a pawn.
 	static void CastTo(AActor* Pawn);
-
-	// Selects the building for tasks.
-	static void FillArray(TArray<AActor*> Building);
-
-	// Empties the array for building.
-	static void EmptyArray(TArray<AActor*> Building);
-
-	// Check if a specific element is in the array.
-	static bool IsBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck);
 
 	// Hits the units that are selected
 	UFUNCTION()
@@ -155,6 +159,7 @@ public:
 
 	// SingleClick Selection Building - Deselects Buildings and Selects New Buildings
 	static void BuildingArrayIsEmpty(TArray<AActor*>& Building, AActor* HitPawn);
+	
 	static void AddBuildingWidget(EBuildingTypes CurrentBuilding);
 
 	// Removes Existing Element in Array and Adds New Element.
@@ -195,7 +200,8 @@ public:
 	static void LogUnitTypeToDataMap(const TMap<EUnitTypes, FUnitData>& DataMap);
 
 	TArray<AGenericBaseAI*> ProccessPatrolMode(TArray<AActor*> Units);
-
+	
+	TObjectPtr<UPlayerWidget> PlayerWidget;
 	
 	// Logging Functions for Attribute TMap.
 

@@ -34,115 +34,6 @@ const char* to_string(EBuildingTypes e)
 	}
 }
 
-/**
- * Function to get the building type of a given actor
- * @param Building - AActor pointer
- * @return EBuildingTypes enum value representing the building type
- */
-EBuildingTypes ISelectionInterface::GetBuildingType(const AActor* Building)
-{
-	if (Building)
-	{
-		if (const ABarracksBuilding* BBuilding = Cast<ABarracksBuilding>(Building))
-		{
-			return GetBuildingType(BBuilding);
-		}
-		if (const AMarketplaceBuilding* TBuilding = Cast<AMarketplaceBuilding>(Building))
-		{
-			return GetBuildingType(TBuilding);
-		}
-	}
-	return {};
-}
-
-/**
- * Function to assign a building type to a given actor
- * @param Building - AActor pointer
- * @return EBuildingTypes enum value representing the assigned building type
- */
-EBuildingTypes ISelectionInterface::AssignBuildingType(const AActor* Building)
-{
-	if (Building)
-	{
-		if (Cast<ABarracksBuilding>(Building))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Building type assigned: Barracks"));
-			return EBuildingTypes::Barracks;
-		}
-		if (Cast<AMarketplaceBuilding>(Building))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Building type assigned: Trader"));
-			return EBuildingTypes::Trader;
-		}
-		if (Cast<AMainBuilding>(Building))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Building type assigned: Main"));
-			return EBuildingTypes::Invalid;
-		}
-	}
-
-	return {};
-}
-
-/**
- * Function to cast a given pawn to AMainBuilding and set visibility of its SelectedDecalComp to false
- * @param Pawn - AActor pointer
- */
-void ISelectionInterface::CastTo(AActor* Pawn)
-{
-	if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Pawn))
-	{
-		MainBuilding->SelectedDecalComp->SetVisibility(false);
-		UE_LOG(LogTemp, Warning, TEXT("Array Wiped - Buildings"));
-	}
-}
-
-/**
- * Function to add a given building to an array and set visibility of its SelectedDecalComp to true
- * @param Building - TArray of AActor pointers
- */
-void ISelectionInterface::FillArray(TArray<AActor*> Building)
-{
-	// Adds the selected building to the array
-	for (AActor* Pawn : Building)
-	{
-		if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Pawn))
-		{
-			MainBuilding->SelectedDecalComp->SetVisibility(true);
-			UE_LOG(LogTemp, Warning, TEXT("Building Selected: %s"), *Pawn->GetName());
-		}
-	}
-}
-
-/**
- * Function to remove a given building from an array and set visibility of its SelectedDecalComp to false
- * @param Building - TArray of AActor pointers
- */
-void ISelectionInterface::EmptyArray(TArray<AActor*> Building)
-{
-	// Deletes the selected building from the array
-	for (AActor* Pawn : Building)
-	{
-		if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Pawn))
-		{
-			MainBuilding->SelectedDecalComp->SetVisibility(false);
-			UE_LOG(LogTemp, Warning, TEXT("Building Deselected: %s"), *Pawn->GetName());
-		}
-	}
-
-	Building.Empty();
-}
-
-/**
- * Function to check if a given building is in an array
- * @param BuildingArray - TArray of APawn pointers
- * @param BuildingToCheck - APawn pointer
- * @return true if the building is in the array, false otherwise
- */
-bool ISelectionInterface::IsBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck)
-{
-	return BuildingArray.Contains(BuildingToCheck);
-}
 
 void ISelectionInterface::UnitSelection()
 {
@@ -193,13 +84,58 @@ void ISelectionInterface::BuildingArrayIsEmpty(TArray<AActor*>& Building, AActor
 			if (const AMainBuilding* MBuilding = Cast<AMainBuilding>(SrcP))
 			{
 				MBuilding->SelectedDecalComp->SetVisibility(true);
-
-				//EBuildingTypes Current = GetBuildingType(SrcP);
-
-				//AddBuildingWidget(Current);
 			}
 		}
+
+		AActor* Current = Building[0];
+		EBuildingTypes CurrentBuilding = GetBuildingType(Current);
+		AddBuildingWidget(CurrentBuilding);
 	}
+}
+
+EBuildingTypes ISelectionInterface::AssignBuildingType(const AActor* Building)
+{
+	if (Building)
+	{
+		if (Cast<ABarracksBuilding>(Building))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Building type assigned: Barracks"));
+			return EBuildingTypes::Barracks;
+		}
+		else if (Cast<AMarketplaceBuilding>(Building))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Building type assigned: Trader"));
+			return EBuildingTypes::Trader;
+		}
+		else if (Cast<AMainBuilding>(Building))
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Building type assigned: Main"));
+			return EBuildingTypes::Invalid;
+		}
+	}
+
+	return {};
+}
+
+/**
+ * Function to get the building type of a given actor
+ * @param Building - AActor pointer
+ * @return EBuildingTypes enum value representing the building type
+ */
+EBuildingTypes ISelectionInterface::GetBuildingType(const AActor* Building)
+{
+	if (Building)
+	{
+		if (Cast<ABarracksBuilding>(Building))
+		{
+			return EBuildingTypes::Barracks;
+		}
+		if (Cast<AMarketplaceBuilding>(Building))
+		{
+			return EBuildingTypes::Trader;
+		}
+	}
+	return {};
 }
 
 void ISelectionInterface::AddBuildingWidget(EBuildingTypes CurrentBuilding)
@@ -676,3 +612,77 @@ void ISelectionInterface::LogUnitTypeToAttributesMap(TMap<EUnitTypes, TArray<EUn
 		UE_LOG(LogTemp, Log, TEXT("%s: %s"), *UnitTypeString, *AttributesString);
 	}
 }
+
+
+
+	// ----- Building Stuff -----
+
+
+
+
+/**
+ * Function to assign a building type to a given actor
+ * @param Building - AActor pointer
+ * @return EBuildingTypes enum value representing the assigned building type
+ */
+
+
+/**
+ * Function to cast a given pawn to AMainBuilding and set visibility of its SelectedDecalComp to false
+ * @param Pawn - AActor pointer
+ */
+/*void ISelectionInterface::CastTo(AActor* Pawn)
+{
+	if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Pawn))
+	{
+		MainBuilding->SelectedDecalComp->SetVisibility(false);
+		UE_LOG(LogTemp, Warning, TEXT("Array Wiped - Buildings"));
+	}
+}*/
+
+/**
+ * Function to add a given building to an array and set visibility of its SelectedDecalComp to true
+ * @param Building - TArray of AActor pointers
+ */
+/*void ISelectionInterface::FillArray(TArray<AActor*> Building)
+{
+	// Adds the selected building to the array
+	for (AActor* Pawn : Building)
+	{
+		if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Pawn))
+		{
+			MainBuilding->SelectedDecalComp->SetVisibility(true);
+			UE_LOG(LogTemp, Warning, TEXT("Building Selected: %s"), *Pawn->GetName());
+		}
+	}
+}*/
+
+/**
+ * Function to remove a given building from an array and set visibility of its SelectedDecalComp to false
+ * @param Building - TArray of AActor pointers
+ */
+/*void ISelectionInterface::EmptyArray(TArray<AActor*> Building)
+{
+	// Deletes the selected building from the array
+	for (AActor* Pawn : Building)
+	{
+		if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(Pawn))
+		{
+			MainBuilding->SelectedDecalComp->SetVisibility(false);
+			UE_LOG(LogTemp, Warning, TEXT("Building Deselected: %s"), *Pawn->GetName());
+		}
+	}
+
+	Building.Empty();
+}*/
+
+/**
+ * Function to check if a given building is in an array
+ * @param BuildingArray - TArray of APawn pointers
+ * @param BuildingToCheck - APawn pointer
+ * @return true if the building is in the array, false otherwise
+ */
+/*bool ISelectionInterface::IsBuildingSelected(const TArray<APawn*>& BuildingArray, const APawn* BuildingToCheck)
+{
+	return BuildingArray.Contains(BuildingToCheck);
+}*/
