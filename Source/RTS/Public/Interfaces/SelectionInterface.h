@@ -155,6 +155,7 @@ public:
 
 	// SingleClick Selection Building - Deselects Buildings and Selects New Buildings
 	static void BuildingArrayIsEmpty(TArray<AActor*>& Building, AActor* HitPawn);
+	static void AddBuildingWidget(EBuildingTypes CurrentBuilding);
 
 	// Removes Existing Element in Array and Adds New Element.
 	static void ChangeElementInArray(TArray<AActor*>& Array, AActor* HitPawn);

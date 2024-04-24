@@ -210,21 +210,13 @@ void AUserController::Tick(float DeltaTime)
 	GetHitResultUnderCursor(mTraceChannel, true, bHit);
 
 	ARTSGameModeBase* GameMode = Cast<ARTSGameModeBase>(GetWorld()->GetAuthGameMode());
-	
-	GrabAllUnits = GameMode->GetAllFriendlyAI(GetWorld());
-	
-    AllWorldUnitsINT32 = AllUnitAmountInt (GrabAllUnits);
 
-	/*if(SetAllUnitsTrue)
-	{
-		for (AGenericBaseAI* Unit : GrabAllUnits)
-		{
-			SelectedUnits.Add(Cast<AActor>(Unit));
-			Unit->SelectedDecalComp->SetVisibility(true);
-		}
-	}*/
-	
-	UE_LOG(LogTemp, Warning, TEXT("Number of selected units: %d"), SelectedUnits.Num());
+	GrabAllUnits = GameMode->GetAllFriendlyAI(GetWorld());
+
+	AllWorldUnitsINT32 = AllUnitAmountInt(GrabAllUnits);
+
+
+	//UE_LOG(LogTemp, Warning, TEXT("Number of selected units: %d"), SelectedUnits.Num());
 	//UE_LOG(LogTemp, Warning, TEXT("Number of All Units: %d"), AllWorldUnitsINT32);
 }
 

@@ -49,7 +49,7 @@ EBuildingTypes ISelectionInterface::GetBuildingType(const AActor* Building)
 		}
 		if (const AMarketplaceBuilding* TBuilding = Cast<AMarketplaceBuilding>(Building))
 		{
-			return {};
+			return GetBuildingType(TBuilding);
 		}
 	}
 	return {};
@@ -193,10 +193,27 @@ void ISelectionInterface::BuildingArrayIsEmpty(TArray<AActor*>& Building, AActor
 			if (const AMainBuilding* MBuilding = Cast<AMainBuilding>(SrcP))
 			{
 				MBuilding->SelectedDecalComp->SetVisibility(true);
+
+				//EBuildingTypes Current = GetBuildingType(SrcP);
+
+				//AddBuildingWidget(Current);
 			}
 		}
 	}
 }
+
+void ISelectionInterface::AddBuildingWidget(EBuildingTypes CurrentBuilding)
+{
+	if(CurrentBuilding == EBuildingTypes::Barracks)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Barracks Selected"));
+	}
+	else if(CurrentBuilding == EBuildingTypes::Trader)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Trader Selected"));
+	}
+}
+
 
 /**
  * Function to change an element in an array with a given hit pawn

@@ -20,7 +20,10 @@ public:
 	AMarketplaceBuilding();
 
 	EBuildingTypes GetBuildingType(EBuildingTypes BuildingType);
-	
+
+	ISelectionInterface* SelectionInterface;
+
+	virtual void BeginPlay() override;
 	
 	//void GetBuildingType(enum EBuildingTypes BuildingType);
 };
