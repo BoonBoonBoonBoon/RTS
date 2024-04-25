@@ -210,7 +210,8 @@ public:
 	void EnterPatrolMode();
 
 	void ProcessPatrolClick(FHitResult HitResult);
-	
+	void AddBuildingWidgetToScreen(UUserWidget* BuildingWidget);
+
 	// Checks if the AI is in Patrol Mode.
 	bool bPatrolMode;
 	// The Patrol Points for the AI to move to.

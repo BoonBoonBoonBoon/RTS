@@ -3,11 +3,10 @@
 
 #include "Buildings/MainBuilding.h"
 
-#include "Buildings/BarracksBuilding.h"
+#include "Buildings/BuildingController.h"
 #include "Buildings/MarketplaceBuilding.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
-#include "Interfaces/BuildingInterface.h"
 
 
 class AMarketplaceBuilding;
@@ -29,12 +28,19 @@ AMainBuilding::AMainBuilding()
 	// Set Tag to building
 	Tags.Add("Building");
 }
- 
+
+
 // Called when the game starts or when spawned
 void AMainBuilding::BeginPlay()
 {
 	Super::BeginPlay();
 
+	/*// Create an instance of BuildingController
+	BuildingController = GetWorld()->SpawnActor<ABuildingController>();
+
+	// Set the BuildingController as the controller for this actor
+	BuildingController->Possess(Cast<APawn>(this));*/
+	
 	// Shouldn't be visible at the start of the game.
 	SelectedDecalComp->SetVisibility(false);
 

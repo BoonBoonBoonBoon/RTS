@@ -4,8 +4,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "BuildingController.h"
 #include "GameFramework/Actor.h"
-//#include "Interfaces/BuildingInterface.h"
 #include "Interfaces/SelectionInterface.h"
 #include "MainBuilding.generated.h"
 
@@ -21,26 +21,25 @@ public:
 	// Sets default values for this pawn's properties
 	AMainBuilding();
 
-	/*
-	static EBuildingTypes AssignBuildingType(const APawn* Building);
-	static void AssignChildrenBuildingTypes(const AMainBuilding* MainBuilding);
-	*/
-
-	
-	/*// The building type of the current building.
-	IBuildingInterface* BuildInt;
-	*/
+	UPROPERTY(EditAnywhere)
+	ABuildingController* BuildingController;
 
 	ISelectionInterface* SelectionInterface;
-	
-	// Spawns the selected units into the current world.
-	//void SpawnUnits();
 	
 	UPROPERTY(EditAnywhere)
 	UDecalComponent* SelectedDecalComp;
 
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* BoxComponent;
+
+
+	// Open & Close Widgets ------------
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	bool bOpenMarketPlace = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
+	bool bOpenBarracks = false;
+
+	// ---------------------------------
 	
 protected:
 	// Called when the game starts or when spawned

@@ -138,6 +138,7 @@ public:
 
 	// --------------
 
+
 	
 	// Assigns the type of building.
 	EBuildingTypes AssignBuildingType(const AActor* Building);
@@ -160,7 +161,7 @@ public:
 	// SingleClick Selection Building - Deselects Buildings and Selects New Buildings
 	static void BuildingArrayIsEmpty(TArray<AActor*>& Building, AActor* HitPawn);
 	
-	static void AddBuildingWidget(EBuildingTypes CurrentBuilding);
+	static void AddBuildingWidget(EBuildingTypes CurrentBuilding, AActor* ActorToWidget);
 
 	// Removes Existing Element in Array and Adds New Element.
 	static void ChangeElementInArray(TArray<AActor*>& Array, AActor* HitPawn);

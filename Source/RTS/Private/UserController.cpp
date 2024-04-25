@@ -727,6 +727,15 @@ void AUserController::ProcessPatrolClick(FHitResult HitResult)
 	}
 }
 
+/*void AUserController::AddBuildingWidgetToScreen(UUserWidget* BuildingWidget)
+{
+	if (BuildingWidget)
+	{
+		BuildingWidget->AddToViewport();
+	}
+}*/
+
+
 /*void AUserController::InitializeCombatInterface(AActor* InitActor)
 {
 	// Initialize the CombatInterface

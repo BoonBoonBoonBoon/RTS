@@ -2,12 +2,16 @@
 
 
 #include "Interfaces/SelectionInterface.h"
+
+#include "UserController.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "AIContent/GenericBaseAI/UserControllerAI/Light/Infantry/lightInfantry.h"
 #include "AIContent/GenericBaseAI/UserControllerAI/WorkerDrone/WorkerDrone.h"
 #include "Buildings/BarracksBuilding.h"
+#include "Buildings/BuildingController.h"
 #include "Buildings/MarketplaceBuilding.h"
 #include "Components/DecalComponent.h"
+#include "Widets/MarketPlaceWidget.h"
 
 // Assign the Signature to the Delegate.
 FOnActorCanGatherDelegate ISelectionInterface::OnActorCanGather;
@@ -81,15 +85,13 @@ void ISelectionInterface::BuildingArrayIsEmpty(TArray<AActor*>& Building, AActor
 		Building.AddUnique(HitPawn);
 		for (AActor* SrcP : Building)
 		{
-			if (const AMainBuilding* MBuilding = Cast<AMainBuilding>(SrcP))
+			if (AMainBuilding* MBuilding = Cast<AMainBuilding>(SrcP))
 			{
-				MBuilding->SelectedDecalComp->SetVisibility(true);
+				//AActor* Current = Building[0];
+				EBuildingTypes CurrentBuilding = GetBuildingType(MBuilding);
+				AddBuildingWidget(CurrentBuilding, MBuilding);
 			}
 		}
-
-		AActor* Current = Building[0];
-		EBuildingTypes CurrentBuilding = GetBuildingType(Current);
-		AddBuildingWidget(CurrentBuilding);
 	}
 }
 
@@ -138,18 +140,26 @@ EBuildingTypes ISelectionInterface::GetBuildingType(const AActor* Building)
 	return {};
 }
 
-void ISelectionInterface::AddBuildingWidget(EBuildingTypes CurrentBuilding)
+void ISelectionInterface::AddBuildingWidget(EBuildingTypes CurrentBuilding, AActor* ActorToWidget)
 {
-	if(CurrentBuilding == EBuildingTypes::Barracks)
+	// Cast ActorToWidget to AMainBuilding
+	if (AMainBuilding* MainBuilding = Cast<AMainBuilding>(ActorToWidget))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Barracks Selected"));
-	}
-	else if(CurrentBuilding == EBuildingTypes::Trader)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Trader Selected"));
+		if(CurrentBuilding == EBuildingTypes::Barracks)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Trader Selected"));
+			MainBuilding->bOpenMarketPlace = false;
+			MainBuilding->bOpenBarracks = true;
+		}
+		else if(CurrentBuilding == EBuildingTypes::Trader)
+		{
+			MainBuilding->bOpenBarracks = false;
+			MainBuilding->bOpenMarketPlace = true;
+			UE_LOG(LogTemp, Warning, TEXT("Trader Selected"));
+			
+		}
 	}
 }
-
 
 /**
  * Function to change an element in an array with a given hit pawn
@@ -173,6 +183,8 @@ void ISelectionInterface::ChangeElementInArray(TArray<AActor*>& Array, AActor* H
 					if (const AMainBuilding* NewBuilding = Cast<AMainBuilding>(SrcP))
 					{
 						NewBuilding->SelectedDecalComp->SetVisibility(true);
+						EBuildingTypes CurrentBuilding = GetBuildingType(NewBuilding);
+						AddBuildingWidget(CurrentBuilding, SrcP);
 					}
 				}
 			}
