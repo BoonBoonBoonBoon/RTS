@@ -32,7 +32,15 @@ public:
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* BoxComponent;
 
+	UFUNCTION(BlueprintImplementableEvent, Category = "BuildingWidget")
+	void OpenMarketPlaceWidget();
+	
+	UFUNCTION(BlueprintImplementableEvent, Category = "BuildingWidget")
+	void OpenBarracksWidget();
 
+	bool OpenMarket(bool bOpen);
+	bool OpenBarracks(bool bOpen);
+	
 	// Open & Close Widgets ------------
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	bool bOpenMarketPlace = false;
