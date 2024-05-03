@@ -151,8 +151,6 @@ void AGenericBaseAI::Tick(float DeltaTime)
 			{
 				FUnitData unitData = Unit->UnitDataMap[Unit->UnitType];
 		
-				
-		
 				if (unitData.Attributes.Contains(EUnitAttributes::Attack))
 				{
 					// Calculate the distance between the AI and the target

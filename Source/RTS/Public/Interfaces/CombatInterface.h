@@ -65,7 +65,7 @@ public:
  * @param Units - The array of units to process.
  * @return TArray<AGenericBaseAI*> - The array of units that can attack.
  */
-	TArray<AGenericBaseAI*> ProccessAttackMode(AActor* Units);
+	TArray<AGenericBaseAI*> ProccessAttackMode(AGenericBaseAI* GenActor);
 
 	
 	void ProccessActors(TArray<AActor*> Array);

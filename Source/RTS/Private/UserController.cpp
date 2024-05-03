@@ -330,6 +330,7 @@ void AUserController::EventKey()
 					{
 						if (CombatInterface != nullptr)
 						{
+							UE_LOG(LogTemp, Warning, TEXT("Found Enemy"));
 							CombatInterface->FindEnemy(HitActorObj, SelectedUnits);
 						}
 						else

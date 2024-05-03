@@ -21,6 +21,41 @@
   */
 
 
+/*CurrentEnemy = EnemyActor->GetActorLocation();
+  UE_LOG(LogTemp, Warning, TEXT("Actor's location: %s"), *CurrentEnemy.ToString());
+  
+  for (AGenericBaseAI* FriendlyActor : AttackingUnits)
+  {
+      AttackLocation = FindAttackLocation(FriendlyActor);
+  }
+  MoveUnitsToSeparateLocations(AttackingUnits, AttackLocation);*/
+
+// Find all friendly actors that can attack.
+//AttackingUnits = ProccessAttackMode(FriendlyActors);
+//  UE_LOG(LogTemp, Warning, TEXT("Attacking Units: %d"), AttackingUnits.Num());
+
+//UE_LOG(LogTemp, Warning, TEXT("bUnitFound: %s"), bUnitFound ? TEXT("True") : TEXT("False"));
+
+void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors)
+{
+    // --------------------- Setup for the combat system --------------------- //
+    CurrentEnemy = EnemyActor->GetActorLocation(); // Obtain the location of the enemy actor.
+    UE_LOG(LogTemp, Warning, TEXT("enemy location: %s"), *CurrentEnemy.ToString());
+
+
+    // V--- This should maybe be looking for if we found an enemy.
+    //bUnitFound = AttackingUnits.Num() > 0; // For us to attack.
+    
+   // Go through what actors that can attack.
+    ProccessActors(FriendlyActors);
+
+    // Now actors are stored in AttackingUnits, we can now move them to the enemy location.
+    for (AGenericBaseAI* Src : AttackingUnits)
+    {
+        FindAttackLocation(Src);
+    }
+}
+
 void ICombatInterface::ProccessActors(TArray<AActor*> Array)
 {
     for (AActor* Src : Array)
@@ -31,42 +66,19 @@ void ICombatInterface::ProccessActors(TArray<AActor*> Array)
             UE_LOG(LogTemp, Warning, TEXT("Attacking Units: %d"), AttackingUnits.Num());
 
             
+            
             // Calculate the distance between the AI and the target
-           // float distance = FVector::Dist(Unit->GetActorLocation(), CurrentEnemy);
+            // float distance = FVector::Dist(Unit->GetActorLocation(), CurrentEnemy);
         }
     }
 }
 
-void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors)
-{
-   CurrentEnemy = EnemyActor->GetActorLocation();
-    UE_LOG(LogTemp, Warning, TEXT("enemy location: %s"), *CurrentEnemy.ToString());
-    bUnitFound = AttackingUnits.Num() > 0;
-    
-    /*// Find all friendly actors that can attack.
-  //  AttackingUnits = ProccessAttackMode(FriendlyActors);
-  //  UE_LOG(LogTemp, Warning, TEXT("Attacking Units: %d"), AttackingUnits.Num());
-    
-  
-    
-   // UE_LOG(LogTemp, Warning, TEXT("bUnitFound: %s"), bUnitFound ? TEXT("True") : TEXT("False"));
-    
-    /*CurrentEnemy = EnemyActor->GetActorLocation();
-    UE_LOG(LogTemp, Warning, TEXT("Actor's location: %s"), *CurrentEnemy.ToString());
-    
-    for (AGenericBaseAI* FriendlyActor : AttackingUnits)
-    {
-        AttackLocation = FindAttackLocation(FriendlyActor);
-    }
-    MoveUnitsToSeparateLocations(AttackingUnits, AttackLocation);#1#*/
-}
-
-TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(AActor* Units)
+TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(AGenericBaseAI* GenActor)
 {
     TArray<AGenericBaseAI*> UnitsCanAttack;
 
-    if (auto GenActor = Cast<AGenericBaseAI>(Units))
-    {
+   // if (auto GenActor = Cast<AGenericBaseAI>(Units))
+    //{
         if (GenActor->UnitDataMap.Contains(GenActor->UnitType))
         {
             if (TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes; Att.Contains(
@@ -75,19 +87,37 @@ TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(AActor* Units)
                 UnitsCanAttack.AddUnique(GenActor);
             }
         }
-    }
+  //  }
 
     // Log the amount of units that will be returned
     UE_LOG(LogTemp, Warning, TEXT("Amount of units that will be returned: %d"), UnitsCanAttack.Num());
     return UnitsCanAttack;
 }
 
+FVector ICombatInterface::FindAttackLocation(AGenericBaseAI* FriendlyActor)
+{
+    FVector ClosestLocation;
+    float MinDis = FLT_MAX;
+    FVector enemyLocation = CurrentEnemy;
 
+    // Iterate over all locations within 150 units of the enemy
+    for(FVector Location : GetAllLocationsWithinRadius(enemyLocation, MeleeAttackRange))
+    {
+        // Check if the location is within 40 units of any other friendly actor.
+        if (!IsLocationOccupied(Location, AttackingUnits, 40.0f)) // Problem is this checks, when we have not yet moved to the location. 
+        {
+            float Distance = FVector::Dist(Location, FriendlyActor->GetActorLocation());
+            if (Distance < MinDis)
+            {
+                MinDis = Distance;
+                ClosestLocation = Location;
+            }
+        }
+    }
+    return ClosestLocation;
+}
 
-
-
-/*
-TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Units)
+/*TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Units)
 {
     TArray<AGenericBaseAI*> UnitsCanAttack;
 
@@ -107,22 +137,7 @@ TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Uni
     // Log the amount of units that will be returned
     UE_LOG(LogTemp, Warning, TEXT("Amount of units that will be returned: %d"), UnitsCanAttack.Num());
     return UnitsCanAttack;
-}
-*/
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+}*/
 
 
 void ICombatInterface::AttackEnemy()
@@ -172,28 +187,7 @@ TimerManager.SetTimer(AttackTimerHandle, Unit, &ICombatInterface::AttackEnemy, u
  * @param FriendlyActor - The friendly AI unit.
  * @return FVector - The best location for the friendly AI unit to attack from.
  */
-FVector ICombatInterface::FindAttackLocation(AGenericBaseAI* FriendlyActor)
-{
-    FVector ClosestLocation;
-    float MinDis = FLT_MAX;
-    FVector enemyLocation = CurrentEnemy;
 
-    // Iterate over all locations within 150 units of the enemy
-    for(FVector Location : GetAllLocationsWithinRadius(enemyLocation, MeleeAttackRange))
-    {
-        // Check if the location is within 40 units of any other friendly actor.
-        if (!IsLocationOccupied(Location, AttackingUnits, 40.0f))
-        {
-            float Distance = FVector::Dist(Location, FriendlyActor->GetActorLocation());
-            if (Distance < MinDis)
-            {
-                MinDis = Distance;
-                ClosestLocation = Location;
-            }
-        }
-    }
-    return ClosestLocation;
-}
 
 /**
  * @brief Function to get all locations within a certain radius of a given center point.
