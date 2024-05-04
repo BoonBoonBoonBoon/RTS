@@ -7,6 +7,7 @@ AWoodResource::AWoodResource()
 {
 	MaxResourceAmount = 10;
 	CurrentWoodAmount = MaxResourceAmount;
+	Tags.Add("Resource");
 }
 
 void AWoodResource::BeginPlay()

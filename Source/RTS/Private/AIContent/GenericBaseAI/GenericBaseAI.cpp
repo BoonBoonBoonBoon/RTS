@@ -140,7 +140,7 @@ void AGenericBaseAI::SetupStimulusSource()
 void AGenericBaseAI::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	
 	if(bUnitFound)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AttackingUnits: %d"), AttackingUnits.Num());

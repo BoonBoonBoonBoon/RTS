@@ -53,12 +53,14 @@ bool ContainsValue(TMap<AGenericBaseAI*, FVector>& Map, FVector Value)
 
 
 // V--- This should maybe be looking for if we found an enemy.
-//bUnitFound = AttackingUnits.Num() > 0; // For us to attack.
+
 
 void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors)
 {
     CurrentEnemy = EnemyActor->GetActorLocation(); // Obtain the location of the enemy actor.
-    UE_LOG(LogTemp, Warning, TEXT("enemy location: %s"), *CurrentEnemy.ToString());
+  //  UE_LOG(LogTemp, Warning, TEXT("enemy location: %s"), *CurrentEnemy.ToString());
+   // UE_LOG(LogTemp, Warning, TEXT("Friendly %d actors"), FriendlyActors.Num());
+   bUnitFound = AttackingUnits.Num() > 0; // For us to attack.
     
     // Proccess the actors that can attack.
     ProccessActors(FriendlyActors);
@@ -81,20 +83,32 @@ void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyAct
 
 void ICombatInterface::ProccessActors(TArray<AActor*> Array)
 {
-    for (AActor* Src : Array)
+    UE_LOG(LogTemp, Warning, TEXT("AttackingUnits %d actors BEFORE"), AttackingUnits.Num());
+    
+    for (AActor* Actor : Array)
     {
-        if (auto Unit = Cast<AGenericBaseAI>(Src))
+        if (AGenericBaseAI* Unit = Cast<AGenericBaseAI>(Actor))
         {
+           // AttackingUnits.Add(Unit);
             AttackingUnits = ProccessAttackMode(Unit);
-            UE_LOG(LogTemp, Warning, TEXT("Attacking Units: %d"), AttackingUnits.Num());
-
-            
-            
-            // Calculate the distance between the AI and the target
-            // float distance = FVector::Dist(Unit->GetActorLocation(), CurrentEnemy);
         }
     }
+    UE_LOG(LogTemp, Warning, TEXT("AttackingUnits %d actors"), AttackingUnits.Num());
 }
+
+/*// UE_LOG(LogTemp, Warning, TEXT("Processing %d actors"), Array.Num());
+for (AActor* Src : Array)
+{
+    if (auto Unit = Cast<AGenericBaseAI>(Src))
+    {
+        AttackingUnits.Add(Unit);
+        AttackingUnits = ProccessAttackMode(Unit);
+
+        // Calculate the distance between the AI and the target
+        // float distance = FVector::Dist(Unit->GetActorLocation(), CurrentEnemy);
+    }
+}
+UE_LOG(LogTemp, Warning, TEXT("Attacking Units: %d"), AttackingUnits.Num());*/
 
 TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(AActor* Units)
 {
@@ -113,7 +127,7 @@ TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(AActor* Units)
    }
 
     // Log the amount of units that will be returned
-    //UE_LOG(LogTemp, Warning, TEXT("Amount of units that will be returned: %d"), UnitsCanAttack.Num());
+    UE_LOG(LogTemp, Warning, TEXT("Processing %d actors"), UnitsCanAttack.Num());
     return UnitsCanAttack;
 }
 

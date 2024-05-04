@@ -7,6 +7,7 @@ AGoldResource::AGoldResource()
 {
 	MaxResourceAmount = 10;
 	CurrentGoldAmount = MaxResourceAmount;
+	Tags.Add("Resource");
 }
 
 EResourceType AGoldResource::GetResourceType() const

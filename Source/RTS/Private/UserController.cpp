@@ -647,17 +647,20 @@ void AUserController::UpdateFlow()
 					// iterate over all previously selected units stored in the SU array.
 					for (AActor* SelectedActor : SelectedUnits)
 					{
-						// For each selected actor we check if it's still present in the ActorsToBeFound array.
-						// (ie. still overlapping with the selection area).
-						if (!ActorsToBeFound.Contains(SelectedActor))
+						if(!SelectedActor->ActorHasTag(FName("Building")) && !SelectedActor->ActorHasTag(FName("Resource")))
 						{
-							// If the actor is not found in the ATBF array, it's no longer overlapping,
-							// so we deselect it by hiding its selection decal and marking it for removal.
-							if (const AGenericBaseAI* AI = Cast<AGenericBaseAI>(SelectedActor))
+							// For each selected actor we check if it's still present in the ActorsToBeFound array.
+							// (ie. still overlapping with the selection area).
+							if (!ActorsToBeFound.Contains(SelectedActor))
 							{
-								AI->SelectedDecalComp->SetVisibility(false);
+								// If the actor is not found in the ATBF array, it's no longer overlapping,
+								// so we deselect it by hiding its selection decal and marking it for removal.
+								if (const AGenericBaseAI* AI = Cast<AGenericBaseAI>(SelectedActor))
+								{
+									AI->SelectedDecalComp->SetVisibility(false);
+								}
+								ActorsToRemove.Add(SelectedActor);
 							}
-							ActorsToRemove.Add(SelectedActor);
 						}
 					}
 

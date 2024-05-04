@@ -7,6 +7,7 @@ AStoneResource::AStoneResource()
 {
 	MaxResourceAmount = 10;
 	CurrentStoneAmount = MaxResourceAmount;
+	Tags.Add("Resource");
 }
 
 EResourceType AStoneResource::GetResourceType() const

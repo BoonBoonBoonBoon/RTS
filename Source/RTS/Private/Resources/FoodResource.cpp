@@ -7,6 +7,8 @@ AFoodResource::AFoodResource()
 {
 	MaxResourceAmount = 10;
 	CurrentFoodAmount = MaxResourceAmount;
+
+	Tags.Add("Resource");
 }
 
 EResourceType AFoodResource::GetResourceType() const

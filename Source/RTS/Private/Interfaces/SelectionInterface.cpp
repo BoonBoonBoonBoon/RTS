@@ -211,19 +211,13 @@ void ISelectionInterface::ChangeElementInArray(TArray<AActor*>& Array, AActor* H
  */
 void ISelectionInterface::MultiUnitSelection(TArray<AActor*>& Selected, AActor* HitActor)
 {
-	if (Cast<AGenericBaseAI>(HitActor))
+	if (const AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(HitActor))
 	{
-		// Loops through all possible actors 
 		Selected.AddUnique(HitActor);
-		for (AActor* Src : Selected)
-		{
-			if (const AGenericBaseAI* BaseAI = Cast<AGenericBaseAI>(Src))
-			{
-				BaseAI->SelectedDecalComp->SetVisibility(true);
 
-				HandleTypes(Selected, HitActor);
-			}
-		}
+		BaseAI->SelectedDecalComp->SetVisibility(true);
+
+		HandleTypes(Selected, HitActor);
 	}
 }
 
@@ -357,9 +351,18 @@ bool ISelectionInterface::IsUnitSelected(const TArray<AActor*>& UnitArray, const
 }
 
 /**
- * Handles the types of units.
- * @param UnitArray - An array of actors representing the units.
- * @param UnitActor - The actor representing the unit.
+ * @brief Handles the types of units.
+ *
+ * This function checks if the given unit actor is in the unit array. If it is, it casts the unit actor to a GenericBaseAI.
+ * If the cast is successful, it checks if the unit type of the GenericBaseAI is in the unit data map.
+ * If it is, it assigns the attributes of the unit to a new attribute array.
+ * If the attribute array is not empty, it checks if the unit has the Gather or Attack attribute.
+ * If the unit has the Gather attribute, it finds the WorkerAttributesComponent of the unit and sets CanGather to true.
+ * If the unit has the Attack attribute, it adds the unit to a new array of attacking units and processes the attacking units.
+ * If the unit actor is not in the unit array, it logs a warning message.
+ *
+ * @param UnitArray An array of actors representing the units.
+ * @param UnitActor The actor representing the unit.
  */
 void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* UnitActor)
 {
@@ -368,12 +371,15 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 	{
 		if (auto GenActor = Cast<AGenericBaseAI>(UnitActor))
 		{
-			if(GenActor->UnitDataMap.Contains(GenActor->UnitType))
+			if(GenActor->UnitDataMap.Contains(GenActor->UnitType)) // If the Actor contains a UnitType.
 			{
 				// Then assign the attributes of the unit to the new Attribute TArray. If the unit has the Gather attribute, then it can gather resources.
 				TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes;
+				
 				if (Att.Num() > 0)
 				{
+					UE_LOG(LogTemp, Warning, TEXT("UnitArray %d actors"), UnitArray.Num());
+					
 					// We then Check the Specific Attributes of the Units To See what they can do
 					if(Att.Contains(EUnitAttributes::Gather))
 					{
@@ -385,16 +391,19 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 					}
 					else if(Att.Contains(EUnitAttributes::Attack)) 
 					{
-						TArray<AActor*> IncAtkUnits;
-						
-						for (AActor* src : UnitArray)
-						{
-							IncAtkUnits.AddUnique(src);
+					//TArray<AActor*> IncAtkUnits;
+					
+					//	for (auto* src : UnitArray)
+					//	{
+							//IncAtkUnits.AddUnique(src);
 							if(ICombatInterface* CombatInterface = GenActor->CombatInterface)
 							{
-								CombatInterface->ProccessActors(IncAtkUnits);
+								//CombatInterface->ProccessActors(UnitArray);
 							}
-						}
+						//}
+						//UE_LOG(LogTemp, Warning, TEXT("UnitArray %d AFTER COMB"), UnitArray.Num());
+						//UE_LOG(LogTemp, Warning, TEXT("IncAtkUnits %d actors"), IncAtkUnits.Num());
+						//IncAtkUnits.Empty();
 					}
 				} 
 			}
