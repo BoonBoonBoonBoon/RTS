@@ -141,7 +141,7 @@ void AGenericBaseAI::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	
-	if(bUnitFound)
+	/*if(bUnitFound)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("AttackingUnits: %d"), AttackingUnits.Num());
 		
@@ -179,7 +179,7 @@ void AGenericBaseAI::Tick(float DeltaTime)
 	} else
 	{
 	//	UE_LOG(LogTemp, Warning, TEXT("AttackingUnits Not Attacjubg: %d"), AttackingUnits.Num());
-	}
+	}*/
 	
 	if(ValidHit)
 	{
@@ -187,6 +187,7 @@ void AGenericBaseAI::Tick(float DeltaTime)
 	}
 }
 
+/*
 void AGenericBaseAI::InitiateCombat(bool bIsAttacking, AGenericBaseAI* Unit)
 {
 	
@@ -212,6 +213,7 @@ void AGenericBaseAI::TimerCallback()
 		AttackEnemy();
 	}
 }
+*/
 
 
 

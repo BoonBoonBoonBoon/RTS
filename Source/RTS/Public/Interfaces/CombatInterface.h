@@ -24,8 +24,58 @@ class RTS_API ICombatInterface
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
+
+	TArray<AActor*> EnemyActors;
+
 	
-	// Friendly AI 
+	TArray<AGenericBaseAI*> AttackingUnits;
+
+	TArray<FVector> GetAllLocationsAroundEnemy(FVector enemyLocation, float radius, float stepSize);
+
+	TArray<FVector> GetAllLocationsWithinRadius(FVector center, float radius);
+
+	void CombatTick(float DeltaTime);
+	void FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors);
+
+	TArray<AGenericBaseAI*> ProccessAttackMode(TArray<AActor*> Units);
+	FVector FindAttackLocation(AGenericBaseAI* FriendlyActor);
+
+	bool IsLocationOccupied(FVector Location, TArray<AGenericBaseAI*> FriendlyActors, float Radius);
+	void MoveUnitsToSeparateLocations(TArray<AGenericBaseAI*> FriendlyActors, FVector TargetLocation);
+	float MeleeAttackRange = 150.f;
+	float RangedAttackRange = 1000.f;
+	FVector CurrentEnemy = FVector::ZeroVector;
+	FVector AttackLocation;
+	TArray<FVector> AssignedLocations;
+
+	FVector UpdateEnemyLocation();
+
+
+	void MoveToAttackLocation(AGenericBaseAI* FriendlyActor, FVector AttackLocation);
+
+	TArray<FVector> SurroundingPositions;
+
+	/*
+	TArray<FVector> CalculateSurroundingPositions(FVector EnemyLocation, int32 UnitsCount, float Radius);
+	TArray<FVector> CalculateRandomPositions(FVector EnemyLocation, int32 UnitsCount, float Radius);
+	
+	TArray<AGenericBaseAI*> AttackingUnits;
+	
+	bool IsLocationOccupied(FVector Location, TArray<AActor*> FriendlyActors, float Radius);
+	
+	void MoveToEnemy(AActor* EnemyActor,TArray<AActor*> FriendlyActors);
+	void SurroundEnemy(AActor* EnemyActor, TArray<AGenericBaseAI*> FriendlyActors);
+	
+	TArray<AGenericBaseAI*> ProccessAttackMode(TArray<AActor*> Units);
+	TArray<FVector> SurroundingPositions;
+	*/
+
+
+
+
+
+	//--------------------------
+	/*// Friendly AI 
 	TArray<AGenericBaseAI*> AttackingUnits;
 
 
@@ -59,5 +109,5 @@ public:
 
 	void MoveToAttackLocation(AGenericBaseAI* FriendlyActor, FVector AttackLocation);
 
-	TArray<FVector> SurroundingPositions;
+	TArray<FVector> SurroundingPositions;*/
 };
