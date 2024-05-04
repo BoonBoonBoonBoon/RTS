@@ -19,8 +19,6 @@
   * 
   * 
   */
-
-
 /*CurrentEnemy = EnemyActor->GetActorLocation();
   UE_LOG(LogTemp, Warning, TEXT("Actor's location: %s"), *CurrentEnemy.ToString());
   
@@ -29,31 +27,56 @@
       AttackLocation = FindAttackLocation(FriendlyActor);
   }
   MoveUnitsToSeparateLocations(AttackingUnits, AttackLocation);*/
-
 // Find all friendly actors that can attack.
 //AttackingUnits = ProccessAttackMode(FriendlyActors);
 //  UE_LOG(LogTemp, Warning, TEXT("Attacking Units: %d"), AttackingUnits.Num());
-
 //UE_LOG(LogTemp, Warning, TEXT("bUnitFound: %s"), bUnitFound ? TEXT("True") : TEXT("False"));
+
+
+/**
+ * @brief Checks if a given FVector value exists in a TMap that maps AGenericBaseAI pointers to FVectors.
+ * @param Map The TMap to search in. It maps AGenericBaseAI pointers to FVectors.
+ * @param Value The FVector value to search for.
+ * @return true if the FVector value is found in the TMap, false otherwise.
+ */
+bool ContainsValue(TMap<AGenericBaseAI*, FVector>& Map, FVector Value)
+{
+    for (auto& Elem : Map)
+    {
+        if (Elem.Value == Value)
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+
+// V--- This should maybe be looking for if we found an enemy.
+//bUnitFound = AttackingUnits.Num() > 0; // For us to attack.
 
 void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors)
 {
-    // --------------------- Setup for the combat system --------------------- //
     CurrentEnemy = EnemyActor->GetActorLocation(); // Obtain the location of the enemy actor.
     UE_LOG(LogTemp, Warning, TEXT("enemy location: %s"), *CurrentEnemy.ToString());
-
-
-    // V--- This should maybe be looking for if we found an enemy.
-    //bUnitFound = AttackingUnits.Num() > 0; // For us to attack.
     
-   // Go through what actors that can attack.
+    // Proccess the actors that can attack.
     ProccessActors(FriendlyActors);
 
-    // Now actors are stored in AttackingUnits, we can now move them to the enemy location.
+    /*// If we have found an enemy, we will find the closest location to the enemy.
     for (AGenericBaseAI* Src : AttackingUnits)
     {
-        FindAttackLocation(Src);
-    }
+        FVector Location = FindAttackLocation(Src);
+        Src->ActorLocationMap.Add(Src, Location); // Update the ActorLocationMap
+        
+        /*for (auto& Elem : Src->ActorLocationMap)
+        {
+            AGenericBaseAI* ActorV = Elem.Key;
+            FVector LocationV = Elem.Value;
+
+            UE_LOG(LogTemp, Warning, TEXT("Actor: %s, Location: %s"), *ActorV->GetName(), *LocationV.ToString());
+        }#1#
+    }*/
 }
 
 void ICombatInterface::ProccessActors(TArray<AActor*> Array)
@@ -73,12 +96,12 @@ void ICombatInterface::ProccessActors(TArray<AActor*> Array)
     }
 }
 
-TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(AGenericBaseAI* GenActor)
+TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(AActor* Units)
 {
     TArray<AGenericBaseAI*> UnitsCanAttack;
 
-   // if (auto GenActor = Cast<AGenericBaseAI>(Units))
-    //{
+    if (auto GenActor = Cast<AGenericBaseAI>(Units))
+    {
         if (GenActor->UnitDataMap.Contains(GenActor->UnitType))
         {
             if (TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes; Att.Contains(
@@ -87,10 +110,10 @@ TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(AGenericBaseAI* Gen
                 UnitsCanAttack.AddUnique(GenActor);
             }
         }
-  //  }
+   }
 
     // Log the amount of units that will be returned
-    UE_LOG(LogTemp, Warning, TEXT("Amount of units that will be returned: %d"), UnitsCanAttack.Num());
+    //UE_LOG(LogTemp, Warning, TEXT("Amount of units that will be returned: %d"), UnitsCanAttack.Num());
     return UnitsCanAttack;
 }
 
@@ -99,12 +122,15 @@ FVector ICombatInterface::FindAttackLocation(AGenericBaseAI* FriendlyActor)
     FVector ClosestLocation;
     float MinDis = FLT_MAX;
     FVector enemyLocation = CurrentEnemy;
-
+    TArray<FVector> lo;
+    
     // Iterate over all locations within 150 units of the enemy
     for(FVector Location : GetAllLocationsWithinRadius(enemyLocation, MeleeAttackRange))
     {
-        // Check if the location is within 40 units of any other friendly actor.
-        if (!IsLocationOccupied(Location, AttackingUnits, 40.0f)) // Problem is this checks, when we have not yet moved to the location. 
+        lo.Add(Location);
+        UE_LOG(LogTemp, Warning, TEXT("lo: %d"), lo.Num());
+        /*// Check if the location is within 40 units of any other friendly actor.
+       if (!IsLocationOccupied(Location, AttackingUnits, 40.0f) && !ContainsValue(FriendlyActor->ActorLocationMap, Location)) // Check if the location is already assigned to any actor // Problem is this checks, when we have not yet moved to the location. 
         {
             float Distance = FVector::Dist(Location, FriendlyActor->GetActorLocation());
             if (Distance < MinDis)
@@ -112,10 +138,41 @@ FVector ICombatInterface::FindAttackLocation(AGenericBaseAI* FriendlyActor)
                 MinDis = Distance;
                 ClosestLocation = Location;
             }
-        }
+        }*/
     }
+    // Add the location to the ActorLocationMap
+    FriendlyActor->ActorLocationMap.Add(FriendlyActor, ClosestLocation);
     return ClosestLocation;
 }
+
+/**
+ * @brief Function to get all locations within a certain radius of a given center point.
+ * @param center - The center point.
+ * @param radius - The radius.
+ * @return TArray<FVector> - An array of all locations within the radius of the center point.
+ */
+TArray<FVector> ICombatInterface::GetAllLocationsWithinRadius(FVector center, float radius)
+{
+    TArray<FVector> locationsWithinRadius;
+    TArray<FVector> allLocations = GetAllLocationsAroundEnemy(center, radius, 40.f);
+
+    for (FVector location : allLocations)
+    {
+        if (FVector::Dist(center, location) <= radius)
+        {
+            locationsWithinRadius.Add(location);
+        }
+    }
+    return locationsWithinRadius;
+}
+
+
+
+
+
+
+
+
 
 /*TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Units)
 {
@@ -189,27 +246,7 @@ TimerManager.SetTimer(AttackTimerHandle, Unit, &ICombatInterface::AttackEnemy, u
  */
 
 
-/**
- * @brief Function to get all locations within a certain radius of a given center point.
- * @param center - The center point.
- * @param radius - The radius.
- * @return TArray<FVector> - An array of all locations within the radius of the center point.
- */
-TArray<FVector> ICombatInterface::GetAllLocationsWithinRadius(FVector center, float radius)
-{
-    TArray<FVector> locationsWithinRadius;
-    TArray<FVector> allLocations = GetAllLocationsAroundEnemy(center, radius, 10.f);
 
-    for (FVector location : allLocations)
-    {
-        if (FVector::Dist(center, location) <= radius)
-        {
-            locationsWithinRadius.Add(location);
-        }
-    }
-
-    return locationsWithinRadius;
-}
 
 /**
  * @brief Function to get all locations around an enemy within a certain radius.

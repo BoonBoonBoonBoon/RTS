@@ -43,6 +43,10 @@ public:
 
 	// UNIT DATA ------------
 
+	// Actor and stored location
+	TMap<AGenericBaseAI*, FVector> ActorLocationMap;
+
+	
 	// Container to store the Attribute & Stats of the unit.
 	UPROPERTY(EditAnywhere, Category = "Unit Data")
 	FUnitData UnitData;

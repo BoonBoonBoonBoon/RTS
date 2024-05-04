@@ -2,16 +2,12 @@
 
 
 #include "Interfaces/SelectionInterface.h"
-
-#include "UserController.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "AIContent/GenericBaseAI/UserControllerAI/Light/Infantry/lightInfantry.h"
 #include "AIContent/GenericBaseAI/UserControllerAI/WorkerDrone/WorkerDrone.h"
 #include "Buildings/BarracksBuilding.h"
-#include "Buildings/BuildingController.h"
 #include "Buildings/MarketplaceBuilding.h"
 #include "Components/DecalComponent.h"
-#include "Widets/MarketPlaceWidget.h"
 
 // Assign the Signature to the Delegate.
 FOnActorCanGatherDelegate ISelectionInterface::OnActorCanGather;
