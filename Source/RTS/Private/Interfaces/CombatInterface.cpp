@@ -21,32 +21,33 @@
   */
 
 
-
-
-
-
-
-
 void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors)
 {
-    if(IsValid(EnemyActor))
+    // Fires off when we select an enemy to go to.
+    // stores all selected units.
+    // Need to find the selected units that can attack, and assign them their own array
+    // and find the enemy and assign it its own variable.
+
+    if (IsValid(EnemyActor))
     {
         // Find all friendly actors that can attack.
         AttackingUnits = ProccessAttackMode(FriendlyActors);
 
-        AttackCommenced = true;
-        
+        //AttackCommenced = true;
+
+        // Find Enemy Location.
         CurrentEnemy = EnemyActor->GetActorLocation();
-    
+
         UE_LOG(LogTemp, Warning, TEXT("Attacking Actors After process %d"), AttackingUnits.Num());
-    
+
         UE_LOG(LogTemp, Warning, TEXT("Actor's location: %s"), *CurrentEnemy.ToString());
-    
+
         for (AGenericBaseAI* FriendlyActor : AttackingUnits)
         {
+           FriendlyActor->EnemyTargets.Add(FriendlyActor, EnemyActor);
+
             AttackLocation = FindAttackLocation(FriendlyActor);
         }
-    
         MoveUnitsToSeparateLocations(AttackingUnits, AttackLocation);
     }
 }
@@ -60,20 +61,19 @@ TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Uni
     {
         if (auto GenActor = Cast<AGenericBaseAI>(Src))
         {
-            if(GenActor->UnitDataMap.Contains(GenActor->UnitType))
+            if (GenActor->UnitDataMap.Contains(GenActor->UnitType))
             {
-                if(TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes; Att.Contains(EUnitAttributes::Attack))
+                if (TArray<EUnitAttributes> Att = GenActor->UnitDataMap[GenActor->UnitType].Attributes; Att.Contains(
+                    EUnitAttributes::Attack))
                 {
                     UnitsCanAttack.AddUnique(GenActor);
                 }
             }
         }
     }
-
-
     // Log the amount of units that will be returned
     UE_LOG(LogTemp, Warning, TEXT("Amount of units that will be returned: %d"), UnitsCanAttack.Num());
-    
+
     return UnitsCanAttack;
 }
 
@@ -84,7 +84,7 @@ FVector ICombatInterface::FindAttackLocation(AGenericBaseAI* FriendlyActor)
     FVector enemyLocation = CurrentEnemy;
 
     // Iterate over all locations within 150 units of the enemy
-    for(FVector Location : GetAllLocationsWithinRadius(enemyLocation, MeleeAttackRange))
+    for (FVector Location : GetAllLocationsWithinRadius(enemyLocation, MeleeAttackRange))
     {
         // Check if the location is within 40 units of any other friendly actor.
         if (!IsLocationOccupied(Location, AttackingUnits, 40.0f))
@@ -118,6 +118,10 @@ TArray<FVector> ICombatInterface::GetAllLocationsWithinRadius(FVector center, fl
 }
 
 
+void ICombatInterface::StartAttacking(AActor* Target)
+{
+}
+
 TArray<FVector> ICombatInterface::GetAllLocationsAroundEnemy(FVector enemyLocation, float radius, float stepSize)
 {
     TArray<FVector> locations;
@@ -125,7 +129,7 @@ TArray<FVector> ICombatInterface::GetAllLocationsAroundEnemy(FVector enemyLocati
     // Iterate over a grid of points around the enemy's location
     for (float phi = 0.0f; phi <= PI; phi += stepSize) // phi is the angle from the positive z-axis
     {
-        for (float theta = 0.0f; theta <= 2*PI; theta += stepSize) // theta is the angle from the positive x-axis
+        for (float theta = 0.0f; theta <= 2 * PI; theta += stepSize) // theta is the angle from the positive x-axis
         {
             float x = radius * sin(phi) * cos(theta);
             float y = radius * sin(phi) * sin(theta);

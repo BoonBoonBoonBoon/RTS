@@ -101,6 +101,8 @@ public:
 
 	AAIController* GetAIController(AGenericBaseAI* Actor);
 
+	TMap<AGenericBaseAI*, AActor*> EnemyTargets;
+	
 private:
 	AActor* TargetEnemy = nullptr;
 	
@@ -119,7 +121,9 @@ protected:
 	
 
 public:
-
+	
+	virtual void StartAttacking(AActor* Target) override;
+	
 	// Team ID ------------
 	
 	/*

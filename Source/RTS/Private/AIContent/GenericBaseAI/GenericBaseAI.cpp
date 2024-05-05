@@ -5,7 +5,6 @@
 #include "UserController.h"
 #include "AIContent/GenericBaseAI/GenericController.h"
 #include "Components/DecalComponent.h"
-#include "Perception/AIPerceptionComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISense_Sight.h"
 
@@ -135,14 +134,43 @@ void AGenericBaseAI::SetupStimulusSource()
 	}
 }
 
+void AGenericBaseAI::StartAttacking(AActor* Target)
+{
+	//for(AGenericBaseAI* FAi : AttackingUnits)
+	if(AGenericBaseAI* FAi = Cast<AGenericBaseAI>(this))
+	{
+		if(EnemyTargets.Contains(FAi))
+		{
+			EnemyTargets[FAi] = Target;
+			
+			if(EnemyTargets[FAi] == Target)
+			{
+				UE_LOG(LogTemp, Warning, TEXT("%s is attacking %s"), *GetName(), *Target->GetName());
+			}
+		}
+		else
+		{
+			EnemyTargets.Add(FAi, Target);
+		}
+	}
+	//UE_LOG(LogTemp, Warning, TEXT("Attacking"));
+	// Add your attack logic here. This could involve changing the unit's state, playing an animation, etc.
+	// For example:
+	
+}
 
 // Called every frame
 void AGenericBaseAI::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-	//UE_LOG(LogTemp, Warning, TEXT("AttackCommenced: %s"), AttackCommenced ? TEXT("True") : TEXT("False"));
 	
-	//if(CombatInterface->AttackCommenced == true)
+	if(ValidHit)
+	{
+		MovePTR();
+	}
+
+	
+	/*
 	//if(bUnitFound)
 	if(CombatInterface->AttackingUnits.Num() > 0 && CombatInterface->CurrentEnemy != FVector::ZeroVector)
 	{
@@ -182,12 +210,9 @@ void AGenericBaseAI::Tick(float DeltaTime)
 	} else
 	{
 		//UE_LOG(LogTemp, Warning, TEXT("AttackingUnits Not Attacjubg: %d"), AttackingUnits.Num());
-	}
+	}#1#
+	*/
 	
-	if(ValidHit)
-	{
-		MovePTR();
-	}
 }
 
 /*

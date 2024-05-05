@@ -215,7 +215,22 @@ void AUserController::Tick(float DeltaTime)
 
 	AllWorldUnitsINT32 = AllUnitAmountInt(GrabAllUnits);
 
+	// Call CheckAttackDistance every tick
+	CheckAttackDistance();
 
+/*
+AGenericBaseAI* AIUnit = Cast<AGenericBaseAI>(GetPawn());
+	
+	for (const auto& Elem : AIUnit->EnemyTargets)
+	{
+		AGenericBaseAI* Key = Elem.Key;
+		AActor* Value = Elem.Value;
+
+		UE_LOG(LogTemp, Warning, TEXT("Key: %s, Value: %s"), *Key->GetName(), *Value->GetName());
+	}
+	*/
+		
+	
 	//UE_LOG(LogTemp, Warning, TEXT("Number of selected units: %d"), SelectedUnits.Num());
 	//UE_LOG(LogTemp, Warning, TEXT("Number of All Units: %d"), AllWorldUnitsINT32);
 }
@@ -256,12 +271,7 @@ void AUserController::BeginPlay()
 			UEconomyManager::GetInstance()->OnGoldChanged.AddDynamic(UserControllerPtr.Get(),
 			                                                         &AUserController::OnGoldChanged);
 		}
-		/*EconomyManager->OnWoodChanged.AddDynamic(this, &AUserController::OnWoodChanged);*/
 	}
-
-	/*// Set the input mode to Game and UI so the player can interact with both the game world and the UI
-	FInputModeGameAndUI InputModeData;
-	SetInputMode(InputModeData);*/
 }
 
 void AUserController::SetupInputComponent()
@@ -283,6 +293,25 @@ void AUserController::SetupInputComponent()
 	InputComponent->BindAction("PatrolAI", IE_Pressed, this, &AUserController::EnterPatrolMode);
 }
 
+void AUserController::CheckAttackDistance()
+{
+	if (CurrentTarget)
+	{
+		for (AActor* Unit : AttackingUnits)
+		{
+			float Distance = FVector::Dist(Unit->GetActorLocation(), CurrentTarget->GetActorLocation());
+
+			// Replace 300.0f with your attack distance
+			if (Distance <= 300.0f)
+			{
+				if (AGenericBaseAI* AIUnit = Cast<AGenericBaseAI>(Unit))
+				{
+					AIUnit->StartAttacking(CurrentTarget);
+				}
+			}
+		}
+	}
+}
 
 void AUserController::EventKey()
 {
@@ -310,6 +339,9 @@ void AUserController::EventKey()
 			                                         WorldMouseLocation + WorldMouseDirection * TraceDistance,
 			                                         ECC_Visibility, CollisionParams))
 			{
+
+				CurrentTarget = NULL;
+				
 				if (AActor* HitActorObj = (HitResult.GetActor()))
 				{
 					// Check if the Hit Result is a Resource.
@@ -330,6 +362,9 @@ void AUserController::EventKey()
 					{
 						if (CombatInterface != nullptr)
 						{
+							// Store the clicked enemy as the current target
+							CurrentTarget = HitActorObj;
+							
 							UE_LOG(LogTemp, Warning, TEXT("Found Enemy"));
 							CombatInterface->FindEnemy(HitActorObj, SelectedUnits);
 						}

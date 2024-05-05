@@ -30,6 +30,10 @@ class RTS_API AUserController : public APlayerController, public ICombatInterfac
 	GENERATED_BODY()
 
 public:
+
+	AActor* CurrentTarget;
+	void CheckAttackDistance();
+	
 	UEconomyManager* EconomyManager = nullptr;
 
 	// Widget for the User Interface //
