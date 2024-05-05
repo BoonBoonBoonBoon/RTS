@@ -26,75 +26,32 @@
 
 
 
-/**
- * @brief Function that is called every tick and checks if an enemy has been found.
- * If an enemy has been found, it iterates over all friendly AI units that can attack,
- * finds the best location for each unit to attack from, and then moves the unit to that location.
- * @param DeltaTime - The time since the last tick.
- */
-void ICombatInterface::CombatTick(float DeltaTime)
+
+void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors)
 {
-    /*if(EnemyFound)
+    if(IsValid(EnemyActor))
     {
+        // Find all friendly actors that can attack.
+        AttackingUnits = ProccessAttackMode(FriendlyActors);
+
+        AttackCommenced = true;
+        
+        CurrentEnemy = EnemyActor->GetActorLocation();
+    
+        UE_LOG(LogTemp, Warning, TEXT("Attacking Actors After process %d"), AttackingUnits.Num());
+    
+        UE_LOG(LogTemp, Warning, TEXT("Actor's location: %s"), *CurrentEnemy.ToString());
+    
         for (AGenericBaseAI* FriendlyActor : AttackingUnits)
         {
             AttackLocation = FindAttackLocation(FriendlyActor);
-            MoveToAttackLocation(FriendlyActor, AttackLocation);
         }
-    }*/
-}
-
-
-/**
- * @brief Function to find an enemy actor and initiate the attack process.
- * It finds all friendly actors that can attack and initiates the attack process.
- * If there are friendly actors that can attack, it iterates over them and,
- * for each one, it gets its AI controller and moves it to a location.
- * Finally, it sets the current enemy to the provided enemy actor and sets the EnemyFound flag to true.
- * @param EnemyActor - The enemy actor to find.
- * @param FriendlyActors - The array of friendly actors.
- */
-void ICombatInterface::FindEnemy(AActor* EnemyActor, TArray<AActor*> FriendlyActors)
-{
-    // Find all friendly actors that can attack.
-    AttackingUnits = ProccessAttackMode(FriendlyActors);
-
-    CurrentEnemy = EnemyActor->GetActorLocation();
-    UE_LOG(LogTemp, Warning, TEXT("Actor's location: %s"), *CurrentEnemy.ToString());
     
-    for (AGenericBaseAI* FriendlyActor : AttackingUnits)
-    {
-        AttackLocation = FindAttackLocation(FriendlyActor);
+        MoveUnitsToSeparateLocations(AttackingUnits, AttackLocation);
     }
-    
-    MoveUnitsToSeparateLocations(AttackingUnits, AttackLocation);
-   
-	
-    // Todo : Find locations the AttackingUnits can move to.
-	
-
-	
-    /*if (AttackingUnits.Num() > 0)
-    {
-        for(int32 i = 0; i < AttackingUnits.Num(); ++i)
-        {
-            if (AGenericController* AIController = Cast<AGenericController>(AttackingUnits[i]->GetController()))
-            {
-                AIController->MoveToLocation(AttackLocation);
-            }
-        }
-    }*/
 }
 
-/**
- * @brief Function to process a given array of units and return those that can attack.
- * It iterates over the given array of units. For each unit, it attempts to cast it to an `AGenericBaseAI`.
- * If the cast is successful and the unit's type is in its `UnitDataMap`, it checks if the unit has the `Attack` attribute.
- * If the unit has the `Attack` attribute, it is added to the `UnitsCanAttack` array.
- * The function returns the `UnitsCanAttack` array, which contains all units from the input array that can attack.
- * @param Units - The array of units to process.
- * @return TArray<AGenericBaseAI*> - The array of units that can attack.
- */
+
 TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Units)
 {
     TArray<AGenericBaseAI*> UnitsCanAttack;
@@ -120,13 +77,6 @@ TArray<AGenericBaseAI*> ICombatInterface::ProccessAttackMode(TArray<AActor*> Uni
     return UnitsCanAttack;
 }
 
-/**
- * @brief Function to find the best location for a friendly AI unit to attack from.
- * It iterates over all locations within 150 units of the enemy and finds the closest one
- * that is not within 40 units of any other friendly AI unit.
- * @param FriendlyActor - The friendly AI unit.
- * @return FVector - The best location for the friendly AI unit to attack from.
- */
 FVector ICombatInterface::FindAttackLocation(AGenericBaseAI* FriendlyActor)
 {
     FVector ClosestLocation;
@@ -150,12 +100,7 @@ FVector ICombatInterface::FindAttackLocation(AGenericBaseAI* FriendlyActor)
     return ClosestLocation;
 }
 
-/**
- * @brief Function to get all locations within a certain radius of a given center point.
- * @param center - The center point.
- * @param radius - The radius.
- * @return TArray<FVector> - An array of all locations within the radius of the center point.
- */
+
 TArray<FVector> ICombatInterface::GetAllLocationsWithinRadius(FVector center, float radius)
 {
     TArray<FVector> locationsWithinRadius;
@@ -173,13 +118,6 @@ TArray<FVector> ICombatInterface::GetAllLocationsWithinRadius(FVector center, fl
 }
 
 
-/**
- * @brief Function to get all locations around an enemy within a certain radius.
- * @param enemyLocation - The location of the enemy.
- * @param radius - The radius around the enemy.
- * @param stepSize - The step size for the grid of points around the enemy.
- * @return TArray<FVector> - An array of all locations around the enemy within the radius.
- */	
 TArray<FVector> ICombatInterface::GetAllLocationsAroundEnemy(FVector enemyLocation, float radius, float stepSize)
 {
     TArray<FVector> locations;
@@ -219,13 +157,7 @@ void ICombatInterface::MoveUnitsToSeparateLocations(TArray<AGenericBaseAI*> Frie
     }
 }
 
-/**
- * @brief Function to check if a given location is within a certain radius of any friendly AI unit.
- * @param Location - The location to check.
- * @param FriendlyActors - The array of friendly AI units.
- * @param Radius - The radius.
- * @return bool - True if the location is within the radius of any friendly AI unit, false otherwise.
- */
+
 bool ICombatInterface::IsLocationOccupied(FVector Location, TArray<AGenericBaseAI*> FriendlyActors, float Radius)
 {
     for (AGenericBaseAI* Actor : FriendlyActors)

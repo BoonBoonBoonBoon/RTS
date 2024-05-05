@@ -140,10 +140,13 @@ void AGenericBaseAI::SetupStimulusSource()
 void AGenericBaseAI::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	//UE_LOG(LogTemp, Warning, TEXT("AttackCommenced: %s"), AttackCommenced ? TEXT("True") : TEXT("False"));
 	
-	/*if(bUnitFound)
+	//if(CombatInterface->AttackCommenced == true)
+	//if(bUnitFound)
+	if(CombatInterface->AttackingUnits.Num() > 0 && CombatInterface->CurrentEnemy != FVector::ZeroVector)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AttackingUnits: %d"), AttackingUnits.Num());
+		//UE_LOG(LogTemp, Warning, TEXT("AttackingUnits: %d"), AttackingUnits.Num());
 		
 		for (AActor* Src: AttackingUnits)
 		{
@@ -178,8 +181,8 @@ void AGenericBaseAI::Tick(float DeltaTime)
 		}
 	} else
 	{
-	//	UE_LOG(LogTemp, Warning, TEXT("AttackingUnits Not Attacjubg: %d"), AttackingUnits.Num());
-	}*/
+		//UE_LOG(LogTemp, Warning, TEXT("AttackingUnits Not Attacjubg: %d"), AttackingUnits.Num());
+	}
 	
 	if(ValidHit)
 	{

@@ -27,6 +27,7 @@ public:
 
 	TArray<AActor*> EnemyActors;
 
+	bool AttackCommenced = false;
 	
 	TArray<AGenericBaseAI*> AttackingUnits;
 

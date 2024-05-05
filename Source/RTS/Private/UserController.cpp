@@ -243,9 +243,9 @@ void AUserController::BeginPlay()
 	// Economy Resource Interface
 	UserControllerPtr = this;
 	EconomyManager = UEconomyManager::GetInstance();
-	if (!EconomyManager == NULL)
+	if (EconomyManager != NULL)
 	{
-		if (UserControllerPtr.IsValid())
+		if (UserControllerPtr.IsValid() && UserControllerPtr != NULL)
 		{
 			UEconomyManager::GetInstance()->OnWoodChanged.AddDynamic(UserControllerPtr.Get(),
 			                                                         &AUserController::OnWoodChanged);

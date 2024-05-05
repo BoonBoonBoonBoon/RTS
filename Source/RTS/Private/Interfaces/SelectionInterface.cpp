@@ -393,14 +393,17 @@ void ISelectionInterface::HandleTypes(const TArray<AActor*>& UnitArray, AActor* 
 					{
 					//TArray<AActor*> IncAtkUnits;
 					
-					//	for (auto* src : UnitArray)
-					//	{
+					for (auto* src : UnitArray)
+					{
+						if (auto Gen = Cast<AGenericBaseAI>(src)){
 							//IncAtkUnits.AddUnique(src);
 							if(ICombatInterface* CombatInterface = GenActor->CombatInterface)
 							{
 								//CombatInterface->ProccessActors(UnitArray);
+								CombatInterface->AttackingUnits.Add(Gen);
 							}
-						//}
+						}
+					}
 						//UE_LOG(LogTemp, Warning, TEXT("UnitArray %d AFTER COMB"), UnitArray.Num());
 						//UE_LOG(LogTemp, Warning, TEXT("IncAtkUnits %d actors"), IncAtkUnits.Num());
 						//IncAtkUnits.Empty();
