@@ -141,17 +141,21 @@ void ISelectionInterface::AddBuildingWidget(EBuildingTypes CurrentBuilding, AAct
 	// Cast ActorToWidget to AMainBuilding
 	if (AMainBuilding* MainBuilding = Cast<AMainBuilding>(ActorToWidget))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("Building Selected: %s"), *ActorToWidget->GetName());
+		
 		if(CurrentBuilding == EBuildingTypes::Barracks)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Barracks Selected"));
-			//MainBuilding->OpenBarracks(MainBuilding->bOpenBarracks);
+			
 			MainBuilding->bOpenMarketPlace = false;
 			MainBuilding->bOpenBarracks = true;
+
+			MainBuilding->OpenBarracksUIEvent();
 		}
 		else if(CurrentBuilding == EBuildingTypes::Trader)
 		{
-			MainBuilding->bOpenBarracks = false;
-			MainBuilding->bOpenMarketPlace = true;
+			//MainBuilding->bOpenBarracks = false;
+			//MainBuilding->bOpenMarketPlace = true;
 			UE_LOG(LogTemp, Warning, TEXT("Trader Selected"));
 			
 		}

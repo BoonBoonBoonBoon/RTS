@@ -40,6 +40,14 @@ bool AMainBuilding::OpenBarracks(bool bOpen)
 	return true;
 }
 
+void AMainBuilding::OpenBarracksUIEvent()
+{
+	bOpenBarracks = true;
+	UE_LOG(LogTemp, Warning, TEXT("Open UI Event"));
+	OpenBarracksWidget();
+}
+
+
 // Called when the game starts or when spawned
 void AMainBuilding::BeginPlay()
 {
@@ -66,11 +74,11 @@ void AMainBuilding::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	if(bOpenBarracks)
+	/*if(bOpenBarracks)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("barracks open"));
 		OpenBarracksWidget();
-	}
+	}*/
 	
 	//OpenMarketPlaceWidget();
 	

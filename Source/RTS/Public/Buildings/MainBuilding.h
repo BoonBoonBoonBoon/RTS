@@ -40,7 +40,8 @@ public:
 
 	bool OpenMarket(bool bOpen);
 	bool OpenBarracks(bool bOpen);
-	
+	void OpenBarracksUIEvent();
+
 	// Open & Close Widgets ------------
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
 	bool bOpenMarketPlace = false;

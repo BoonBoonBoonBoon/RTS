@@ -49,12 +49,20 @@ void AGenericBaseEnemyAI::TakeDamage(float DamageAmount)
 {
 	// Reduce health by the damage amount
 	Health -= DamageAmount;
+	
+	// Log the health
+	UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
 
 	// Clamp health between 0 and MaxHealth
 	Health = FMath::Clamp(Health, 0.f, MaxHealth);
-
+	
 	// Reset the timer
 	TimeSinceLastDamage = 0.f;
+
+	if(Health <= 0)
+	{
+		Destroy();
+	}
 }
 
 void AGenericBaseEnemyAI::RegenerateHealth(float DeltaTime)

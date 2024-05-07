@@ -120,7 +120,7 @@ void AGenericBaseAI::BeginPlay()
 	// Initialize the CombatInterface
 	CombatInterface = Cast<ICombatInterface>(this);
 
-
+	
 }
 
 
@@ -145,7 +145,8 @@ void AGenericBaseAI::StartAttacking(AActor* Target)
 			
 			if(EnemyTargets[FAi] == Target)
 			{
-				UE_LOG(LogTemp, Warning, TEXT("%s is attacking %s"), *GetName(), *Target->GetName());
+				//UE_LOG(LogTemp, Warning, TEXT("%s is attacking %s"), *GetName(), *Target->GetName());
+				CombatInterface->LightInfDealDamage(FAi, Target);
 			}
 		}
 		else

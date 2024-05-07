@@ -4,8 +4,9 @@
 #include "Interfaces/CombatInterface.h"
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "AIContent/GenericBaseAI/GenericController.h"
+#include "AIContent/GenericBaseEnemy/GenericBaseEnemyAI.h"
 
- /*	Todo : W/O Perception Currently. 
+/*	Todo : W/O Perception Currently. 
   *	The Friendly AI that can attack must find an actor that they can attack. 
   *	They do this when the player clicks on the Enemy AI target in usercontroller event key.
   *	Once we find the ai target the friendly AI must be constantly updated about where the enemy ai is currently at in the combatinterface,
@@ -121,6 +122,68 @@ TArray<FVector> ICombatInterface::GetAllLocationsWithinRadius(FVector center, fl
 void ICombatInterface::StartAttacking(AActor* Target)
 {
 }
+
+void ICombatInterface::LightInfDealDamage(AGenericBaseAI* Unit, AActor* Target)
+{
+    // Get Damage to deal from the unit's stats.
+    int DmgToDeal = Unit->UnitDataMap[Unit->UnitType].UnitStats.DamageDealt;
+
+    // Get the attack speed from the unit's stats.
+    int AttackSpeed = Unit->UnitDataMap[Unit->UnitType].UnitStats.AttackSpeed;
+
+    if (TimeValue <= 0)
+    {
+        TimeValue = AttackSpeed;
+    }
+    
+    // Check if the timer is already set
+    if (!Unit->GetWorld()->GetTimerManager().IsTimerActive(Unit->AttackTimerHandleLightInf))
+    {
+        // Set a timer to call the AttackEnemy function every AttackSpeed seconds
+        // lambda function
+        Unit->GetWorld()->GetTimerManager().SetTimer(Unit->AttackTimerHandleLightInf, [this, Unit, Target, DmgToDeal]()
+        {
+            TimeValue--;
+        
+            UE_LOG(LogTemp, Warning, TEXT("Remaining time for timer: %d"), TimeValue);
+                    
+            if (TimeValue <= 0)
+            {
+                //TimeValue = Unit->UnitDataMap[Unit->UnitType].UnitStats.AttackSpeed;
+                if (AGenericBaseEnemyAI* Enemy = Cast<AGenericBaseEnemyAI>(Target))
+                {
+                    Enemy->TakeDamage(DmgToDeal);
+                    Unit->GetWorld()->GetTimerManager().ClearTimer(AttackTimerHandleLightInf);
+                }
+            }
+        }, AttackSpeed, true);
+    }
+    /*
+    FTimerHandle& ActorTimer = LightInfTimers[Unit]; // Get the timer for the actor.
+    Unit->GetWorld()->GetTimerManager().SetTimer(ActorTimer, [&, Unit, Target, DmgToDeal]()
+    {
+        
+        // Deal damage to the enemy
+        if (AGenericBaseEnemyAI* Enemy = Cast<AGenericBaseEnemyAI>(Target))
+        {
+            --TimeValue;
+            if(TimeValue <= 0)
+            {
+                TimeValue = Unit->UnitDataMap[Unit->UnitType].UnitStats.AttackSpeed;
+                Enemy->TakeDamage(DmgToDeal);
+            }
+        }
+    }, AttackSpeed, true);
+    */
+    
+  
+    
+    /*if(AGenericBaseEnemyAI* Enemy = Cast<AGenericBaseEnemyAI>(Target))
+    {
+        Enemy->TakeDamage(DmgToDeal);
+    }*/
+}
+
 
 TArray<FVector> ICombatInterface::GetAllLocationsAroundEnemy(FVector enemyLocation, float radius, float stepSize)
 {

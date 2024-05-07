@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include <map>
+
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
@@ -30,6 +32,12 @@ public:
 	
 	TArray<AActor*> EnemyActors;
 
+	void LightInfDealDamage(AGenericBaseAI* Unit, AActor* Target);
+	FTimerHandle AttackTimerHandleLightInf;
+
+	// A map of actors and their timers. (Key = Actor, Value = TimerHandle)
+	std::map<AActor*, FTimerHandle> LightInfTimers;
+	int32 TimeValue = 0;
 	
 	
 	bool AttackCommenced = false;
