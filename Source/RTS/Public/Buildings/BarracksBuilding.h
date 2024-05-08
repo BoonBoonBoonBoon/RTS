@@ -18,7 +18,7 @@ class RTS_API ABarracksBuilding : public AMainBuilding
 public:
 	ABarracksBuilding();
 
-
+	virtual void BeginPlay() override;
 	
 	//void SpawnUnit();
 	

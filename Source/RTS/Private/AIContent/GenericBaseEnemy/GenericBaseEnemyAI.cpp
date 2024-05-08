@@ -13,7 +13,7 @@ AGenericBaseEnemyAI::AGenericBaseEnemyAI()
 	//CombatInterface = Cast<ICombatInterface>(this);
 	
 	// Initialize health attributes
-	Health = 100.f;
+	Health = 50.f;
 	MaxHealth = 100.f;
 	HealthRegenRate = 5.f;
 }

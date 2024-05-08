@@ -9,6 +9,9 @@
 #include "Interfaces/SelectionInterface.h"
 #include "MainBuilding.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOpenBarracksUIEvent, bool, bOpenBarracksUI);
+
 class UDecalComponent;
 class UBoxComponent;
 
@@ -35,9 +38,13 @@ public:
 	UFUNCTION(BlueprintImplementableEvent, Category = "BuildingWidget")
 	void OpenMarketPlaceWidget();
 	
-	UFUNCTION(BlueprintImplementableEvent, Category = "BuildingWidget")
+	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable, Category = "BuildingWidget")
 	void OpenBarracksWidget();
 
+	UPROPERTY(BlueprintAssignable)
+	FOpenBarracksUIEvent OpenBarracksUI;
+
+	
 	bool OpenMarket(bool bOpen);
 	bool OpenBarracks(bool bOpen);
 	void OpenBarracksUIEvent();

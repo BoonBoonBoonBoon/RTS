@@ -2,7 +2,6 @@
 
 
 #include "Buildings/MainBuilding.h"
-
 #include "Buildings/BuildingController.h"
 #include "Buildings/MarketplaceBuilding.h"
 #include "Components/BoxComponent.h"
@@ -20,7 +19,7 @@ AMainBuilding::AMainBuilding()
 
 	
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>("Collision");
-	//BoxComponent->SetupAttachment(RootComponent);
+	BoxComponent->SetupAttachment(RootComponent);
 	
 	SelectedDecalComp = CreateDefaultSubobject<UDecalComponent>("Decal");
 	SelectedDecalComp->SetupAttachment(BoxComponent);
@@ -42,8 +41,10 @@ bool AMainBuilding::OpenBarracks(bool bOpen)
 
 void AMainBuilding::OpenBarracksUIEvent()
 {
-	bOpenBarracks = true;
-	UE_LOG(LogTemp, Warning, TEXT("Open UI Event"));
+	OpenBarracksUI.Broadcast(true);
+	
+	//bOpenBarracks = true;
+	UE_LOG(LogTemp, Warning, TEXT("Check if Open Building UI Event is called"));
 	OpenBarracksWidget();
 }
 
@@ -53,6 +54,9 @@ void AMainBuilding::BeginPlay()
 {
 	Super::BeginPlay();
 
+	
+
+	
 	/*// Create an instance of BuildingController
 	BuildingController = GetWorld()->SpawnActor<ABuildingController>();
 

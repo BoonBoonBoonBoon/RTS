@@ -10,6 +10,11 @@ ABarracksBuilding::ABarracksBuilding()
 	Tags.Add("Barracks");
 }
 
+void ABarracksBuilding::BeginPlay()
+{
+	Super::BeginPlay();
+}
+
 /*
 void ABarracksBuilding::SpawnUnit()
 {

@@ -150,6 +150,7 @@ void ISelectionInterface::AddBuildingWidget(EBuildingTypes CurrentBuilding, AAct
 			MainBuilding->bOpenMarketPlace = false;
 			MainBuilding->bOpenBarracks = true;
 
+			//MainBuilding->OpenBarracksUI.Broadcast(true);
 			MainBuilding->OpenBarracksUIEvent();
 		}
 		else if(CurrentBuilding == EBuildingTypes::Trader)
