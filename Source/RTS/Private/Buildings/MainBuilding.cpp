@@ -45,7 +45,7 @@ void AMainBuilding::OpenBarracksUIEvent()
 	
 	//bOpenBarracks = true;
 	UE_LOG(LogTemp, Warning, TEXT("Check if Open Building UI Event is called"));
-	OpenBarracksWidget();
+	//OpenBarracksWidget();
 }
 
 

@@ -15,8 +15,4 @@ void ABarracksBuilding::BeginPlay()
 	Super::BeginPlay();
 }
 
-/*
-void ABarracksBuilding::SpawnUnit()
-{
-}
-*/
+
