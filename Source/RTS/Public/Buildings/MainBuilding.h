@@ -10,7 +10,8 @@
 #include "MainBuilding.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOpenBarracksUIEvent, bool, bOpenBarracksUI);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOpenBarracksUIEvent, bool, bOpenBarracksUI, bool, bOpenMarketPlaceUI);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FOpenMarketPlaceUIEvent, bool, bOpenMarketPlaceUI, bool, bOpenBarracksUI);
 
 class UDecalComponent;
 class UBoxComponent;
@@ -35,26 +36,18 @@ public:
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* BoxComponent;
 
-	UFUNCTION(BlueprintImplementableEvent, Category = "BuildingWidget")
-	void OpenMarketPlaceWidget();
-	
-	UFUNCTION(BlueprintImplementableEvent,BlueprintCallable, Category = "BuildingWidget")
-	void OpenBarracksWidget();
+
+	// ------------------- Widgets -------------------
 
 	UPROPERTY(BlueprintAssignable)
 	FOpenBarracksUIEvent OpenBarracksUI;
 
+	UPROPERTY(BlueprintAssignable)
+	FOpenMarketPlaceUIEvent OpenMarketPlaceUI;
 	
-	bool OpenMarket(bool bOpen);
-	bool OpenBarracks(bool bOpen);
 	void OpenBarracksUIEvent();
-
-	// Open & Close Widgets ------------
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	bool bOpenMarketPlace = false;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Widgets")
-	bool bOpenBarracks = false;
-
+	void OpenMarketUIEvent();
+	
 	// ---------------------------------
 	
 protected:

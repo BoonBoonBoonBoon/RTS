@@ -147,16 +147,10 @@ void ISelectionInterface::AddBuildingWidget(EBuildingTypes CurrentBuilding, AAct
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Barracks Selected"));
 			
-			MainBuilding->bOpenMarketPlace = false;
-			MainBuilding->bOpenBarracks = true;
-
-			//MainBuilding->OpenBarracksUI.Broadcast(true);
 			MainBuilding->OpenBarracksUIEvent();
 		}
 		else if(CurrentBuilding == EBuildingTypes::Trader)
 		{
-			//MainBuilding->bOpenBarracks = false;
-			//MainBuilding->bOpenMarketPlace = true;
 			UE_LOG(LogTemp, Warning, TEXT("Trader Selected"));
 			
 		}

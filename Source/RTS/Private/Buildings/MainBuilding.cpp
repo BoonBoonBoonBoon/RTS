@@ -2,7 +2,6 @@
 
 
 #include "Buildings/MainBuilding.h"
-#include "Buildings/BuildingController.h"
 #include "Buildings/MarketplaceBuilding.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
@@ -29,23 +28,15 @@ AMainBuilding::AMainBuilding()
 }
 
 
-bool AMainBuilding::OpenMarket(bool bOpen)
-{
-	return true;
-}
-
-bool AMainBuilding::OpenBarracks(bool bOpen)
-{
-	return true;
-}
-
 void AMainBuilding::OpenBarracksUIEvent()
 {
-	OpenBarracksUI.Broadcast(true);
-	
-	//bOpenBarracks = true;
-	UE_LOG(LogTemp, Warning, TEXT("Check if Open Building UI Event is called"));
-	//OpenBarracksWidget();
+	OpenBarracksUI.Broadcast(true, false);
+}
+
+void AMainBuilding::OpenMarketUIEvent()
+{
+	//OpenMarketPlaceUI.Broadcast(true);
+	OpenBarracksUI.Broadcast(false, true);
 }
 
 
