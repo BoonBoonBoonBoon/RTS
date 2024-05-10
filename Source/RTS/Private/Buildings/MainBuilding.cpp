@@ -30,13 +30,12 @@ AMainBuilding::AMainBuilding()
 
 void AMainBuilding::OpenBarracksUIEvent()
 {
-	OpenBarracksUI.Broadcast(true, false);
+	OpenBarracksUI.Broadcast(true);
 }
 
 void AMainBuilding::OpenMarketUIEvent()
 {
-	//OpenMarketPlaceUI.Broadcast(true);
-	OpenBarracksUI.Broadcast(false, true);
+	OpenMarketPlaceUI.Broadcast(true);
 }
 
 
@@ -68,16 +67,14 @@ void AMainBuilding::BeginPlay()
 void AMainBuilding::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	/*if(bOpenBarracks)
+	/*if(!bBarracksSelected)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("barracks open"));
-		OpenBarracksWidget();
+		OpenBarracksUI.Broadcast(false);
+	}
+	else if(!bMarketSlectected)
+	{
+		OpenMarketPlaceUI.Broadcast(false);
 	}*/
-	
-	//OpenMarketPlaceWidget();
-	
-	
 }
 
 

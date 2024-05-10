@@ -19,9 +19,5 @@ public:
 	ABarracksBuilding();
 
 	virtual void BeginPlay() override;
-	
-	//void SpawnUnit();
-	
-	/*UPROPERTY(EditAnywhere, BlueprintReadWrite, Category= "Building Type")
-	EBuildingTypes Type;*/
+
 };

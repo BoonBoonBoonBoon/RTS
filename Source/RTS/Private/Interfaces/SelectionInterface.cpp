@@ -146,13 +146,12 @@ void ISelectionInterface::AddBuildingWidget(EBuildingTypes CurrentBuilding, AAct
 		if(CurrentBuilding == EBuildingTypes::Barracks)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Barracks Selected"));
-			
 			MainBuilding->OpenBarracksUIEvent();
 		}
 		else if(CurrentBuilding == EBuildingTypes::Trader)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Trader Selected"));
-			
+			MainBuilding->OpenMarketUIEvent();
 		}
 	}
 }

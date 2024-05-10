@@ -8,6 +8,7 @@ ABarracksBuilding::ABarracksBuilding()
 	//BuildingType = EBuildingTypes::Barracks;
 
 	Tags.Add("Barracks");
+	
 }
 
 void ABarracksBuilding::BeginPlay()
