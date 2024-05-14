@@ -8,8 +8,10 @@
 #include "SelectionInterface.generated.h"
 
 class AGenericBaseAI;
-// Declare the delegate for the actor can gather.
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActorCanGatherDelegate, AActor*, GatherActor);
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnActorCanGatherDelegate, AActor*, GatherActor); // Declare the delegate for the actor can gather.
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCloseBarracksValid, bool, bCloseBarracksUI); // Declare the delegate for the barracks UI.
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FCloseMarketValid, bool, bCloseMarketUI); // Declare the delegate for the barracks UI.
 
 // This class does not need to be modified.
 UINTERFACE(MinimalAPI)
@@ -137,6 +139,11 @@ public:
 
 
 	// --------------
+
+
+	// Closes the Selected Buildings UI. 
+	static FCloseBarracksValid CloseBarracksUISwitch;
+	static FCloseMarketValid CloseMarketUISwitch;
 
 
 	

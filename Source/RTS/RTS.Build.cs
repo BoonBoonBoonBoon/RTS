@@ -10,7 +10,7 @@ public class RTS : ModuleRules
 	
 		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "Niagara", "AIModule", "GameplayTasks", "NavigationSystem", "HeadMountedDisplay", "UMG" });
 
-		PrivateDependencyModuleNames.AddRange(new string[] { "InteractiveToolsFramework" });
+		PrivateDependencyModuleNames.AddRange(new string[] { "InteractiveToolsFramework", "AITestSuite" });
 
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });

@@ -18,6 +18,22 @@ class EbuildingTypes;
 #define mTraceChannel ECollisionChannel::ECC_Pawn
 
 
+void AUserController::OnSwitchBarracksUI(bool bCloseBarracksUI)
+{
+	if(bCloseBarracksUI)
+	{
+		CloseMarketplaceUI.Broadcast(true);
+	}
+}
+
+void AUserController::OnSwitchMarketplaceUI(bool bCloseMarketUI)
+{
+	if(bCloseMarketUI)
+	{
+		CloseBarracksUI.Broadcast(true);
+	}
+}
+
 int32 AUserController::AllUnitAmountInt(TArray<AGenericBaseAI*> AllU)
 
 {
@@ -51,6 +67,9 @@ AUserController::AUserController()
 	UStoneAmount = 0;
 	UFoodAmount = 0;
 	UGoldAmount = 0;
+
+	
+	
 }
 
 void AUserController::OnPossess(APawn* InPawn)
@@ -246,6 +265,9 @@ void AUserController::BeginPlay()
 	// Initialize the CombatInterface
 	CombatInterface = Cast<ICombatInterface>(this);
 
+	SelectionInterface->CloseBarracksUISwitch.AddDynamic(this, &AUserController::OnSwitchBarracksUI);
+	SelectionInterface->CloseMarketUISwitch.AddDynamic(this, &AUserController::OnSwitchMarketplaceUI);
+	
 	if(WidgetClass)
 	{
 		ResourceWidgetInstance = CreateWidget<UUserWidget>(this, WidgetClass);
@@ -461,6 +483,7 @@ void AUserController::StartBoxSelection()
 	// Get the Coordinates of the mouse when clicked
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
+	
 		
 		SetAllUnitsTrue = false;
 		
@@ -473,6 +496,10 @@ void AUserController::StartBoxSelection()
 		{
 			SelectionInterface->NotHit(SelectedBuilding);
 			SelectionInterface->NotHit(SelectedUnits);
+
+			// Close The Widgets 
+			CloseBarracksUI.Broadcast(true);
+			CloseMarketplaceUI.Broadcast(true);
 		}
 	}
 }
@@ -565,6 +592,10 @@ void AUserController::HandleSelection(AActor* ActorHit)
 	{
 		if (ActorHit->Tags.Contains("Unit")) // Look for Actor Type.
 		{
+			// Close the Widget.
+			CloseBarracksUI.Broadcast(true);
+			CloseMarketplaceUI.Broadcast(true);
+			
 			if (!SelectedBuilding.IsEmpty()) // Clears Selection to process new Array Selection.
 			{
 				SelectionInterface->NotHit(SelectedBuilding);
@@ -594,7 +625,19 @@ void AUserController::HandleSelection(AActor* ActorHit)
 				}
 				else if (SelectedBuilding.Num() > 0)
 				{
+					// return element
 					SelectionInterface->ChangeElementInArray(SelectedBuilding, ActorHit);
+
+					EBuildingTypes CurrentBuilding = SelectionInterface->GetBuildingType(ActorHit);
+
+					if(CurrentBuilding == EBuildingTypes::Barracks)
+					{
+						CloseMarketplaceUI.Broadcast(true);
+					}
+					else if(CurrentBuilding == EBuildingTypes::Trader)
+					{
+						CloseBarracksUI.Broadcast(true);
+					}
 				}
 			}
 		}

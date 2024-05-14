@@ -9,12 +9,21 @@
 #include "Buildings/MarketplaceBuilding.h"
 #include "Components/DecalComponent.h"
 
+
 // Assign the Signature to the Delegate.
 FOnActorCanGatherDelegate ISelectionInterface::OnActorCanGather;
 
 class IUnitInterface;
 class AGenericBaseAI;
+
 TMap<EUnitTypes, TArray<EUnitAttributes>> ISelectionInterface::UnitTypeToAttributesMap;
+FCloseBarracksValid ISelectionInterface::CloseBarracksUISwitch;
+FCloseMarketValid ISelectionInterface::CloseMarketUISwitch;
+
+//FDeselectBarracksUIEvent AUserController::CloseBarracksUI;
+
+
+
 //TMap<EUnitTypes, FUnitData> ISelectionInterface::UnitTypeToDataMap;
 
 /**
@@ -142,14 +151,16 @@ void ISelectionInterface::AddBuildingWidget(EBuildingTypes CurrentBuilding, AAct
 	if (AMainBuilding* MainBuilding = Cast<AMainBuilding>(ActorToWidget))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Building Selected: %s"), *ActorToWidget->GetName());
-		
+	
 		if(CurrentBuilding == EBuildingTypes::Barracks)
 		{
+			//CloseMarketUISwitch.Broadcast(true);
 			UE_LOG(LogTemp, Warning, TEXT("Barracks Selected"));
 			MainBuilding->OpenBarracksUIEvent();
 		}
 		else if(CurrentBuilding == EBuildingTypes::Trader)
 		{
+			//CloseBarracksUISwitch.Broadcast(true);
 			UE_LOG(LogTemp, Warning, TEXT("Trader Selected"));
 			MainBuilding->OpenMarketUIEvent();
 		}

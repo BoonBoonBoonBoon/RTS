@@ -15,6 +15,9 @@
 #include "UserController.generated.h"
 
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDeselectBarracksUIEvent, bool, bCloseBarracksUI);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDeselectMarketPlaceUIEvent, bool, bCloseMarketPlaceUI);
+
 class IBuildingInterface;
 class ICombatInterface;
 class UDecalComponent;
@@ -44,7 +47,14 @@ public:
 	// Instance of the Widget Class.
 	UUserWidget* ResourceWidgetInstance;
 
+	UPROPERTY(BlueprintAssignable)
+	FDeselectBarracksUIEvent CloseBarracksUI;
 
+	UPROPERTY(BlueprintAssignable)
+	FDeselectMarketPlaceUIEvent CloseMarketplaceUI;
+
+	void OnSwitchBarracksUI(bool bCloseBarracksUI);
+	void OnSwitchMarketplaceUI(bool bCloseMarketUI);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GetUnits")
 	TArray<AGenericBaseAI*> GrabAllUnits;
