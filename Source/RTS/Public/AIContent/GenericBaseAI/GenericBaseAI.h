@@ -102,6 +102,11 @@ public:
 	AAIController* GetAIController(AGenericBaseAI* Actor);
 
 	TMap<AGenericBaseAI*, AActor*> EnemyTargets;
+
+	UPROPERTY(EditAnywhere,BlueprintReadWrite)
+	float ProductionTime;
+
+	
 	
 private:
 	AActor* TargetEnemy = nullptr;
