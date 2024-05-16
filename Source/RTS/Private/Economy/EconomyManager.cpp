@@ -17,7 +17,6 @@ void UEconomyManager::ResetEconomy()
 	RStoneAmount = 0;
 	RFoodAmount = 0;
 	RGoldAmount = 0;
-	//UE_LOG(LogTemp, Warning, TEXT("EconomyManager GameMode Reset : %d"), RWoodAmount);
 }
 
 void UEconomyManager::GlobalEconomy()
@@ -33,7 +32,6 @@ void UEconomyManager::IncomingResource(int32 IncomingResourceAmount, EResourceTy
 			RWoodAmount += IncomingResourceAmount;
 			UE_LOG(LogTemp, Warning, TEXT("Wood Amount Stored At HUB: %d"), RWoodAmount);
 			OnWoodChanged.Broadcast(RWoodAmount);
-			//UpdateEconomyWidget();
 		}
 		else if (IncomingResourceType == EResourceType::Stone)
 		{
