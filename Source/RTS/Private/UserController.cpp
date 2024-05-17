@@ -67,8 +67,6 @@ AUserController::AUserController()
 	UStoneAmount = 0;
 	UFoodAmount = 0;
 	UGoldAmount = 0;
-
-	
 	
 }
 

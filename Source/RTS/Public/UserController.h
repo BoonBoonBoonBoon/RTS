@@ -53,7 +53,10 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FDeselectMarketPlaceUIEvent CloseMarketplaceUI;
 
+	UFUNCTION(BlueprintCallable, Category = "UI")
 	void OnSwitchBarracksUI(bool bCloseBarracksUI);
+	
+	UFUNCTION(BlueprintCallable, Category = "UI")
 	void OnSwitchMarketplaceUI(bool bCloseMarketUI);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GetUnits")
@@ -200,13 +203,13 @@ public:
 	int UGoldAmount;
 
 	UFUNCTION(BlueprintCallable)
-	void OnWoodChanged(int32 NewAmount) { UWoodAmount = NewAmount; };
+	void OnWoodChanged(int32 NewAmount) { UWoodAmount += NewAmount; };
 	UFUNCTION(BlueprintCallable)
-	void OnStoneChanged(int32 NewAmount) { UStoneAmount = NewAmount; };
+	void OnStoneChanged(int32 NewAmount) { UStoneAmount += NewAmount; };
 	UFUNCTION(BlueprintCallable)
-	void OnFoodChanged(int32 NewAmount) { UFoodAmount = NewAmount; };
+	void OnFoodChanged(int32 NewAmount) { UFoodAmount += NewAmount; };
 	UFUNCTION(BlueprintCallable)
-	void OnGoldChanged(int32 NewAmount) { UGoldAmount = NewAmount; };
+	void OnGoldChanged(int32 NewAmount) { UGoldAmount += NewAmount;   UE_LOG(LogTemp, Warning, TEXT("OnChanged Gold Amount: %d"), UGoldAmount); };
 
 	// ------------
 	void UpdateResources();

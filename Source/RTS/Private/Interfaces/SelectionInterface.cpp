@@ -237,18 +237,20 @@ void ISelectionInterface::MultiUnitSelection(TArray<AActor*>& Selected, AActor* 
 void ISelectionInterface::NotHit(TArray<AActor*>& Array)
 {
 	// Loops through all the elements and turns vis off
-
-	for (AActor* PawnSrc : Array)
+	if (!Array.IsEmpty())
 	{
-		if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(PawnSrc))
+		for (AActor* PawnSrc : Array)
 		{
-			MainBuilding->SelectedDecalComp->SetVisibility(false);
-			Array.Empty();
-		}
-		else if (const AGenericBaseAI* AI = Cast<AGenericBaseAI>(PawnSrc))
-		{
-			AI->SelectedDecalComp->SetVisibility(false);
-			Array.Empty();
+			if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(PawnSrc))
+			{
+				MainBuilding->SelectedDecalComp->SetVisibility(false);
+				Array.Empty();
+			}
+			else if (const AGenericBaseAI* AI = Cast<AGenericBaseAI>(PawnSrc))
+			{
+				AI->SelectedDecalComp->SetVisibility(false);
+				Array.Empty();
+			}
 		}
 	}
 }

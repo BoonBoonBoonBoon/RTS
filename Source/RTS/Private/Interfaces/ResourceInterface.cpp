@@ -79,13 +79,16 @@ TArray<FVector> IResourceInterface::CalcGatherPos(AActor* Resources, const TArra
 void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActor, FVector NormalImpulse,
                                             const FHitResult& Hi)
 {
-	TArray<AActor*> CollectingActors;
-	CollectingActors.Add(OtherActor);
+	// Check if the resource node is null before trying to access it
+	if (SelfActor != nullptr)
+	{
+		TArray<AActor*> CollectingActors;
+		CollectingActors.Add(OtherActor);
 
-	// Check if the Actor is able to gather resources.
-	UWorkerAttributesComponent* AttributesComponent = Cast<UWorkerAttributesComponent>(
-		OtherActor->GetComponentByClass(UWorkerAttributesComponent::StaticClass()));
-	
+		// Check if the Actor is able to gather resources.
+		UWorkerAttributesComponent* AttributesComponent = Cast<UWorkerAttributesComponent>(
+			OtherActor->GetComponentByClass(UWorkerAttributesComponent::StaticClass()));
+
 		for (AActor* Src : CollectingActors)
 		{
 			if (Src->IsA(AWorkerDrone::StaticClass()))
@@ -147,9 +150,13 @@ void IResourceInterface::TakeResourceObject(AActor* SelfActor, AActor* OtherActo
 			}
 		}
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("ResourceNode is null."));
+	}
 	// Use transaction class. where in function we tell wood resource to reduce its int, and resource interface to increase its int.
 	//Mediator Pattern: Introduce a mediator class that handles communication between classes. Instead of classes communicating directly with each other, they communicate through the mediator, which reduces direct dependencies.
-
+}
 
 
 int32 IResourceInterface::GetAmount(int Amount)
