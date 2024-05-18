@@ -18,10 +18,10 @@ AMainBuilding::AMainBuilding()
 
 	
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>("Collision");
-	BoxComponent->SetupAttachment(RootComponent);
+	//BoxComponent->SetupAttachment(RootComponent);
 	
 	SelectedDecalComp = CreateDefaultSubobject<UDecalComponent>("Decal");
-	SelectedDecalComp->SetupAttachment(BoxComponent);
+	SelectedDecalComp->SetupAttachment(RootComponent);
 	
 	// Set Tag to building
 	Tags.Add("Building");
