@@ -180,7 +180,7 @@ void ISelectionInterface::ChangeElementInArray(TArray<AActor*>& Array, AActor* H
 		{
 			if (const AMainBuilding* MBuilding = Cast<AMainBuilding>(Actor))
 			{
-				MBuilding->SelectedDecalComp->SetVisibility(false);
+			//	MBuilding->SelectedDecalComp->SetVisibility(false);
 				Array.Empty();
 
 				Array.AddUnique(HitPawn);
@@ -188,7 +188,7 @@ void ISelectionInterface::ChangeElementInArray(TArray<AActor*>& Array, AActor* H
 				{
 					if (const AMainBuilding* NewBuilding = Cast<AMainBuilding>(SrcP))
 					{
-						NewBuilding->SelectedDecalComp->SetVisibility(true);
+						//NewBuilding->SelectedDecalComp->SetVisibility(true);
 						EBuildingTypes CurrentBuilding = GetBuildingType(NewBuilding);
 						AddBuildingWidget(CurrentBuilding, SrcP);
 					}
@@ -243,7 +243,7 @@ void ISelectionInterface::NotHit(TArray<AActor*>& Array)
 		{
 			if (const AMainBuilding* MainBuilding = Cast<AMainBuilding>(PawnSrc))
 			{
-				MainBuilding->SelectedDecalComp->SetVisibility(false);
+				//MainBuilding->SelectedDecalComp->SetVisibility(false);
 				Array.Empty();
 			}
 			else if (const AGenericBaseAI* AI = Cast<AGenericBaseAI>(PawnSrc))

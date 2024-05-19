@@ -2,21 +2,24 @@
 
 
 #include "Buildings/BarracksBuilding.h"
-
 #include "AIContent/GenericBaseAI/UserControllerAI/WorkerDrone/WorkerDrone.h"
 #include "Components/BoxComponent.h"
+#include "Components/DecalComponent.h"
 
 ABarracksBuilding::ABarracksBuilding()
 {
 	//BuildingType = EBuildingTypes::Barracks;
 
 	UnitProductionBox = CreateDefaultSubobject<UBoxComponent>("UnitProductionBox");
-	UnitProductionBox->SetupAttachment(RootComponent);
+	UnitProductionBox->SetupAttachment(BoxComponent);
+
+	//SelectedDecalComp->SetRelativeLocation(FVector(0, 0, 0));
 	
 	// Set the location of UnitProductionBox
 	FVector NewLocation = FVector(70, 0, -40);
 	UnitProductionBox->SetRelativeLocation(NewLocation);
 	
+	DroneToProduce = AWorkerDrone::StaticClass();
 	
 	Tags.Add("Barracks");
 	
@@ -34,42 +37,40 @@ void ABarracksBuilding::BeginPlay()
 	}
 }
 
-
-// Add the selected unit into a production array and set production to true. we then set a timer to produce the specific unit.
-/*void ABarracksBuilding::ProductionForUnits(AActor* UnitToSpawn, int32 AmountToSpawn, float TimeToSpawn)
+void ABarracksBuilding::ProductionForUnits(float TimeToSpawn)
 {
-	// Placeholder Value
-	if(UserController->UFoodAmount >= 5)
+	if (DroneToProduce)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("more than 5 food "));
-
-		
-		// Cast the UnitToSpawn to AWorkerDrone
-		if(AWorkerDrone* WorkerDroneToSpawn = Cast<AWorkerDrone>(UnitToSpawn))
+		// Placeholder Value
+		if (UserController->UFoodAmount >= 1)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Worker Drone"));
+			UE_LOG(LogTemp, Warning, TEXT("more than 1 food "));
+
+			FActorSpawnParameters SpawnParameters;
+
+			AWorkerDrone* WorkerDroneToSpawn = GetWorld()->SpawnActor<AWorkerDrone>(
+				DroneToProduce, FVector(0,0,0), UnitProductionBox->GetComponentRotation(),
+				SpawnParameters);
+			
+			//UnitsToProduce.Add(WorkerDroneToSpawn);
+
+			// Start the timer to produce the unit.
+			//GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, TimeToSpawn, false);
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Not a Worker Drone"));
+			UE_LOG(LogTemp, Warning, TEXT("Not enough food to produce unit."));
 		}
-
-		
-		// Set the building to be producing a unit.
-		//bIsProducingUnit = true;
-
-		// Add the unit to the array.
-		//UnitsToProduce.Add(UnitToSpawn);
-
-		// Start the timer to produce the unit.
-		//GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, TimeToSpawn, true);
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not enough food to produce unit."));
+		UE_LOG(LogTemp, Warning, TEXT("DroneToProduce is nullptr."));
 	}
-}*/
+}
 
+
+//-------------------
+/*
 void ABarracksBuilding::ProductionForUnits(float TimeToSpawn)
 {
 	// Placeholder Value
@@ -77,31 +78,11 @@ void ABarracksBuilding::ProductionForUnits(float TimeToSpawn)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("more than 1 food "));
 
-		AWorkerDrone* WorkerDroneToSpawn;
-
+		AWorkerDrone* WorkerDroneToSpawn = GetWorld()->SpawnActor<AWorkerDrone>();
 		UnitsToProduce.Add(WorkerDroneToSpawn);
-		
-		// Cast the UnitToSpawn to AWorkerDrone
-		/*
-		if(AWorkerDrone* WorkerDroneToSpawn = Cast<AWorkerDrone>(UnitToSpawn))
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Worker Drone"));
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Not a Worker Drone"));
-		}
-		*/
-
-		
-		// Set the building to be producing a unit.
-		//bIsProducingUnit = true;
-
-		// Add the unit to the array.
-		//UnitsToProduce.Add(UnitToSpawn);
 
 		// Start the timer to produce the unit.
-		GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, TimeToSpawn, true);
+		GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, TimeToSpawn, false);
 	}
 	else
 	{
@@ -115,34 +96,37 @@ void ABarracksBuilding::ProduceUnit()
 	{
 		// Get the class of the unit to spawn
 		UClass* UnitClass = UnitsToProduce[0]->GetClass();
-
+		
 		// Print the name of the unit to spawn
 		FString UnitName = UnitClass->GetName();
-		UE_LOG(LogTemp, Warning, TEXT("Spawning unit: %s"), *UnitName);
-
+		UE_LOG(LogTemp, Warning, TEXT("Unit class: %s"), *UnitClass->GetName());
+	
 		// Define the spawn parameters
 		FActorSpawnParameters SpawnParams;
 		SpawnParams.Owner = this;
-		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
 		// Define the spawn location and rotation
-		FVector SpawnLocation = GetActorLocation(); // Change to collision box 
-		FRotator SpawnRotation = GetActorRotation();
-
+		FVector SpawnLocation = UnitProductionBox->GetComponentLocation(); 
+		FRotator SpawnRotation = UnitProductionBox->GetComponentRotation();
+		
+		UE_LOG(LogTemp, Warning, TEXT("Spawn location: %s"), *SpawnLocation.ToString());
+		UE_LOG(LogTemp, Warning, TEXT("Spawn rotation: %s"), *SpawnRotation.ToString());
+		
 		// Spawn the unit
-		GetWorld()->SpawnActor<AWorkerDrone>(UnitClass, SpawnLocation, SpawnRotation, SpawnParams);
-
+		//GetWorld()->SpawnActor<AActor>(UnitClass, SpawnLocation, SpawnRotation, SpawnParams);
+		AWorkerDrone* WorkerDroneToSpawn = GetWorld()->SpawnActor<AWorkerDrone>(UnitClass, SpawnLocation, SpawnRotation, SpawnParams);
+		GLog->Log("Spawned the WorkerDroneToSpawn.");
+		
 		// Remove the first element from the array
 		UnitsToProduce.RemoveAt(0);
 
 		// If there are more units to produce, start the timer again
-		if (UnitsToProduce.Num() > 0)
+		if (UnitsToProduce.Num() >= 1)
 		{
+			UE_LOG(LogTemp, Warning, TEXT("Still Units Waiting to be Produced."));
 			float TimeToSpawn = 10.0f; 
-			GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, TimeToSpawn, true);
-		} else
-		{
-			GetWorldTimerManager().ClearTimer(ProductionTimer);
+			GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, TimeToSpawn, false);
 		}
 	}
 	else
@@ -151,5 +135,4 @@ void ABarracksBuilding::ProduceUnit()
 		UE_LOG(LogTemp, Warning, TEXT("UnitsToProduce is empty or the first element is nullptr."));
 	}
 }
-
-
+*/

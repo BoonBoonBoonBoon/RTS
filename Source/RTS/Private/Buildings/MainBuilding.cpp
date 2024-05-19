@@ -20,8 +20,8 @@ AMainBuilding::AMainBuilding()
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>("Collision");
 	//BoxComponent->SetupAttachment(RootComponent);
 	
-	SelectedDecalComp = CreateDefaultSubobject<UDecalComponent>("Decal");
-	SelectedDecalComp->SetupAttachment(RootComponent);
+	//SelectedDecalComp = CreateDefaultSubobject<UDecalComponent>("Decal");
+//	SelectedDecalComp->SetupAttachment(BoxComponent);
 	
 	// Set Tag to building
 	Tags.Add("Building");
@@ -54,7 +54,7 @@ void AMainBuilding::BeginPlay()
 	BuildingController->Possess(Cast<APawn>(this));*/
 	
 	// Shouldn't be visible at the start of the game.
-	SelectedDecalComp->SetVisibility(false);
+//	SelectedDecalComp->SetVisibility(false);
 
 	// Cast this to ISelectionInterface
 	SelectionInterface = Cast<ISelectionInterface>(this);

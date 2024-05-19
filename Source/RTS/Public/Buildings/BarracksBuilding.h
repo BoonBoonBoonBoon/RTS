@@ -38,6 +38,10 @@ public:
 	void ProductionForUnits( float TimeToSpawn);
 
 	void ProduceUnit();
+
+	UPROPERTY(EditDefaultsOnly, Category = "Unit Production")
+	TSubclassOf<AWorkerDrone> DroneToProduce;
+
 	
 	// Array that stores the current units that are intended to be produced.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
