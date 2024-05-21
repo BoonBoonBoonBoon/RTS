@@ -5,6 +5,7 @@
 #include "AIContent/GenericBaseAI/UserControllerAI/WorkerDrone/WorkerDrone.h"
 #include "Components/BoxComponent.h"
 #include "Components/DecalComponent.h"
+#include "Elements/Framework/TypedElementQueryBuilder.h"
 
 ABarracksBuilding::ABarracksBuilding()
 {
@@ -37,36 +38,86 @@ void ABarracksBuilding::BeginPlay()
 	}
 }
 
-void ABarracksBuilding::ProductionForUnits(float TimeToSpawn)
+void ABarracksBuilding::ProductionForUnits(TSubclassOf<AGenericBaseAI> UnitToProduce)
 {
-	if (DroneToProduce)
+	// Check if there is enough food to produce the unit
+	if (UserController->UFoodAmount >= 0)
 	{
-		// Placeholder Value
-		if (UserController->UFoodAmount >= 1)
+		// Deduct the food cost
+		UserController->OnFoodChanged(-0);
+
+		// Add the unit to the production queue
+		UnitsForProduction.Enqueue(UnitToProduce);
+		UE_LOG(LogTemp, Warning, TEXT("UnitToProduce enqueued: %s"), *UnitToProduce->GetName());
+
+		// Start the production timer if it's not already running
+		if (!GetWorldTimerManager().IsTimerActive(ProductionTimer))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("more than 1 food "));
-
-			FActorSpawnParameters SpawnParameters;
-
-			AWorkerDrone* WorkerDroneToSpawn = GetWorld()->SpawnActor<AWorkerDrone>(
-				DroneToProduce, FVector(0,0,0), UnitProductionBox->GetComponentRotation(),
-				SpawnParameters);
-			
-			//UnitsToProduce.Add(WorkerDroneToSpawn);
-
-			// Start the timer to produce the unit.
-			//GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, TimeToSpawn, false);
-		}
-		else
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Not enough food to produce unit."));
+			UE_LOG(LogTemp, Warning, TEXT("Set timer"));
+			GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, 5.0f, true);
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("DroneToProduce is nullptr."));
+		UE_LOG(LogTemp, Warning, TEXT("Not enough food to produce unit."));
 	}
 }
+
+
+void ABarracksBuilding::ProduceUnit()
+{
+	// Check if there are any units in the queue
+	if (!UnitsForProduction.IsEmpty())
+	{
+		// Dequeue the next unit
+		TSubclassOf<AGenericBaseAI> UnitToProduce;
+		UnitsForProduction.Dequeue(UnitToProduce);
+
+		// Spawn the unit
+		//FActorSpawnParameters SpawnParameters;
+		//SpawnParameters.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+		//GetWorld()->SpawnActor<AGenericBaseAI>(UnitToProduce, UnitProductionBox->GetComponentLocation(), UnitProductionBox->GetComponentRotation(), SpawnParameters);
+
+		ProduceUnitEvent.Broadcast(UnitToProduce, UnitProductionBox->GetComponentLocation());
+		
+	}
+	else
+	{
+		// No more units to produce, so stop the timer
+		GetWorldTimerManager().ClearTimer(ProductionTimer);
+	}
+}
+
+
+
+/*
+// Placeholder Value
+if (UserController->UFoodAmount >= 5)
+{
+	UE_LOG(LogTemp, Warning, TEXT("Creating Worker Drone"));
+	UserController->OnFoodChanged(-5);
+
+	FActorSpawnParameters SpawnParameters;
+	SpawnParameters.SpawnCollisionHandlingOverride =
+		ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+
+	AWorkerDrone* WorkerDroneToSpawn = GetWorld()->SpawnActor<AWorkerDrone>(
+		DroneToProduce, UnitProductionBox->GetComponentLocation(), UnitProductionBox->GetComponentRotation(),
+		SpawnParameters);
+
+	//UnitsToProduce.Add(WorkerDroneToSpawn);
+
+	// Start the timer to produce the unit.
+	//GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, TimeToSpawn, false);
+}
+else
+{
+	UE_LOG(LogTemp, Warning, TEXT("Not enough food to produce unit."));
+}
+*/
+
+
 
 
 //-------------------

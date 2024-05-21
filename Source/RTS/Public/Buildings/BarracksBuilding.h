@@ -4,10 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UserController.h"
+#include "AIContent/GenericBaseAI/UserControllerAI/Light/Infantry/lightInfantry.h"
 #include "AIContent/GenericBaseAI/UserControllerAI/WorkerDrone/WorkerDrone.h"
 #include "Buildings/MainBuilding.h"
 #include "BarracksBuilding.generated.h"
 
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FProudceUnitEvent, TSubclassOf<AGenericBaseAI>, UnitToProduce, FVector, SpawnLocation);
 
 /**
  * 
@@ -29,19 +32,29 @@ public:
 	AUserController* UserController;
 	
 	FTimerHandle ProductionTimer;
+
+	UPROPERTY(BlueprintAssignable)
+	FProudceUnitEvent ProduceUnitEvent;
 	
-	// Function used to produce units.
-	//UFUNCTION(BlueprintCallable)
-	//void ProductionForUnits(AActor* UnitToSpawn, int32 AmountToSpawn, float TimeToSpawn);
+	// Add a queue to hold the units waiting to be produced
+	TQueue<TSubclassOf<AGenericBaseAI>> UnitsForProduction;
 	
 	UFUNCTION(BlueprintCallable)
-	void ProductionForUnits( float TimeToSpawn);
-
+	void ProductionForUnits(TSubclassOf<AGenericBaseAI> UnitToProduce);
 	void ProduceUnit();
 
-	UPROPERTY(EditDefaultsOnly, Category = "Unit Production")
-	TSubclassOf<AWorkerDrone> DroneToProduce;
+	//void ProduceUnit();
 
+	UPROPERTY(EditDefaultsOnly, Category = "Unit Production")
+	TSubclassOf<AGenericBaseAI> DroneToProduce;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Unit Production")
+	TSubclassOf<AlightInfantry> lightInfantryToProduce;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Unit Production")
+	TSubclassOf<AWorkerDrone> WorkerDroneToProduce;
+
+	
 	
 	// Array that stores the current units that are intended to be produced.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
