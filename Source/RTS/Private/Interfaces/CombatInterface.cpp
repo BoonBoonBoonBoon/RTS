@@ -164,31 +164,6 @@ void ICombatInterface::LightInfDealDamage(AGenericBaseAI* Unit, AActor* Target)
             }, AttackSpeed, true);
         }
     }
-    
-    /*
-    FTimerHandle& ActorTimer = LightInfTimers[Unit]; // Get the timer for the actor.
-    Unit->GetWorld()->GetTimerManager().SetTimer(ActorTimer, [&, Unit, Target, DmgToDeal]()
-    {
-        
-        // Deal damage to the enemy
-        if (AGenericBaseEnemyAI* Enemy = Cast<AGenericBaseEnemyAI>(Target))
-        {
-            --TimeValue;
-            if(TimeValue <= 0)
-            {
-                TimeValue = Unit->UnitDataMap[Unit->UnitType].UnitStats.AttackSpeed;
-                Enemy->TakeDamage(DmgToDeal);
-            }
-        }
-    }, AttackSpeed, true);
-    */
-    
-  
-    
-    /*if(AGenericBaseEnemyAI* Enemy = Cast<AGenericBaseEnemyAI>(Target))
-    {
-        Enemy->TakeDamage(DmgToDeal);
-    }*/
 }
 
 

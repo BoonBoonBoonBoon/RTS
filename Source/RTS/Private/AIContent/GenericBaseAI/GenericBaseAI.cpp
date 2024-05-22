@@ -106,6 +106,25 @@ AAIController* AGenericBaseAI::GetAIController(AGenericBaseAI* Actor)
 }
 
 
+void AGenericBaseAI::TakeDamage(float DamageAmount)
+{
+	// Reduce health by the damage amount
+	int Health = this->UnitDataMap[this->UnitType].UnitStats.Health;
+
+	Health -= DamageAmount;
+	
+	// Log the health
+	UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
+
+	// Clamp health between 0 and MaxHealth
+	Health = FMath::Clamp(Health, 0.f, 100);
+	
+
+	if(Health <= 0)
+	{
+		Destroy();
+	}
+}
 
 // Called when the game starts or when spawned
 void AGenericBaseAI::BeginPlay()
@@ -136,7 +155,6 @@ void AGenericBaseAI::SetupStimulusSource()
 
 void AGenericBaseAI::StartAttacking(AActor* Target)
 {
-	//for(AGenericBaseAI* FAi : AttackingUnits)
 	if(AGenericBaseAI* FAi = Cast<AGenericBaseAI>(this))
 	{
 		if(EnemyTargets.Contains(FAi))
@@ -145,7 +163,6 @@ void AGenericBaseAI::StartAttacking(AActor* Target)
 			
 			if(EnemyTargets[FAi] == Target)
 			{
-				//UE_LOG(LogTemp, Warning, TEXT("%s is attacking %s"), *GetName(), *Target->GetName());
 				CombatInterface->LightInfDealDamage(FAi, Target);
 			}
 		}
@@ -154,10 +171,6 @@ void AGenericBaseAI::StartAttacking(AActor* Target)
 			EnemyTargets.Add(FAi, Target);
 		}
 	}
-	//UE_LOG(LogTemp, Warning, TEXT("Attacking"));
-	// Add your attack logic here. This could involve changing the unit's state, playing an animation, etc.
-	// For example:
-	
 }
 
 // Called every frame
@@ -169,90 +182,7 @@ void AGenericBaseAI::Tick(float DeltaTime)
 	{
 		MovePTR();
 	}
-
-	
-	/*
-	//if(bUnitFound)
-	if(CombatInterface->AttackingUnits.Num() > 0 && CombatInterface->CurrentEnemy != FVector::ZeroVector)
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("AttackingUnits: %d"), AttackingUnits.Num());
-		
-		for (AActor* Src: AttackingUnits)
-		{
-			if(auto Unit = Cast<AGenericBaseAI>(Src))
-			{
-				FUnitData unitData = Unit->UnitDataMap[Unit->UnitType];
-		
-				if (unitData.Attributes.Contains(EUnitAttributes::Attack))
-				{
-					// Calculate the distance between the AI and the target
-					float distance = FVector::Dist(Unit->GetActorLocation(), CurrentEnemy);
-					UE_LOG(LogTemp, Warning, TEXT("distance: %f"), distance);
-
-			
-					// Check if the AI is within a certain distance
-					if (distance <= 300.f)
-					{
-						// Set isAttacking to true for the individual instance of the actor
-						unitData.UnitStats.bIsAttacking = true;
-						//InitiateCombat(unitData.UnitStats.bIsAttacking, Unit);
-						UE_LOG(LogTemp, Warning, TEXT(" Attacking1"));
-					}
-					else
-					{
-						// Set isAttacking to false for the individual instance of the actor
-						unitData.UnitStats.bIsAttacking = false;
-						//InitiateCombat(unitData.UnitStats.bIsAttacking, Unit);
-						//UE_LOG(LogTemp, Warning, TEXT("Not Attacking"));
-					}
-				}
-			}
-		}
-	} else
-	{
-		//UE_LOG(LogTemp, Warning, TEXT("AttackingUnits Not Attacjubg: %d"), AttackingUnits.Num());
-	}#1#
-	*/
-	
 }
-
-/*
-void AGenericBaseAI::InitiateCombat(bool bIsAttacking, AGenericBaseAI* Unit)
-{
-	
-	if (bIsAttacking)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Get World"));
-		GetWorld()->GetTimerManager().SetTimer(Unit->AttackTimerHandle, this, &AGenericBaseAI::TimerCallback, TimeValue, true);
-	} else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("attack false "));
-	}
-}
-
-// Add a new member function to the ICombatInterface class
-void AGenericBaseAI::TimerCallback()
-{
-	--TimeValue;
-	UE_LOG(LogTemp, Warning, TEXT("TimeValue: %f"), TimeValue);
-	
-	if (TimeValue <= 0)
-	{
-		++TimeValue;
-		AttackEnemy();
-	}
-}
-*/
-
-
-
-
-
-
-
-
-
-
 
 // Called to bind functionality to input
 void AGenericBaseAI::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)

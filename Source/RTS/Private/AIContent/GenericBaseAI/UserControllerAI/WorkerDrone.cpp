@@ -9,9 +9,7 @@ AWorkerDrone::AWorkerDrone()
 	
 	// Identify the Worker Drone.
 	Tags.Add("WorkerDrone");
-
-	
-	
+	Tags.Add("Friendly");
 }
 
 void AWorkerDrone::BeginPlay()

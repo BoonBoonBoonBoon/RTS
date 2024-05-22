@@ -3,7 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Components/SphereComponent.h"
 #include "GameFramework/Character.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
 #include "GenericBaseEnemyAI.generated.h"
 
 
@@ -15,7 +18,18 @@ class RTS_API AGenericBaseEnemyAI : public ACharacter
 public:
 	// Sets default values for this character's properties
 	AGenericBaseEnemyAI();
+	
+	UFUNCTION(BlueprintCallable)
+	void OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                    int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	void OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	                  int32 OtherBodyIndex);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	USphereComponent* AttackRangeSphere;
+
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -24,10 +38,7 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	// Called to bind functionality to input
-	//virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	
+
 	// Health attribute
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float Health;
@@ -44,6 +55,12 @@ public:
 	float TimeSinceLastDamage;
 
 	bool bIsGettingHealing; // When the AI is reciving healing from a building or ai
+
+	int32 TimeValue =2;
+
+	FTimerHandle AttackTimerHandleLightInf;
+
+	
 	
 	// Method for taking damage
 	UFUNCTION(BlueprintCallable, Category = "Health")

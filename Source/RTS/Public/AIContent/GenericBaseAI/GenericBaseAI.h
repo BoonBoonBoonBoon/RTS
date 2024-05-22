@@ -23,15 +23,6 @@ class RTS_API AGenericBaseAI : public ACharacter, public ISelectionInterface, pu
 	// Used as a generator for the pawn to emit a stimuli. Need this as the AI will use this as a tool to percept.
 	UPROPERTY(EditAnywhere, Category = "AI Sight")
 	class UAIPerceptionStimuliSourceComponent* StimuliSourceAi;
-
-	/*// Used to detect the stimuli emitted by the pawn.
-	UPROPERTY(EditAnywhere, Category = "AI Sight")
-	class UAIPerceptionComponent* PerceptionComponent;
-
-	// Used to configure the sight sense of the AI.
-	UPROPERTY(EditAnywhere, Category = "AI Sight")
-	UAISenseConfig_Sight* SightConfig;*/
-
 	
 	
 	UPROPERTY()
@@ -106,7 +97,10 @@ public:
 	UPROPERTY(EditAnywhere,BlueprintReadWrite)
 	float ProductionTime;
 
-	
+	// Method for taking damage
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	void TakeDamage(float DamageAmount);
+
 	
 private:
 	AActor* TargetEnemy = nullptr;
@@ -117,33 +111,9 @@ protected:
 	
 	virtual void SetupStimulusSource();
 
-	/*
-	UFUNCTION()
-	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimulus);
-	
-	void InitializePerceptionSystem();
-	*/
-	
-
 public:
 	
 	virtual void StartAttacking(AActor* Target) override;
-	
-	// Team ID ------------
-	
-	/*
-	// Override the GetGenericTeamId method from the IGenericTeamAgentInterface
-	virtual FGenericTeamId GetGenericTeamId() const override {return TeamId; }
-
-	// Override the GetTeamAttitudeTowards method from the IGenericTeamAgentInterface
-	virtual ETeamAttitude::Type GetTeamAttitudeTowards(const AActor& Other) const override;
-
-	// Add a member variable to store the team id
-	UPROPERTY(EditAnywhere)
-	FGenericTeamId TeamId;
-	*/
-
-	// -------------------
 
 	bool bUnitFound = false;
 	

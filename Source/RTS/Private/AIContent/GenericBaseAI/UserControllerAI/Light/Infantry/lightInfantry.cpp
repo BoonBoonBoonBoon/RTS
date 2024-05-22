@@ -11,7 +11,7 @@ AlightInfantry::AlightInfantry()
 	
 	// Identify the Worker Drone.
 	Tags.Add("LightInfantry");
-	
+	Tags.Add("Friendly");
 	
 }
 
