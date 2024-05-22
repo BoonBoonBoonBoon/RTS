@@ -15,11 +15,14 @@
 void UResourceTransaction::TransactionProcess(AResourceMain* ResourceRef)
 {
 	// Identify the Resource Type and then Process the Transaction.
-
+	UE_LOG(LogTemp, Warning, TEXT("Transaction Process called."));
+	
 	if (AWoodResource* WoodResource = Cast<AWoodResource>(ResourceRef))
 	{
 		const int32 TakenWoodAmount = WoodResource->TakeResources(ValueForTransaction);
 
+		UE_LOG(LogTemp, Warning, TEXT("Wood Transaction Processing."));
+		
 		// Push the Resource to the EM, Value amount & Resource Type.
 		ProcessingTransaction(TakenWoodAmount, EResourceType::Wood);
 	}
@@ -27,6 +30,8 @@ void UResourceTransaction::TransactionProcess(AResourceMain* ResourceRef)
 	{
 		const int32 TakenStoneAmount = StoneResource->TakeResources(ValueForTransaction);
 
+		UE_LOG(LogTemp, Warning, TEXT("Stone Transaction Processing."));
+		
 		// Push the Resource to the EM, Value amount & Resource Type.
 		ProcessingTransaction(TakenStoneAmount, EResourceType::Stone);
 	}
@@ -34,6 +39,8 @@ void UResourceTransaction::TransactionProcess(AResourceMain* ResourceRef)
 	{
 		const int32 TakenFoodAmount = FoodResource->TakeResources(ValueForTransaction);
 
+		UE_LOG(LogTemp, Warning, TEXT("Food Transaction Processing."));
+		
 		// Push the Resource to the EM, Value amount & Resource Type.
 		ProcessingTransaction(TakenFoodAmount, EResourceType::Food);
 	}
@@ -41,6 +48,8 @@ void UResourceTransaction::TransactionProcess(AResourceMain* ResourceRef)
 	{
 		const int32 TakenGoldAmount = GoldResource->TakeResources(ValueForTransaction);
 
+		UE_LOG(LogTemp, Warning, TEXT("Gold Transaction Processing."));
+		
 		// Push the Resource to the EM, Value amount & Resource Type.
 		ProcessingTransaction(TakenGoldAmount, EResourceType::Gold);
 	}
@@ -54,7 +63,9 @@ void UResourceTransaction::ProcessingTransaction(int32 ResourceAmount, EResource
 {
 	// Get the Economy Manager Instance.
 	UEconomyManager* EconomyManager = UEconomyManager::GetInstance();
-
+	
+	UE_LOG(LogTemp, Warning, TEXT("ProcessingTransaction :: ResourceAmount: %d"), ResourceAmount);
+	
 	// Process The Last of the Dispatched Resources.
 	EconomyManager->IncomingResource(ResourceAmount, ResourceType);
 }

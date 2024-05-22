@@ -40,29 +40,69 @@ void ABarracksBuilding::BeginPlay()
 
 void ABarracksBuilding::ProductionForUnits(TSubclassOf<AGenericBaseAI> UnitToProduce)
 {
-	// Check if there is enough food to produce the unit
-	if (UserController->UFoodAmount >= 0)
+	if (UnitToProduce->IsChildOf(AlightInfantry::StaticClass()))
 	{
-		// Deduct the food cost
-		UserController->OnFoodChanged(-0);
-
-		// Add the unit to the production queue
-		UnitsForProduction.Enqueue(UnitToProduce);
-		UE_LOG(LogTemp, Warning, TEXT("UnitToProduce enqueued: %s"), *UnitToProduce->GetName());
-
-		// Start the production timer if it's not already running
-		if (!GetWorldTimerManager().IsTimerActive(ProductionTimer))
+		// Check the type of UnitToProduce
+		if (UnitToProduce->IsChildOf(AWorkerDrone::StaticClass()))
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Set timer"));
-			GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, 5.0f, true);
+			UE_LOG(LogTemp, Warning, TEXT("UnitToProduce is of type WorkerDrone"));
+
+			// Check if there is enough food to produce the unit
+			if (UserController->UWoodAmount >= 5 && UserController->UFoodAmount >= 5)
+			{
+				// Deduct the food cost
+				UserController->OnFoodChanged(-5);
+				UserController->OnWoodChanged(-5);
+
+				// Add the unit to the production queue
+				UnitsForProduction.Enqueue(UnitToProduce);
+				UE_LOG(LogTemp, Warning, TEXT("UnitToProduce enqueued: %s"), *UnitToProduce->GetName());
+
+				// Start the production timer if it's not already running
+				if (!GetWorldTimerManager().IsTimerActive(ProductionTimer))
+				{
+					UE_LOG(LogTemp, Warning, TEXT("Set timer"));
+					GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, 5.0f, true);
+				}
+			}
+			else
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Not enough food to produce unit."));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("UnitToProduce is of an unknown type"));
 		}
 	}
-	else
+
+	// Check the type of UnitToProduce
+	if (UnitToProduce->IsChildOf(AWorkerDrone::StaticClass()))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Not enough food to produce unit."));
+		UE_LOG(LogTemp, Warning, TEXT("UnitToProduce is of type WorkerDrone"));
+		// Check if there is enough food to produce the unit
+		if (UserController->UFoodAmount >= 5)
+		{
+			// Deduct the food cost
+			UserController->OnFoodChanged(-5);
+
+			// Add the unit to the production queue
+			UnitsForProduction.Enqueue(UnitToProduce);
+			UE_LOG(LogTemp, Warning, TEXT("UnitToProduce enqueued: %s"), *UnitToProduce->GetName());
+
+			// Start the production timer if it's not already running
+			if (!GetWorldTimerManager().IsTimerActive(ProductionTimer))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("Set timer"));
+				GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, 5.0f, true);
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Not enough food to produce unit."));
+		}
 	}
 }
-
 
 void ABarracksBuilding::ProduceUnit()
 {

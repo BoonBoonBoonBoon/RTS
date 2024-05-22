@@ -25,34 +25,34 @@ void UEconomyManager::GlobalEconomy()
 
 void UEconomyManager::IncomingResource(int32 IncomingResourceAmount, EResourceType IncomingResourceType)
 {
-	if (IncomingResourceAmount > 0)
-	{
+	//if (IncomingResourceAmount > 0)
+	//{
 		if (IncomingResourceType == EResourceType::Wood)
 		{
 			//RWoodAmount += IncomingResourceAmount;
-		//	UE_LOG(LogTemp, Warning, TEXT("Wood Amount Stored At HUB: %d"), RWoodAmount);
+			UE_LOG(LogTemp, Warning, TEXT("Wood Amount Incoming: %d"), IncomingResourceAmount);
 			OnWoodChanged.Broadcast(IncomingResourceAmount);
 		}
 		else if (IncomingResourceType == EResourceType::Stone)
 		{
 			//RStoneAmount += IncomingResourceAmount;
-		//UE_LOG(LogTemp, Warning, TEXT("Stone Amount : %d"), RStoneAmount);
+			UE_LOG(LogTemp, Warning, TEXT("Stone Amount Incoming: %d"), IncomingResourceAmount);
 			OnStoneChanged.Broadcast(IncomingResourceAmount);
 		}
 		else if (IncomingResourceType == EResourceType::Food)
 		{
 			//RFoodAmount += IncomingResourceAmount;
-			//UE_LOG(LogTemp, Warning, TEXT("Food Amount : %d"), RFoodAmount);
+			UE_LOG(LogTemp, Warning, TEXT("Food Amount Incoming: %d"), IncomingResourceAmount);
 			OnFoodChanged.Broadcast(IncomingResourceAmount);
 		}
 		else if (IncomingResourceType == EResourceType::Gold)
 		{
 			//RGoldAmount += IncomingResourceAmount;
-			//UE_LOG(LogTemp, Warning, TEXT("Gold Amount : %d"), RGoldAmount);
+			UE_LOG(LogTemp, Warning, TEXT("Gold Amount Incoming: %d"), IncomingResourceAmount);
 			OnGoldChanged.Broadcast(IncomingResourceAmount);
 		}
 	}
-}
+//}
 
 void UEconomyManager::OutgoingResource(int32 ResourceAmount)
 {

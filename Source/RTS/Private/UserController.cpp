@@ -284,6 +284,8 @@ void AUserController::BeginPlay()
 		{
 			UEconomyManager::GetInstance()->OnWoodChanged.AddDynamic(UserControllerPtr.Get(),
 			                                                         &AUserController::OnWoodChanged);
+			
+			
 			UEconomyManager::GetInstance()->OnStoneChanged.AddDynamic(UserControllerPtr.Get(),
 			                                                          &AUserController::OnStoneChanged);
 			UEconomyManager::GetInstance()->OnFoodChanged.AddDynamic(UserControllerPtr.Get(),

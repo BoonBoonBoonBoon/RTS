@@ -59,8 +59,9 @@ void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		GetWorld()->GetTimerManager().SetTimer(ActorTimer, [this, OtherActor, SweepResult]()
 		{
 			--TimeValue;
-			if (TimeValue <= 0)
+			if (TimeValue == 0)
 			{
+				UE_LOG(LogTemp, Warning, TEXT("Timer Reached Zero :: ResourceMain :: BeginOverlap"));
 				++TimeValue;
 				RInterface->TakeResourceObject(this, OtherActor, FVector(0), SweepResult);
 			}
