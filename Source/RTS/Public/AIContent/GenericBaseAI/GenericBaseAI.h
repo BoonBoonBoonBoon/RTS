@@ -101,6 +101,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void TakeDamage(float DamageAmount);
 
+	void Des();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
+	bool IsDest = false;
 	
 private:
 	AActor* TargetEnemy = nullptr;

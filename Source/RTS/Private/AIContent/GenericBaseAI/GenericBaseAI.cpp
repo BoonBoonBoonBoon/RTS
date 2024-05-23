@@ -114,7 +114,7 @@ void AGenericBaseAI::TakeDamage(float DamageAmount)
 	Health -= DamageAmount;
 	
 	// Log the health
-	UE_LOG(LogTemp, Warning, TEXT("Health: %f"), Health);
+	UE_LOG(LogTemp, Warning, TEXT("Health Worker Drone %f"), Health);
 
 	// Clamp health between 0 and MaxHealth
 	Health = FMath::Clamp(Health, 0.f, 100);
@@ -124,6 +124,12 @@ void AGenericBaseAI::TakeDamage(float DamageAmount)
 	{
 		Destroy();
 	}
+}
+
+void AGenericBaseAI::Des()
+{
+	Destroy();
+	IsDest = true;
 }
 
 // Called when the game starts or when spawned

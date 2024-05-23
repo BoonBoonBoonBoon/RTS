@@ -40,7 +40,7 @@ void AGenericBaseEnemyAI::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 {
 	UE_LOG(LogTemp, Warning, TEXT("Attacking"));
 	// Declare the variable
-	float Dmg = 10.0f; // Set this to the desired damage amount
+	float Dmg = 20.0f; // Set this to the desired damage amount
 
 	// Check if the overlapped actor is a worker drone
 	if (OtherActor == Cast<AGenericBaseAI>(OtherActor))
@@ -67,11 +67,24 @@ void AGenericBaseEnemyAI::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 				{
 					if (AGenericBaseAI* Enemy = Cast<AGenericBaseAI>(OtherActor))
 					{
-						Enemy->TakeDamage(Dmg);
+						// Reduce the enemy's health
+						//Enemy->TakeDamage(Dmg);
 
+						Enemy->UnitDataMap[Enemy->UnitType].UnitStats.Health -= Dmg;
+						
+						UE_LOG(LogTemp, Warning, TEXT("Health Worker Drone %f"), Enemy->UnitDataMap[Enemy->UnitType].UnitStats.Health);
+						
+						// Check if the enemy's health is zero or less
 						if (Enemy->UnitDataMap[Enemy->UnitType].UnitStats.Health <= 0)
 						{
+							// Clear the timer if the enemy's health is zero or less
 							this->GetWorld()->GetTimerManager().ClearTimer(AttackTimerHandleLightInf);
+							Enemy->Des();
+						}
+						else
+						{
+							// Reset the timer if the enemy is still alive
+							TimeValue = 2;
 						}
 					}
 				}
