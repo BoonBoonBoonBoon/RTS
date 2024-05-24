@@ -366,10 +366,10 @@ void AUserController::EventKey()
 						bPatrolMode = false;
 						PatrolPoints.Empty();
 
-						// Draw a debug box at the hit location
+						/*// Draw a debug box at the hit location
 						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green,
 						             false,
-						             1, 0, 5.0f);
+						             1, 0, 5.0f);*/
 
 						HandleResourceGathering(HitActorObj);
 					}
@@ -401,10 +401,10 @@ void AUserController::EventKey()
 							SelectionInterface->MoveGroupToLocation(SelectedUnits, Location);
 						}
 
-						// Draw a debug box at the hit location
+						/*// Draw a debug box at the hit location
 						DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Green,
 						             false,
-						             15, 0, 5.0f);
+						             15, 0, 5.0f);*/
 					}
 				}
 			}
@@ -557,15 +557,15 @@ void AUserController::CastToActor()
 		                                         ECC_Visibility, CollisionParams))
 		{
 			// draw a debug box at the hit location
-			DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Red, false, 2.0f, 0,
-			             5.0f);
+			//DrawDebugBox(GetWorld(), HitResult.Location, DebugBoxExtent, FQuat::Identity, FColor::Red, false, 2.0f, 0,
+			           //  5.0f);
 
 			MouseStart = bHit.Location;
 			if (AActor* HitActor = HitResult.GetActor())
 			{
 				bNotHit = false;
 				HandleSelection(HitActor);
-				DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
+				//DrawDebugBox(GetWorld(), SpawnLoc, DebugBoxExtent, FColor::Green, false, -1, 0, 4);
 			}
 			else
 			{

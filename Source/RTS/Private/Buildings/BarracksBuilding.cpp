@@ -41,43 +41,38 @@ void ABarracksBuilding::BeginPlay()
 void ABarracksBuilding::ProductionForUnits(TSubclassOf<AGenericBaseAI> UnitToProduce)
 {
 	if (UnitToProduce->IsChildOf(AlightInfantry::StaticClass()))
+	//if (UnitToProduce->GetClass() == AlightInfantry::StaticClass())
 	{
-		// Check the type of UnitToProduce
-		if (UnitToProduce->IsChildOf(AWorkerDrone::StaticClass()))
+		// Check if there is enough food to produce the unit
+		if (UserController->UWoodAmount >= 5 && UserController->UFoodAmount >= 5)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("UnitToProduce is of type WorkerDrone"));
+			// Deduct the food cost
+			UserController->OnFoodChanged(-5);
+			UserController->OnWoodChanged(-5);
 
-			// Check if there is enough food to produce the unit
-			if (UserController->UWoodAmount >= 5 && UserController->UFoodAmount >= 5)
+			// Add the unit to the production queue
+			UnitsForProduction.Enqueue(UnitToProduce);
+			UE_LOG(LogTemp, Warning, TEXT("UnitToProduce enqueued: %s"), *UnitToProduce->GetName());
+
+			// Start the production timer if it's not already running
+			if (!GetWorldTimerManager().IsTimerActive(ProductionTimer))
 			{
-				// Deduct the food cost
-				UserController->OnFoodChanged(-5);
-				UserController->OnWoodChanged(-5);
-
-				// Add the unit to the production queue
-				UnitsForProduction.Enqueue(UnitToProduce);
-				UE_LOG(LogTemp, Warning, TEXT("UnitToProduce enqueued: %s"), *UnitToProduce->GetName());
-
-				// Start the production timer if it's not already running
-				if (!GetWorldTimerManager().IsTimerActive(ProductionTimer))
-				{
-					UE_LOG(LogTemp, Warning, TEXT("Set timer"));
-					GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, 5.0f, true);
-				}
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Not enough food to produce unit."));
+				UE_LOG(LogTemp, Warning, TEXT("Set timer"));
+				GetWorldTimerManager().SetTimer(ProductionTimer, this, &ABarracksBuilding::ProduceUnit, 5.0f,
+				                                true);
 			}
 		}
 		else
 		{
-			UE_LOG(LogTemp, Warning, TEXT("UnitToProduce is of an unknown type"));
+			UE_LOG(LogTemp, Warning, TEXT("Not enough food to produce unit."));
 		}
 	}
 
+	UE_LOG(LogTemp, Warning, TEXT("b4e"));
 	// Check the type of UnitToProduce
 	if (UnitToProduce->IsChildOf(AWorkerDrone::StaticClass()))
+
+	//if (UnitToProduce->GetClass() == AWorkerDrone::StaticClass())
 	{
 		UE_LOG(LogTemp, Warning, TEXT("UnitToProduce is of type WorkerDrone"));
 		// Check if there is enough food to produce the unit
@@ -103,6 +98,7 @@ void ABarracksBuilding::ProductionForUnits(TSubclassOf<AGenericBaseAI> UnitToPro
 		}
 	}
 }
+
 
 void ABarracksBuilding::ProduceUnit()
 {
