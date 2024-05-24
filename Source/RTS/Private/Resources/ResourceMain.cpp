@@ -21,27 +21,12 @@ AResourceMain::AResourceMain()
 	CollisionComp->OnComponentEndOverlap.AddDynamic(this, &AResourceMain::EndOverlap);
 }
 
-// To send resoucres we do a function thats called everytick and we say a certain timer
-// which lets the AI pickup 1 resource at a time EACH. and it repeats still a second is up so it can grab another resource.
-
-// can give them inventory by making stuct invetory then saying "inventory new AiInv = IncomingInt;"
-// then we can say "AiInv.Amount += 1;" and then we can say "IncomingInt = AiInv;" to send it back to the AI.
-
 
 EResourceType AResourceMain::GetResourceType() const
 {
 	return EResourceType::Invalid;
 }
 
-/* TODO:
- * 1. Create a Child Of genericAI, whose purpose it is to gather resources.
- * 2. Create Optional Upgrades for the AI to gather resources faster. (Check if the AI has the upgrade, if so, gather resources faster.) (Use Struct)
- * 3. Check for Upgrades.
- * 4. Upgrades then determine the amount we can take from the resource. (Increase Speed even?) (maybe Nerf Speed)
- * (Give the AI a value Variable in which it increases pickup speed by a percentile amount)
- * ie. Reducing the timer gradually -> then to buy the upgrades the ai need to have a certain amount of resources.
- * Check out FResourceStats For the amount we should take.
- */
 
 void AResourceMain::BeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep,

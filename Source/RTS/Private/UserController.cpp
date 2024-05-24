@@ -20,7 +20,7 @@ class EbuildingTypes;
 
 void AUserController::OnSwitchBarracksUI(bool bCloseBarracksUI)
 {
-	if(bCloseBarracksUI)
+	if (bCloseBarracksUI)
 	{
 		CloseMarketplaceUI.Broadcast(true);
 	}
@@ -28,7 +28,7 @@ void AUserController::OnSwitchBarracksUI(bool bCloseBarracksUI)
 
 void AUserController::OnSwitchMarketplaceUI(bool bCloseMarketUI)
 {
-	if(bCloseMarketUI)
+	if (bCloseMarketUI)
 	{
 		CloseBarracksUI.Broadcast(true);
 	}
@@ -67,7 +67,6 @@ AUserController::AUserController()
 	UStoneAmount = 0;
 	UFoodAmount = 0;
 	UGoldAmount = 0;
-	
 }
 
 void AUserController::OnPossess(APawn* InPawn)
@@ -234,22 +233,7 @@ void AUserController::Tick(float DeltaTime)
 
 	// Call CheckAttackDistance every tick
 	CheckAttackDistance();
-
-/*
-AGenericBaseAI* AIUnit = Cast<AGenericBaseAI>(GetPawn());
 	
-	for (const auto& Elem : AIUnit->EnemyTargets)
-	{
-		AGenericBaseAI* Key = Elem.Key;
-		AActor* Value = Elem.Value;
-
-		UE_LOG(LogTemp, Warning, TEXT("Key: %s, Value: %s"), *Key->GetName(), *Value->GetName());
-	}
-	*/
-		
-	
-	//UE_LOG(LogTemp, Warning, TEXT("Number of selected units: %d"), SelectedUnits.Num());
-	//UE_LOG(LogTemp, Warning, TEXT("Number of All Units: %d"), AllWorldUnitsINT32);
 }
 
 void AUserController::BeginPlay()
@@ -265,16 +249,16 @@ void AUserController::BeginPlay()
 
 	SelectionInterface->CloseBarracksUISwitch.AddDynamic(this, &AUserController::OnSwitchBarracksUI);
 	SelectionInterface->CloseMarketUISwitch.AddDynamic(this, &AUserController::OnSwitchMarketplaceUI);
-	
-	if(WidgetClass)
+
+	if (WidgetClass)
 	{
 		ResourceWidgetInstance = CreateWidget<UUserWidget>(this, WidgetClass);
-		if(ResourceWidgetInstance)
+		if (ResourceWidgetInstance)
 		{
 			ResourceWidgetInstance->AddToViewport();
 		}
 	}
-	
+
 	// Economy Resource Interface
 	UserControllerPtr = this;
 	EconomyManager = UEconomyManager::GetInstance();
@@ -282,16 +266,26 @@ void AUserController::BeginPlay()
 	{
 		if (UserControllerPtr.IsValid() && UserControllerPtr != NULL)
 		{
-			UEconomyManager::GetInstance()->OnWoodChanged.AddDynamic(UserControllerPtr.Get(),
-			                                                         &AUserController::OnWoodChanged);
-			
-			
-			UEconomyManager::GetInstance()->OnStoneChanged.AddDynamic(UserControllerPtr.Get(),
-			                                                          &AUserController::OnStoneChanged);
-			UEconomyManager::GetInstance()->OnFoodChanged.AddDynamic(UserControllerPtr.Get(),
-			                                                         &AUserController::OnFoodChanged);
-			UEconomyManager::GetInstance()->OnGoldChanged.AddDynamic(UserControllerPtr.Get(),
-			                                                         &AUserController::OnGoldChanged);
+			UEconomyManager* EconomyManagerInstance = UEconomyManager::GetInstance();
+			if (EconomyManagerInstance != nullptr && UserControllerPtr.IsValid())
+			{
+				/*UEconomyManager::GetInstance()->OnGoldChanged.AddDynamic(UserControllerPtr.Get(),
+																	   &AUserController::OnGoldChanged);
+																	   */
+
+				EconomyManagerInstance->OnWoodChanged.AddDynamic(UserControllerPtr.Get(),
+				                                                 &AUserController::OnWoodChanged);
+				EconomyManagerInstance->OnStoneChanged.AddDynamic(UserControllerPtr.Get(),
+				                                                  &AUserController::OnStoneChanged);
+				EconomyManagerInstance->OnFoodChanged.AddDynamic(UserControllerPtr.Get(),
+				                                                 &AUserController::OnFoodChanged);
+				EconomyManagerInstance->OnGoldChanged.AddDynamic(UserControllerPtr.Get(),
+				                                                 &AUserController::OnGoldChanged);
+			}
+		}
+		else
+		{
+			// Log an error or handle the situation where the instance is null or the UserControllerPtr is invalid
 		}
 	}
 }
@@ -361,9 +355,8 @@ void AUserController::EventKey()
 			                                         WorldMouseLocation + WorldMouseDirection * TraceDistance,
 			                                         ECC_Visibility, CollisionParams))
 			{
-
 				CurrentTarget = NULL;
-				
+
 				if (AActor* HitActorObj = (HitResult.GetActor()))
 				{
 					// Check if the Hit Result is a Resource.
@@ -386,8 +379,7 @@ void AUserController::EventKey()
 						{
 							// Store the clicked enemy as the current target
 							CurrentTarget = HitActorObj;
-							
-							UE_LOG(LogTemp, Warning, TEXT("Found Enemy"));
+
 							CombatInterface->FindEnemy(HitActorObj, SelectedUnits);
 						}
 						else
@@ -483,10 +475,8 @@ void AUserController::StartBoxSelection()
 	// Get the Coordinates of the mouse when clicked
 	if (GetMousePosition(InitialMousePosition.X, InitialMousePosition.Y))
 	{
-	
-		
 		SetAllUnitsTrue = false;
-		
+
 		bIsSelecting = true;
 
 		CastToActor();
@@ -595,7 +585,7 @@ void AUserController::HandleSelection(AActor* ActorHit)
 			// Close the Widget.
 			CloseBarracksUI.Broadcast(true);
 			CloseMarketplaceUI.Broadcast(true);
-			
+
 			if (!SelectedBuilding.IsEmpty()) // Clears Selection to process new Array Selection.
 			{
 				SelectionInterface->NotHit(SelectedBuilding);
@@ -630,11 +620,11 @@ void AUserController::HandleSelection(AActor* ActorHit)
 
 					EBuildingTypes CurrentBuilding = SelectionInterface->GetBuildingType(ActorHit);
 
-					if(CurrentBuilding == EBuildingTypes::Barracks)
+					if (CurrentBuilding == EBuildingTypes::Barracks)
 					{
 						CloseMarketplaceUI.Broadcast(true);
 					}
-					else if(CurrentBuilding == EBuildingTypes::Trader)
+					else if (CurrentBuilding == EBuildingTypes::Trader)
 					{
 						CloseBarracksUI.Broadcast(true);
 					}
@@ -725,7 +715,8 @@ void AUserController::UpdateFlow()
 					// iterate over all previously selected units stored in the SU array.
 					for (AActor* SelectedActor : SelectedUnits)
 					{
-						if(!SelectedActor->ActorHasTag(FName("Building")) && !SelectedActor->ActorHasTag(FName("Resource")))
+						if (!SelectedActor->ActorHasTag(FName("Building")) && !SelectedActor->ActorHasTag(
+							FName("Resource")))
 						{
 							// For each selected actor we check if it's still present in the ActorsToBeFound array.
 							// (ie. still overlapping with the selection area).
@@ -808,24 +799,3 @@ void AUserController::ProcessPatrolClick(FHitResult HitResult)
 		}
 	}
 }
-
-/*void AUserController::AddBuildingWidgetToScreen(UUserWidget* BuildingWidget)
-{
-	if (BuildingWidget)
-	{
-		BuildingWidget->AddToViewport();
-	}
-}*/
-
-
-/*void AUserController::InitializeCombatInterface(AActor* InitActor)
-{
-	// Initialize the CombatInterface
-	if (InitActor == GetPawn())
-	{
-		if (AGenericBaseAI* GB = Cast<AGenericBaseAI>(InitActor))
-		{
-			CombatInterface = Cast<ICombatInterface>(GB);
-		}
-	}
-}*/

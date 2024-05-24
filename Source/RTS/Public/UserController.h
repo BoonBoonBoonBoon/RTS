@@ -16,6 +16,7 @@
 
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDeselectBarracksUIEvent, bool, bCloseBarracksUI);
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FDeselectMarketPlaceUIEvent, bool, bCloseMarketPlaceUI);
 
 class IBuildingInterface;
@@ -33,10 +34,9 @@ class RTS_API AUserController : public APlayerController, public ICombatInterfac
 	GENERATED_BODY()
 
 public:
-
 	AActor* CurrentTarget;
 	void CheckAttackDistance();
-	
+
 	UEconomyManager* EconomyManager = nullptr;
 
 	// Widget for the User Interface //
@@ -55,17 +55,17 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void OnSwitchBarracksUI(bool bCloseBarracksUI);
-	
+
 	UFUNCTION(BlueprintCallable, Category = "UI")
 	void OnSwitchMarketplaceUI(bool bCloseMarketUI);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GetUnits")
 	TArray<AGenericBaseAI*> GrabAllUnits;
-	
+
 	// --
-	
-	
-	int32 AllUnitAmountInt (TArray<AGenericBaseAI*> AllU);
+
+
+	int32 AllUnitAmountInt(TArray<AGenericBaseAI*> AllU);
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "GetUnits")
 	int32 AllWorldUnitsINT32;
@@ -83,76 +83,69 @@ public:
 	// Camera Movement Edge of Screen
 	void EdgeScrolling();
 	void EdgeScrolling_WASD_Up(float Value);
-	void EdgeScrolling_WASD_Down(float Value); 
-	void EdgeScrolling_WASD_Right(float Value); 
-	void EdgeScrolling_WASD_Left(float Value); 
-	
+	void EdgeScrolling_WASD_Down(float Value);
+	void EdgeScrolling_WASD_Right(float Value);
+	void EdgeScrolling_WASD_Left(float Value);
+
 	void MoveCamera(const FVector& Direction);
-	
-	
+
+
 	void EventKey(); // Movement and Attack Direction
 	void HandleResourceGathering(AActor* Resource);
 	void MoveDronesToGatherPos(FVector GatherPos, AActor* Drone);
-	
+
 	void StartBoxSelection(); // User Input to select Actor
 	void EndBoxSelection(); // End of User Input
 	void MultiSelect(); // User Input With intent of Selection Multiple Units
 	bool HasCursorMoved();
 
-	
+
 	void CastToActor(); // Raycasts to Actors to check Hit Result
-	void HandleSelection(AActor* ActorHit);// Determines On how the Actor will be processed.
-	
-	
-	//TArray<AActor*> ConvertPawnArrayToActorArray(const TArray<APawn*>& PawnArray); // Converts Pawn Array to Actor Array
-	
+	void HandleSelection(AActor* ActorHit); // Determines On how the Actor will be processed.
+
 	void HandleMarqueePawnSelection(AActor* HitPawn); // Selects Actors Hit by Tool
 	void UpdateFlow(); // Draws Marquee Selection Tool 
-	
+
 protected:
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UNiagaraSystem* FXCursor;
 
 	UPROPERTY(EditAnywhere)
 	AGenericBaseAI* GenericBaseAI;
-	
+
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* SelectionArea;
-	
+
 	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
 	UBlackboardComponent* BlackboardComponent; // ? maybe delete
-	
+
 	UPROPERTY(EditAnywhere)
 	AGenericBaseAI* Decals;
-	
+
 	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObject
 	AUserCharacter* UserCharacter;
-	
+
 	// Building Interface that stores important Data for the building;
-	IBuildingInterface * BuildingInterface;
+	IBuildingInterface* BuildingInterface;
 
 	// Selection Interface that stores important Data for the Unit selection;
 	ISelectionInterface* SelectionInterface;
-	
+
 	// Combat Interface that stores important Data for the Combat;
 	ICombatInterface* CombatInterface;
-	
+
 public:
-
-
-	
 	UPROPERTY(BlueprintReadWrite)
 	FVector2D InitialMousePosition; // 2D World Space Current Mouse Position
-	
+
 	FVector2D MousePosition;
-	
+
 	UPROPERTY(BlueprintReadWrite)
 	FVector2D NewMousePosition;
-	
+
 	UPROPERTY(BlueprintReadWrite)
 	bool CursorMoved = false;
-	
+
 	// ReSharper disable once CppUE4ProbableMemoryIssuesWithUObjectsInContainer
 	TArray<AActor*> ActorsInSelection;
 
@@ -165,32 +158,28 @@ public:
 	// Stores the building type.
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AActor*> SelectedBuilding;
-	
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Player Controller")
 	TWeakObjectPtr<AUserController> UserControllerPtr;
-	
-	
-	
+
 protected:
-	
 	float dist;
-	FVector SelectionSize; 
+	FVector SelectionSize;
 	FVector CenterMouseLocation;
 	FVector MouseStart;
 	FVector MouseEnd;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Box Selection")
 	bool bIsSelecting;
-	
+
 	bool bCheckCursor;
 	bool bCursorMove;
-	
+
 	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
 public:
-
 	// Economy --
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Resources")
@@ -209,11 +198,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void OnFoodChanged(int32 NewAmount) { UFoodAmount += NewAmount; };
 	UFUNCTION(BlueprintCallable)
-	void OnGoldChanged(int32 NewAmount) { UGoldAmount += NewAmount;   UE_LOG(LogTemp, Warning, TEXT("OnChanged Gold Amount: %d"), UGoldAmount); };
+	void OnGoldChanged(int32 NewAmount)
+	{
+		UGoldAmount += NewAmount;
+		UE_LOG(LogTemp, Warning, TEXT("OnChanged Gold Amount: %d"), UGoldAmount);
+	};
 
 	// ------------
 	void UpdateResources();
-	
+
 	// Checks if we are selecting multiple ai
 	bool MultiselectCond;
 
@@ -236,9 +229,8 @@ public:
 	// The Current Patrol Point the AI is moving to.
 	TArray<AGenericBaseAI*> PatrolUnits;
 
-	
-	FHitResult bHit; 
+
+	FHitResult bHit;
 
 	void InitializeCombatInterface(AActor* InitActor);
-	
 };

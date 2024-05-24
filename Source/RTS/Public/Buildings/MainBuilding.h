@@ -29,9 +29,6 @@ public:
 	ABuildingController* BuildingController;
 
 	ISelectionInterface* SelectionInterface;
-	
-	//UPROPERTY(EditAnywhere)
-	//UDecalComponent* SelectedDecalComp;
 
 	UPROPERTY(EditAnywhere)
 	UBoxComponent* BoxComponent;

@@ -7,6 +7,7 @@
 #include "GameFramework/Character.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
+#include "RTS/RTSGameModeBase.h"
 #include "GenericBaseEnemyAI.generated.h"
 
 
@@ -60,7 +61,7 @@ public:
 
 	FTimerHandle AttackTimerHandleLightInf;
 
-	
+	ARTSGameModeBase* GameMode;
 	
 	// Method for taking damage
 	UFUNCTION(BlueprintCallable, Category = "Health")

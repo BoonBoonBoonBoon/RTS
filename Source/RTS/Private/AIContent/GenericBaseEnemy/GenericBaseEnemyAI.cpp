@@ -7,6 +7,9 @@
 #include "AIContent/GenericBaseAI/GenericBaseAI.h"
 #include "AIContent/GenericBaseEnemy/GenericEnemyController.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "RTS/RTSGameModeBase.h"
+
+
 
 // Sets default values
 AGenericBaseEnemyAI::AGenericBaseEnemyAI()
@@ -38,15 +41,12 @@ AGenericBaseEnemyAI::AGenericBaseEnemyAI()
 
 void AGenericBaseEnemyAI::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Attacking"));
 	// Declare the variable
 	float Dmg = 20.0f; // Set this to the desired damage amount
 
 	// Check if the overlapped actor is a worker drone
 	if (OtherActor == Cast<AGenericBaseAI>(OtherActor))
 	{
-		// Start damaging the worker drone
-		UE_LOG(LogTemp, Warning, TEXT("Damaging worker drone..."));
 
 		if (TimeValue <= 0)
 		{
@@ -61,18 +61,11 @@ void AGenericBaseEnemyAI::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 			{
 				TimeValue--;
 
-				UE_LOG(LogTemp, Warning, TEXT("Remaining time for timer: %d"), TimeValue);
-
 				if (TimeValue <= 0)
 				{
 					if (AGenericBaseAI* Enemy = Cast<AGenericBaseAI>(OtherActor))
 					{
-						// Reduce the enemy's health
-						//Enemy->TakeDamage(Dmg);
-
 						Enemy->UnitDataMap[Enemy->UnitType].UnitStats.Health -= Dmg;
-						
-						UE_LOG(LogTemp, Warning, TEXT("Health Worker Drone %f"), Enemy->UnitDataMap[Enemy->UnitType].UnitStats.Health);
 						
 						// Check if the enemy's health is zero or less
 						if (Enemy->UnitDataMap[Enemy->UnitType].UnitStats.Health <= 0)
@@ -93,66 +86,12 @@ void AGenericBaseEnemyAI::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AA
 	}
 }
 
-/*
-void AGenericBaseEnemyAI::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	// Check if the overlapped actor is a worker drone
-	if (OtherActor->ActorHasTag("Friendly"))
-	{
-		// Start damaging the worker drone
-		// Replace this with your actual damage logic
-		UE_LOG(LogTemp, Warning, TEXT("Damaging worker drone..."));
-
-		// Get Overlapped actor and call TakeDamage function
-		
-		//OtherActor->TakeDamage(15);
-
-
-		if (TimeValue <= 0)
-		{
-			TimeValue = 2;
-		}
-    
-		// Check if the timer is already set
-		if (!this->GetWorld()->GetTimerManager().IsTimerActive(this->AttackTimerHandleLightInf))
-		{
-			// lambda function, Set a timer to call the AttackEnemy function every 2 seconds
-			this->GetWorld()->GetTimerManager().SetTimer(this->AttackTimerHandleLightInf, [this, this, OtherActor, Dmg]()
-			{
-				TimeValue--;
-
-				UE_LOG(LogTemp, Warning, TEXT("Remaining time for timer: %d"), TimeValue);
-
-				if (TimeValue <= 0)
-				{
-					//TimeValue = Unit->UnitDataMap[Unit->UnitType].UnitStats.AttackSpeed;
-					if (AGenericBaseAI* Enemy = Cast<AGenericBaseAI>(OtherActor))
-					{
-						Enemy->TakeDamage(Dmg);
-                        
-						//if (Enemy->Health <= 0)
-						if(Enemy->UnitDataMap[Enemy->UnitType].UnitStats.Health <= 0)
-						{
-							this->GetWorld()->GetTimerManager().ClearTimer(AttackTimerHandleLightInf);
-							//Unit->GetWorld()->GetTimerManager().ClearTimer(AttackTimerHandleLightInf);
-						}
-					}
-				}
-			}, 2, true);
-		}
-	}
-}
-*/
-
 
 void AGenericBaseEnemyAI::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	// Check if the overlapped actor is a worker drone
 	if (OtherActor->ActorHasTag("Friendly"))
 	{
-		// Stop damaging the worker drone
-		// Replace this with your actual stop attack logic
-		UE_LOG(LogTemp, Warning, TEXT("Stopped damaging worker drone..."));
 	}
 }
 
@@ -161,6 +100,8 @@ void AGenericBaseEnemyAI::BeginPlay()
 {
 	Super::BeginPlay();
 	Tags.Add("Enemy");
+	
+	GameMode = Cast<ARTSGameModeBase>(GetWorld()->GetAuthGameMode());
 }
 
 // Called every frame
@@ -193,13 +134,17 @@ void AGenericBaseEnemyAI::TakeDamage(float DamageAmount)
 
 	// Clamp health between 0 and MaxHealth
 	Health = FMath::Clamp(Health, 0.f, MaxHealth);
-	
+
 	// Reset the timer
 	TimeSinceLastDamage = 0.f;
 
-	if(Health <= 0)
+	if (Health <= 0)
 	{
 		Destroy();
+		if (GameMode)
+		{
+			GameMode->CheckEnemies();
+		}
 	}
 }
 

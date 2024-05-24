@@ -14,6 +14,6 @@ void AMarketplaceBuilding::BeginPlay()
 {
 	Super::BeginPlay();
 	
- //SelectionInterface->AssignBuildingType(this);
+
 }
 

@@ -25,8 +25,7 @@ void UEconomyManager::GlobalEconomy()
 
 void UEconomyManager::IncomingResource(int32 IncomingResourceAmount, EResourceType IncomingResourceType)
 {
-	//if (IncomingResourceAmount > 0)
-	//{
+
 		if (IncomingResourceType == EResourceType::Wood)
 		{
 			//RWoodAmount += IncomingResourceAmount;
@@ -52,7 +51,6 @@ void UEconomyManager::IncomingResource(int32 IncomingResourceAmount, EResourceTy
 			OnGoldChanged.Broadcast(IncomingResourceAmount);
 		}
 	}
-//}
 
 void UEconomyManager::OutgoingResource(int32 ResourceAmount)
 {
@@ -73,7 +71,7 @@ UEconomyManager* UEconomyManager::GetInstance()
 
 void UEconomyManager::UpdateEconomyWidget()
 {
-	//GameModeRef = (ARTSGameModeBase*)GetWorld()->GetAuthGameMode();
+	
 	GameModeRef = Cast<ARTSGameModeBase>(UGameplayStatics::GetGameMode(GetOuter()->GetWorld()));
 
 	if (GameModeRef != nullptr)
@@ -92,25 +90,3 @@ void UEconomyManager::UpdateEconomyWidget()
 		}
 	}
 }
-
-/*if(EconomyWidget)
-{
-	//EconomyWidget->SetDisplayWoodAmount(RWoodAmount);
-}*/
-	
-/*if(EconomyWidget)
-{
-	auto EcomWidgetInstance = Cast<UPlayerWidget>(EconomyWidget);
-	if(EcomWidgetInstance)
-	{
-		EcomWidgetInstance->SetDisplayWoodAmount(RWoodAmount);
-	}
-}*/
-
-/*ARTSGameModeBase* GameMode = Cast<ARTSGameModeBase>(GetWorld());
-if(GameMode)
-{
-	UE_LOG(LogTemp, Warning, TEXT("GameMode."));
-}*/
-
-

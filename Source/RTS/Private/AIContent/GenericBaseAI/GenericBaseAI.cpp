@@ -20,12 +20,7 @@ AGenericBaseAI::AGenericBaseAI()
 	
 	SelectedDecalComp = CreateDefaultSubobject<UDecalComponent>("Decal");
 	SelectedDecalComp->SetupAttachment(RootComponent);
-
-	// Initialize the Stimulus Source
-    SetupStimulusSource();
 	
-	// Initialize the Perception System
-	//InitializePerceptionSystem();
 	
 	// Set Tag to building
 	Tags.Add("Unit");

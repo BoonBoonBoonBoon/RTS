@@ -64,8 +64,3 @@ public:
 	virtual int32 GetAmount(int Amount);
 };
 
-
-///*virtual FString GetEnumName();
-
-//EResourceType GetType(AActor* Actor);
-

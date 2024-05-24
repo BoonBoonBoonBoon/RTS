@@ -15,5 +15,4 @@ class RTS_API ABuildingController : public AController
 	GENERATED_BODY()
 public:
 	
-	//void AddBuildingWidgetToScreen(UUserWidget* BuildingWidget);
 };

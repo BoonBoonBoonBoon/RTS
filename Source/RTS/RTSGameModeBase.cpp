@@ -4,6 +4,7 @@
 
 #include "EngineUtils.h"
 #include "UserController.h"
+#include "AIContent/GenericBaseEnemy/GenericBaseEnemyAI.h"
 #include "Blueprint/UserWidget.h"
 #include "Economy/EconomyManager.h"
 
@@ -35,25 +36,25 @@ ARTSGameModeBase::ARTSGameModeBase()
 void ARTSGameModeBase::UpdateEWidget()
 {
 	
-	/*PlayerWidget->Initialize();
-	
-	PlayerWidget = CreateWidget<UPlayerWidget>(GetWorld(), UPlayerWidget::StaticClass());
-	if(PlayerWidget)
+}
+
+void ARTSGameModeBase::OnAllEnemiesDestroyed()
+{
+	OpenFinishedWidget.Broadcast();
+}
+
+void ARTSGameModeBase::CheckEnemies()
+{
+	for (TActorIterator<AGenericBaseEnemyAI> It(GetWorld()); It; ++It)
 	{
-		
-		PlayerWidget->AddToViewport();
-
-		UEconomyManager::GetInstance()->OnWoodChanged.AddDynamic(PlayerWidget, &UPlayerWidget::UpdateWoodAmount);
-		UEconomyManager::GetInstance()->OnStoneChanged.AddDynamic(PlayerWidget, &UPlayerWidget::UpdateStoneAmount);
-		UEconomyManager::GetInstance()->OnFoodChanged.AddDynamic(PlayerWidget, &UPlayerWidget::UpdateFoodAmount);
-		UEconomyManager::GetInstance()->OnGoldChanged.AddDynamic(PlayerWidget, &UPlayerWidget::UpdateGoldAmount);
-
-		UE_LOG(LogTemp, Warning, TEXT("Widget added to viewport."));
+		// If an enemy AI is found, return
+		return;
 	}
-	else
-	{
-		UE_LOG(LogTemp, Error, TEXT("Failed to create widget."));
-	}*/
+
+	UE_LOG(LogTemp, Warning, TEXT("All Enemies Destroyed"));
+	
+	// If no enemy AI are found, call OnAllEnemiesDestroyed
+	OnAllEnemiesDestroyed();
 }
 
 void ARTSGameModeBase::BeginPlay()
@@ -64,8 +65,7 @@ void ARTSGameModeBase::BeginPlay()
 	UEconomyManager::GetInstance()->ResetEconomy();
 
 	UpdateEWidget();
-
-	//	UEconomyManager::EconomyWidgetRef = Cast<UPlayerWidget>(CreateWidget(GetWorld(), UPlayerWidget::StaticClass()));
+	
 }
 
 UPlayerWidget* ARTSGameModeBase::Getter()
